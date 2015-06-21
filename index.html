@@ -1,0 +1,249 @@
+<!--
+ /**
+ * @preserve
+ *
+ *                                      .,,,;;,'''..
+ *                                  .'','...     ..',,,.
+ *                                .,,,,,,',,',;;:;,.  .,l,
+ *                               .,',.     ...     ,;,   :l.
+ *                              ':;.    .'.:do;;.    .c   ol;'.
+ *       ';;'                   ;.;    ', .dkl';,    .c   :; .'.',::,,'''.
+ *      ',,;;;,.                ; .,'     .'''.    .'.   .d;''.''''.
+ *     .oxddl;::,,.             ',  .'''.   .... .'.   ,:;..
+ *      .'cOX0OOkdoc.            .,'.   .. .....     'lc.
+ *     .:;,,::co0XOko'              ....''..'.'''''''.
+ *     .dxk0KKdc:cdOXKl............. .. ..,c....
+ *      .',lxOOxl:'':xkl,',......'....    ,'.
+ *           .';:oo:...                        .
+ *                .cd,      ╔═╗┌┬┐┬┌┬┐┌─┐┬─┐    .
+ *                  .l;     ║╣  │││ │ │ │├┬┘    '
+ *                    'l.   ╚═╝─┴┘┴ ┴ └─┘┴└─   '.
+ *                     .o.                   ...
+ *                      .''''','.;:''.........
+ *                           .'  .l
+ *                          .:.   l'
+ *                         .:.    .l.
+ *                        .x:      :k;,.
+ *                        cxlc;    cdc,,;;.
+ *                       'l :..   .c  ,
+ *                       o.
+ *                      .,
+ *
+ *              ╦ ╦┬ ┬┌┐ ┬─┐┬┌┬┐  ╔═╗┌┐  ┬┌─┐┌─┐┌┬┐┌─┐
+ *              ╠═╣└┬┘├┴┐├┬┘│ ││  ║ ║├┴┐ │├┤ │   │ └─┐
+ *              ╩ ╩ ┴ └─┘┴└─┴─┴┘  ╚═╝└─┘└┘└─┘└─┘ ┴ └─┘
+ *
+ *
+ * Created by Valentin on 10/22/14.
+ *
+ * Copyright (c) 2015 Valentin Heun
+ *
+ * All ascii characters above must be included in any redistribution.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+ -->
+<html>
+<head>
+    <meta http-equiv="cache-control" content="max-age=0"/>
+    <meta http-equiv="cache-control" content="no-cache"/>
+    <meta http-equiv="expires" content="0"/>
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT"/>
+    <meta http-equiv="pragma" content="no-cache"/>
+
+    <title>Hybrid Objects - Editor</title>
+
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <script src="thirdPartyCode/hand.minified-1.3.8.js"></script>
+    <script src="js/globalVariables.js"></script>
+    <script src="js/utilities.js"></script>
+    <script src="js/index.js"></script>
+    <script src="js/gui.js"></script>
+    <script src="js/log.js"></script>
+    <script src="js/eventHandlers.js"></script>
+    <script src="js/interactWithLines.js"></script>
+    <script src="js/onload.js"></script>
+
+
+    <style type="text/css">
+        A:link {
+            background: #FFCCFF;
+            text-decoration: none
+        }
+
+        A:visited {
+            background: #00CC00;
+            text-decoration: none
+        }
+
+        A:active {
+            background: #FF0000;
+            text-decoration: none
+        }
+
+        A:hover {
+            background: #00FFFF;
+            font-weight: bold;
+            color: green;
+        }
+    </style>
+
+</head>
+<body text="#01fffd">
+
+<!---<div id="controls" class='Interfaces'
+     style="position: fixed; left:10px; top: 10px; width: 200px; height: 200px;  -webkit-transform-style: preserve-3d;
+             background-color: #333333; visibility: visible"></div>--->
+
+<!-- This is the console terminal -->
+
+<div class='Interfaces' id="consolelog"></div>
+
+<!-- This is the div in which all the interaction will be passed
+-->
+
+<div class='main' id="GUI"></div>
+
+<!-- This is the console terminal -->
+
+<div class='Interfaces' id="preferences">
+
+    <div id="content1" class='Interfaces'
+         style="position: fixed; left: 5%; top: 13%; right: 58%; bottom: 10%;  -webkit-transform-style: preserve-3d;
+             background-color: #333333;">
+
+        <div class='Interfaces'
+             style='position: relative;  float: left; height: 10px; width: 100%;  box-sizing: border-box; padding: 5px;
+               text-align: center; font-family: Helvetica Neue, Helvetica, Arial;
+               background-color: #3c3c3c; -webkit-transform-style: preserve-3d;'>
+        </div>
+
+        <div  id="content11" class='Interfaces'
+             style='position: relative;  float: left; height: 70px; width: 50%;  box-sizing: border-box; padding-top: 13px;padding-left: 13px;
+               text-align: left; font-family: Helvetica Neue, Helvetica, Arial;
+               background-color: #3c3c3c; -webkit-transform-style: preserve-3d;'>
+            <b>Developer</b><br>
+        </div>
+
+        <div  id="content12" class='Interfaces'
+             style='position: relative;  float: left; height: 70px; width: 50%;  box-sizing: border-box; padding: 5px;
+               text-align: center; font-family: Helvetica Neue, Helvetica, Arial;
+               background-color: #3c3c3c; -webkit-transform-style: preserve-3d;'>
+            <img id="editingModeSwitch" src="png/switchOff.png" style=" width: 99px;height: 60px;"></div>
+
+        <div class='Interfaces'
+             style='position: relative;  float: left; height: 10px; width: 100%;  box-sizing: border-box; padding: 5px;
+               text-align: center; font-family: Helvetica Neue, Helvetica, Arial;
+               background-color: #3c3c3c; -webkit-transform-style: preserve-3d;'>
+        </div>
+        <!--  <div class='Interfaces'
+               style='position: relative;  float: left; height: 30px; width: 100%;  box-sizing: border-box; padding: 5px;padding-left: 13px;
+               text-align: left; font-family: Helvetica Neue, Helvetica, Arial;
+               background-color: #3c3c3c; -webkit-transform-style: preserve-3d;'>Interface Source URL
+          </div>
+
+          <div class='Interfaces'
+               style='position: relative;  float: left; height: 30px; width: 100%;  box-sizing: border-box; padding: 5px;padding-left: 13px;
+               text-align: left; font-family: Helvetica Neue, Helvetica, Arial;
+               background-color: #3c3c3c; -webkit-transform-style: preserve-3d;'>
+              <form>
+                  <input id="interfaceSourceURL" type="text" name="firstname">
+              </form>
+          </div>
+-->
+
+
+    </div>
+
+
+    <div id="content1title" class='Interfaces'
+         style="position: fixed; left: 5%; top: 7%; right: 58%; bottom: 89%;
+           font-family: Helvetica Neue, Helvetica, Arial; font-size: 18pt;
+
+             -webkit-transform-style: preserve-3d;
+            text-align: center;
+
+             ">Settings
+
+    </div>
+
+
+    <div id="content2" class='Interfaces'
+         style="position: fixed; left: 47%; top: 13%; right: 17%; bottom: 10%;  -webkit-transform-style: preserve-3d;
+            background-color: #333333;">
+
+    </div>
+    <div id="content2title" class='Interfaces'
+         style="position: fixed; left: 47%; top: 7%; right: 17%; bottom: 89%;
+           font-family: Helvetica Neue, Helvetica, Arial; font-size: 18pt;
+
+             -webkit-transform-style: preserve-3d;
+            text-align: center;
+
+             ">Found Objects in this Network
+
+    </div>
+
+
+</div>
+<!-- This is the Interface frontend GUI part -->
+
+<div class='Interfaces' id="UIButtons" style="
+  -webkit-transform-style: preserve-3d;
+   visibility: hidden;
+position: fixed;
+    width: 100%;
+    height: 100%;
+    right: 18px;
+    top: 18px;
+
+   /* this is a hack for adding the interface in front of the transformed web interface */
+-webkit-transform: translateZ(1px);
+">
+    <div class='Interfaces'
+         style="position: fixed; width: 60px;height: 139px;right: 0px; top: 0px;  -webkit-transform-style: preserve-3d;  visibility: visible;">
+        <img class='Interfaces' id="guiButtonImage" src="png/intOneSelect.png" width="60" height="139" alt=""></div>
+    <div class='Interfaces'
+         style="position: fixed; width: 60px;height: 60px;right: 0px; top: 149px;  -webkit-transform-style: preserve-3d; visibility: visible;">
+        <img class='Interfaces' id="feezeButton" src="png/freeze.png" width="60" height="60" alt=""/></div>
+    <div class='Interfaces' id="guiButtonImage1"
+         style="position: fixed; width: 69px;height: 60px;right: 0px; top:0px;  -webkit-transform-style: preserve-3d; visibility: visible;">
+    </div>
+    <div class='Interfaces' id="guiButtonImage2"
+         style="position: fixed; width: 69px;height: 60px;right: 0px; top:70px;  -webkit-transform-style: preserve-3d; visibility: visible;">
+    </div>
+    <div class='Interfaces' id="reloadButtonDiv"
+         style="position: fixed; width: 60px;height: 60px;right: 0px; bottom: 36px;  -webkit-transform-style: preserve-3d; visibility: visible;">
+        <img class='Interfaces' id="reloadButton" src="png/reload.png" width="60" height="60" alt=""/></div>
+
+    <div id="logButtonDiv" style="position: fixed; width: 60px;height: 60px;right: 0px; bottom: 106px;  -webkit-transform-style: preserve-3d;  visibility: visible;">
+        <img class='Interfaces' id="logButton" src="png/log.png" width="60" height="60" alt=""/></div>
+
+    <div class='Interfaces'  id="preferencesButtonDiv"
+         style="position: fixed; width: 60px;height: 60px;right: 0px; bottom: 176px;  -webkit-transform-style: preserve-3d; visibility: visible;">
+        <img class='Interfaces'  id="preferencesButton" src="png/pref.png" width="60"
+             height="60" alt=""/></div>
+    <!-- ontouchmove='eventTest()'-->
+
+</div>
+<canvas class="Canvas" id="canvas"></canvas>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

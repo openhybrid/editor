@@ -1,0 +1,180 @@
+/*
+
+                                      .,,,;;,'''..
+                                  .'','...     ..',,,.
+                                .,,,,,,',,',;;:;,.  .,l,
+                               .,',.     ...     ,;,   :l.
+                              ':;.    .'.:do;;.    .c   ol;'.
+       ';;'                   ;.;    ', .dkl';,    .c   :; .'.',::,,'''.
+      ',,;;;,.                ; .,'     .'''.    .'.   .d;''.''''.
+     .oxddl;::,,.             ',  .'''.   .... .'.   ,:;..
+      .'cOX0OOkdoc.            .,'.   .. .....     'lc.
+     .:;,,::co0XOko'              ....''..'.'''''''.
+     .dxk0KKdc:cdOXKl............. .. ..,c....
+      .',lxOOxl:'':xkl,',......'....    ,'.
+           .';:oo:...                        .
+                .cd,      ╔═╗┌┬┐┬┌┬┐┌─┐┬─┐    .
+                  .l;     ║╣  │││ │ │ │├┬┘    '
+                    'l.   ╚═╝─┴┘┴ ┴ └─┘┴└─   '.
+                     .o.                   ...
+                      .''''','.;:''.........
+                           .'  .l
+                          .:.   l'
+                         .:.    .l.
+                        .x:      :k;,.
+                        cxlc;    cdc,,;;.
+                       'l :..   .c  ,
+                       o.
+                      .,
+
+              ╦ ╦┬ ┬┌┐ ┬─┐┬┌┬┐  ╔═╗┌┐  ┬┌─┐┌─┐┌┬┐┌─┐
+              ╠═╣└┬┘├┴┐├┬┘│ ││  ║ ║├┴┐ │├┤ │   │ └─┐
+              ╩ ╩ ┴ └─┘┴└─┴─┴┘  ╚═╝└─┘└┘└─┘└─┘ ┴ └─┘ (not even) Alpha
+
+
+ *
+ *
+ * Created by Valentin on 10/22/14.
+ *
+ * Copyright (c) 2015 Valentin Heun
+ *
+ * All ascii characters above must be included in any redistribution.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+
+ **********************************************************************************************************************
+ ******************************************** TODOS *******************************************************************
+ **********************************************************************************************************************
+
+ **
+ * TODO -
+ **
+
+ **********************************************************************************************************************
+ ******************************************** style content ***********************************************************
+ **********************************************************************************************************************/
+* {
+    -webkit-transform-style: preserve-3d;
+    -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    -webkit-user-select: none; /*   Disable selection/Copy of UIWebView */
+}
+
+body {
+    -webkit-transform-style: preserve-3d;
+    margin: 0;
+    padding: 0;
+
+    /*   -webkit-user-select: none; Disable selection/Copy of UIWebView */
+    -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+}
+
+.main {
+    -webkit-transform-style: preserve-3d;
+    visibility: hidden;
+    z-index: 1;
+    position: fixed; /**/
+    margin: 0;
+    padding: 0;
+    border-width: 0px;
+    /*   -webkit-user-select: none; Disable selection/Copy of UIWebView */
+    -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+
+}
+
+.mainProgram {
+    -webkit-transform-style: preserve-3d;
+    position: fixed; /**/
+    margin: 0;
+    padding: 0;
+    border-width: 0px;
+    /*background-color: rgba(0, 0, 0, 0.2);*/
+    background:repeating-linear-gradient(-45deg, transparent, transparent 22px, rgba(1, 255, 252, 0.5) 22px, rgba(1, 255, 252, 0.5) 44px);
+    -webkit-filter: contrast(200%);
+    /*border: 10px dashed green;*/
+    z-index: 2;
+    -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+
+}
+
+.mainEditing {
+    -webkit-transform-style: preserve-3d;
+    position: fixed; /**/
+    margin: 0;
+    padding: 0;
+    border-width: 0px;
+    /* background-color: rgba(0, 0, 0, 1);*/
+    z-index: 2;
+    -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+}
+
+
+.iframe {
+    -webkit-transform-style: preserve-3d;
+    position: fixed;
+    /*   -webkit-user-select: none; Disable selection/Copy of UIWebView */
+    background-color: rgba(0, 0, 0, 0.5);
+    -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+
+}
+
+.contentRotation {
+    -webkit-transform-style: preserve-3d;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    visibility: hidden;
+    -webkit-transform: rotate3d(1, 0, 0, 180deg) translate3d(0, 0, 0) scale3d(1, 1, 1);
+
+}
+
+#consolelog {
+    visibility: hidden;
+    -webkit-transform-style: preserve-3d;
+
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    z-index: 30;
+    background-color: rgba(0, 0, 0, 0.50);
+    -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+
+}
+
+#preferences {
+    visibility: hidden;
+    -webkit-transform-style: preserve-3d;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    background-color: #2c2c2c;
+
+    -webkit-transform: translateZ(1px);
+}
+
+.Interfaces {
+    -webkit-transform-style: preserve-3d;
+    -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+}
+
+.interfaceSourceURL {
+    -webkit-user-select: text;
+}
+
+.Canvas {
+    visibility: visible;
+    -webkit-transform-style: preserve-3d;
+
+    margin: 0;
+    padding: 0;
+    z-index: 0;
+    -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+}
