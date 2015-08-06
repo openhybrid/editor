@@ -110,7 +110,7 @@ function generalLog(tempConsoleText) {
     tempConsoleText += "<br>framerate: <b>" + parseInt(fps) + "</b><br><br>";
     tempConsoleText += "Currently loaded GUI elements: <b>" + GUIElements + "</b><br>";
     tempConsoleText += "Currently loaded Programming elements: <b>" + (document.getElementById("GUI").getElementsByTagName("iframe").length - GUIElements) + "</b><br><br>";
-    tempConsoleText += JSON.stringify(globalStates).replace(/,/gi, '<br>');
+   // tempConsoleText += JSON.stringify(globalStates).replace(/,/gi, '<br>');
     document.getElementById("consolelog").style.visibility = "visible";
     document.getElementById("consolelog").innerHTML = tempConsoleText;
 }
