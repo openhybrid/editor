@@ -63,6 +63,7 @@
  **/
 
 window.onload = function () {
+
     GUI();
 
     if (globalStates.platform !== 'iPad' && globalStates.platform !== 'iPhone' && globalStates.platform !== 'iPod') {
@@ -101,12 +102,47 @@ window.onload = function () {
         editingInterface.style.width = "60%";
 
 
+        editingInterface = document.getElementById("content13");
+        editingInterface.style.fontSize = "12px";
+        editingInterface.style.width = "40%";
+
+        editingInterface = document.getElementById("content14");
+        editingInterface.style.fontSize = "12px";
+        editingInterface.style.width = "60%";
+
+
+
+        editingInterface = document.getElementById("content15");
+        editingInterface.style.fontSize = "12px";
+        editingInterface.style.width = "40%";
+        editingInterface.innerHTML ='<b>External Interface</b><br>';
+
+        editingInterface = document.getElementById("content16");
+        editingInterface.style.fontSize = "12px";
+        editingInterface.style.width = "60%";
+
+        editingInterface = document.getElementById("content18");
+        editingInterface.style.visibility ='hidden';
+
+
         editingInterface = document.getElementById("content1");
         editingInterface.style.fontSize = "12px";
         editingInterface.style.left = "2%";
         editingInterface.style.right = "65%";
         editingInterface.style.bottom = "14%";
 
+    }else
+    {
+        editingInterface = document.getElementById("content15");
+        editingInterface.style.paddingTop = "13px";
+
+
+
+        editingInterface = document.getElementById("content20");
+        editingInterface.innerHTML = '<input id="newURLText"'+
+
+        "style='text-align: left; font-family: Helvetica Neue, Helvetica, Arial; font-size: large;   -webkit-user-select: text;'"+
+        'type="text" name="newURL"  size="27" placeholder="http://..."'+ "oninput='newURLTextLoad()'><br>";
     }
 
     globalCanvas.canvas = document.getElementById('canvas');

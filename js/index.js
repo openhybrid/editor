@@ -309,9 +309,7 @@ function update(objects) {
         generalLog(consoleText);
     }
 
-    if (globalStates.preferencesButtonState) {
-        addElementInPreferences();
-    }
+
 }
 
 /**********************************************************************************************************************
@@ -423,22 +421,22 @@ function addElementInPreferences() {
 
 
     htmlContent += "<div class='Interfaces'" +
-    " style='position: relative;  float: left; height: 20px; width: 35%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial;background-color: #333333; -webkit-transform-style: preserve-3d;'>" +
+    " style='position: relative;  float: left; height: 20px; width: 35%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial;background-color: #a0a0a0; -webkit-transform-style: preserve-3d;'>" +
     "Name</div>";
     htmlContent += "<div class='Interfaces'" +
-    " style='position: relative;  float: left; height: 20px; width: 30%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial;background-color: #333333; -webkit-transform-style: preserve-3d;'>" +
+    " style='position: relative;  float: left; height: 20px; width: 30%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial;background-color: #a0a0a0; -webkit-transform-style: preserve-3d;'>" +
     "IP</div>";
 
     htmlContent += "<div class='Interfaces'" +
-    " style='position: relative;  float: left; height: 20px; width: 16%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial;background-color: #333333; -webkit-transform-style: preserve-3d; '>" +
+    " style='position: relative;  float: left; height: 20px; width: 16%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial;background-color: #a0a0a0; -webkit-transform-style: preserve-3d; '>" +
     "Version</div>";
 
     htmlContent += "<div class='Interfaces'" +
-    " style='position: relative;  float: left; height: 20px; width: 7%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial; background-color: #333333;-webkit-transform-style: preserve-3d;'>" +
+    " style='position: relative;  float: left; height: 20px; width: 7%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial; background-color: #a0a0a0;-webkit-transform-style: preserve-3d;'>" +
     "I/O</div>";
 
     htmlContent += "<div class='Interfaces'" +
-    " style='position: relative;  float: left; height: 20px; width: 12%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial; background-color: #333333;-webkit-transform-style: preserve-3d;'>" +
+    " style='position: relative;  float: left; height: 20px; width: 12%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial; background-color: #a0a0a0;-webkit-transform-style: preserve-3d;'>" +
     "Links</div>";
 
     var bgSwitch = false;
@@ -446,10 +444,10 @@ function addElementInPreferences() {
     for (var keyPref in objectExp) {
 
         if (bgSwitch) {
-            bgcolor = "background-color: #353535;";
+            bgcolor = "background-color: #a0a0a0;";
             bgSwitch = false;
         } else {
-            bgcolor = "background-color: #323232;";
+            bgcolor = "background-color: #aaaaaa;";
             bgSwitch = true;
         }
 

@@ -62,6 +62,7 @@ var preferencesButtonImage = [];
 var reloadButtonImage = [];
 var logButtonImage = [];
 var editingButtonImage = [];
+var loadNewUiImage = [];
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -91,9 +92,11 @@ function GUI() {
         'png/log.png', 'png/logOver.png', 'png/logSelect.png'
     );
 
-    preload(editingButtonImage,
-        'png/switchOff.png', 'png/switchOffOver.png', 'png/switchOn.png', 'png/switchOnOver.png'
+    preload(loadNewUiImage,
+        'png/load.png', 'png/loadOver.png'
     );
+
+
 
 
     document.getElementById("guiButtonImage1").addEventListener("touchstart", function () {
@@ -126,26 +129,40 @@ function GUI() {
         }
     });
 
-    document.getElementById("editingModeSwitch").addEventListener("touchstart", function () {
-        if (globalStates.editingMode === true) {
-            document.getElementById('editingModeSwitch').src = editingButtonImage[3].src;
-        }
-        else {
-            document.getElementById('editingModeSwitch').src = editingButtonImage[1].src;
+    document.getElementById("extendedTrackingSwitch").addEventListener("change", function () {
+        console.log("hallo");
+        if(document.getElementById("extendedTrackingSwitch").checked){
+            globalStates.extendedTracking = true;
+            window.location.href = "of://extendedTrackingOn";
+        }else{
+            globalStates.extendedTracking = false;
+            window.location.href = "of://extendedTrackingOff";
         }
     });
 
-    document.getElementById("editingModeSwitch").addEventListener("touchend", function () {
-        if (globalStates.editingMode === true) {
-            removeEventHandlers();
-            document.getElementById('editingModeSwitch').src = editingButtonImage[0].src;
+    document.getElementById("editingModeSwitch").addEventListener("change", function () {
+        console.log("hallo");
+        if(document.getElementById("editingModeSwitch").checked){
+            globalStates.editingMode = true;
+        }else{
             globalStates.editingMode = false;
         }
-        else {
-            addEventHandlers();
-            document.getElementById('editingModeSwitch').src = editingButtonImage[2].src;
-            globalStates.editingMode = true;
+    });
+
+
+    document.getElementById("loadNewUI").addEventListener("touchstart", function () {
+        if (globalStates.extendedTracking === true) {
+            document.getElementById('loadNewUI').src = loadNewUiImage[3].src;
         }
+        else {
+            document.getElementById('loadNewUI').src = loadNewUiImage[1].src;
+        }
+    });
+
+    document.getElementById("loadNewUI").addEventListener("touchend", function () {
+
+            document.getElementById('loadNewUI').src = loadNewUiImage[0].src;
+            window.location.href = "of://loadNewUI"+globalStates.newURLText;
 
     });
 
@@ -159,6 +176,11 @@ function GUI() {
             preferencesHide()
         }
         else {
+
+
+                addElementInPreferences();
+
+
             preferencesVisible();
             consoleHide();
         }
@@ -244,7 +266,8 @@ function consoleHide() {
 function preferencesHide() {
     document.getElementById('preferencesButton').src = preferencesButtonImage[0].src;
     globalStates.preferencesButtonState = false;
-    document.getElementById("preferences").style.visibility = "hidden";
+    document.getElementById("preferences").style.visibility = "hidden" ; //= "hidden";
+    document.getElementById("preferences").style.dispaly = "none" ; //= "hidden";
 }
 
 
@@ -258,7 +281,8 @@ function preferencesHide() {
 function preferencesVisible() {
     document.getElementById('preferencesButton').src = preferencesButtonImage[2].src;
     globalStates.preferencesButtonState = true;
-    document.getElementById("preferences").style.visibility = "visible";
+    document.getElementById("preferences").style.visibility = "visible" ; //
+    document.getElementById("preferences").style.display = "inline" ; //= "hidden";
 }
 
 

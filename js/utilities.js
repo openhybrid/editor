@@ -55,6 +55,12 @@
  ******************************************** Utilities Section ******************************************************
  **********************************************************************************************************************/
 
+function newURLTextLoad(){
+
+    globalStates.newURLText = encodeURIComponent(document.getElementById('newURLText').value);
+}
+
+
 /**
  * @desc
  * @param
