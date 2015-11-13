@@ -1,0 +1,20 @@
+/* This code is only meant for previewing your Reflow design. */
+.primaryContainer {
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 100%;
+    width: 100%;
+}
+
+#box {
+    float: left;
+    height: 66px;
+    margin-left: 1.270878%;
+    margin-top: 10px;
+    clear: none;
+    width: 12.6193%;
+    border: 1px solid rgb(255, 0, 0);
+    background-color: rgb(255, 0, 0);
+}
+

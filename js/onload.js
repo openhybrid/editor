@@ -146,8 +146,9 @@ window.onload = function () {
     }
 
     globalCanvas.canvas = document.getElementById('canvas');
-    globalCanvas.canvas.width = window.innerWidth;
-    globalCanvas.canvas.height = window.innerHeight;
+    globalCanvas.canvas.width = globalStates.height;
+    globalCanvas.canvas.height = globalStates.width;
+
     globalCanvas.context = canvas.getContext('2d');
 
     if (globalStates.platform) {
@@ -163,6 +164,9 @@ window.onload = function () {
     document.addEventListener("pointerdown", getPossition, false);
     document.addEventListener("pointerup", documentPointerUp, false);
     window.addEventListener("message", postMessage, false);
+
+
+
 
 };
 

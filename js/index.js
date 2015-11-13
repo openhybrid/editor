@@ -56,7 +56,6 @@
  * TODO - add reset button on every target
  * TODO - Documentation before I leave
  * TODO - Arduino Library
- 
  **
 
 /**********************************************************************************************************************
@@ -82,11 +81,61 @@ function addHeartbeatObject(beat) {
         if (!objectExp[beat.id]) {
             getData('http://' + beat.ip + ':' + httpPort +'/object/'+beat.id, beat.id, function (req, thisKey) {
                 objectExp[thisKey] = req;
+
+              // this is a work around to set the state of an objects to not being visible.
+                objectExp[thisKey].ObjectVisible = false;
+                objectExp[thisKey].screenZ = 1000;
+
                console.log(objectExp[thisKey]);
             });
         }
     }
 }
+
+/**
+ * @desc
+ * @param
+ * @param
+ * @return
+ **/
+
+function setStates(developerState, extendedTrackingState, clearSkyState, externalState) {
+
+
+
+    globalStates.extendedTrackingState = extendedTrackingState;
+        globalStates.developerState = developerState;
+        globalStates.clearSkyState = clearSkyState;
+    globalStates.externalState = externalState;
+
+
+
+if(clearSkyState){
+   // globalStates.UIOffMode = true;
+    timeForContentLoaded = 240000;
+   // document.getElementById("turnOffUISwitch").checked = true;
+}
+
+    if(developerState){
+        addEventHandlers();
+        globalStates.editingMode = true;
+        document.getElementById("editingModeSwitch").checked = true;
+    }
+
+    if(extendedTrackingState){
+        globalStates.extendedTracking = true;
+        document.getElementById("extendedTrackingSwitch").checked = true;
+    }
+
+
+    if(globalStates.externalState !==""){
+        document.getElementById("newURLText").value = globalStates.externalState;
+    }
+
+
+
+}
+
 
 /**
  * @desc
@@ -232,16 +281,18 @@ function update(objects) {
     }
 
     for (var key in objectExp) {
-        // if (!objectExp.hasOwnProperty(key)) { continue; }
+        if (!objectExp.hasOwnProperty(key)) { continue; }
 
         var generalObject = objectExp[key];
 
-        if (globalObjects[key]) {
+        // I changed this to has property.
+        if (globalObjects.hasOwnProperty(key)) {
 
             generalObject.visibleCounter = timeForContentLoaded;
             generalObject.ObjectVisible = true;
 
             var tempMatrix = multiplyMatrix(rotateX, multiplyMatrix(globalObjects[key], globalStates.projectionMatrix));
+
 
             //  var tempMatrix2 = multiplyMatrix(globalObjects[key], globalStates.projectionMatrix);
 
@@ -367,9 +418,14 @@ if(generalKey === thisKey) {
         thisTransform[3][0] + ',' + thisTransform[3][1] + ',' + thisTransform[3][2] + ',' + thisTransform[3][3] + ')';
 
         // this is for later
-        thisObject.screenX = thisTransform[3][0] / thisTransform[3][2] + (globalStates.height / 2);
-        thisObject.screenY = thisTransform[3][1] / thisTransform[3][2] + (globalStates.width / 2);
+        // The matrix has been changed from Vuforia 3 to 4 and 5. Instead of  thisTransform[3][2] it is now thisTransform[3][3]
+        thisObject.screenX = thisTransform[3][0] / thisTransform[3][3] + (globalStates.height / 2);
+        thisObject.screenY = thisTransform[3][1] / thisTransform[3][3] + (globalStates.width / 2);
         thisObject.screenZ = thisTransform[3][2];
+
+
+
+
     }
 }
 
@@ -539,10 +595,14 @@ function addElement(thisObject, thisKey, thisUrl, generalObject) {
         document.getElementById("GUI").appendChild(addDoc);
 
 
-        var tempAddContent = "<iframe id='iframe" + thisKey + "' onload='on_load(\"" + generalObject + "\",\"" + thisKey + "\")' frameBorder='0' " +
-            "style='width:" + thisObject.frameSizeX + "px; height:" + thisObject.frameSizeY + "px;" +
-            "top:" + ((globalStates.width - thisObject.frameSizeX) / 2) + "px; left:" + ((globalStates.height - thisObject.frameSizeY) / 2) + "px; visibility: hidden;' " +
-            "src='" + thisUrl + "' class='main'></iframe>";
+        var tempAddContent =
+            "<iframe id='iframe" + thisKey + "' onload='on_load(\"" +
+                generalObject + "\",\"" + thisKey + "\")' frameBorder='0' " +
+                "style='width:" + thisObject.frameSizeX + "px; height:" + thisObject.frameSizeY + "px;" +
+                "top:" + ((globalStates.width - thisObject.frameSizeX) / 2) + "px; left:" +
+                ((globalStates.height - thisObject.frameSizeY) / 2) + "px; visibility: hidden;' " +
+                "src='" + thisUrl + "' class='main'>" +
+            "</iframe>";
 
         tempAddContent += "<div id='" + thisKey + "' frameBorder='0' style='width:" + thisObject.frameSizeX + "px; height:" + thisObject.frameSizeY + "px;" +
         "top:" + ((globalStates.width - thisObject.frameSizeX) / 2) + "px; left:" + ((globalStates.height - thisObject.frameSizeY) / 2) + "px; visibility: hidden;' class='mainEditing'></div>" +
@@ -592,21 +652,15 @@ function addElement(thisObject, thisKey, thisUrl, generalObject) {
 
 function killObjects(thisObject, thisKey) {
 
-
     if (thisObject.visibleCounter > 0) {
         thisObject.visibleCounter--;
     } else if (thisObject.loaded) {
         thisObject.loaded = false;
-       // try {
+
         var tempElementDiv = document.getElementById("thisObject" + thisKey);
             tempElementDiv.parentNode.removeChild(tempElementDiv);
-      //  } catch(err){
-      //      console.log("err");
-      //  }
-
 
         for (var subKey in thisObject.objectValues) {
-            //  if (!thisObject.objectValues.hasOwnProperty(subKey)) { continue; }
            try{
             tempElementDiv = document.getElementById("thisObject" +subKey);
             tempElementDiv.parentNode.removeChild(tempElementDiv);
@@ -615,10 +669,7 @@ function killObjects(thisObject, thisKey) {
      }
             thisObject.objectValues[subKey].loaded = false;
        }
-
     }
-
-
 }
 
 /**********************************************************************************************************************

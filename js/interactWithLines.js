@@ -118,21 +118,60 @@ function drawAllLines(thisObject, context) {
         if (bA === undefined || bB === undefined || oA === undefined || oB === undefined) {
             continue; //should not be undefined
         }
-        // the line actuall screen possition gets changed so that when cutting the line of an out of image object
-        // the line still gets cut
-        if (!oB.ObjectVisible) {
-            bB.screenX = bA.screenX;
-            bB.screenY = -10;
-            bB.screenZ = 1;
+            // the line actuall screen possition gets changed so that when cutting the line of an out of image object
+            // the line still gets cut
+
+            var thisM = globalStates.height / 500 * 1000;
+
+            // bA.screenZ =  thisM/(Math.sqrt(bA.screenZ));
+            // bB.screenZ = thisM/(Math.sqrt(bB.screenZ));
+
+
+            bA.screenZ = thisM / (bA.screenZ);
+            bB.screenZ = thisM / (bB.screenZ);
+
+           // console.log(oB.ObjectVisible);
+           // console.log(oA.ObjectVisible);
+
+
+        if (bA.screenZ > 3) {
+
+            bA.screenZ = 3;
         }
 
-        if (!oA.ObjectVisible) {
-            bA.screenX = bB.screenX;
-            bA.screenY = -10;
-            bA.screenZ = 1;
+        if (bA.screenZ < 0) {
+
+            bA.screenZ = 0;
         }
+
+        if (bB.screenZ > 3) {
+
+            bB.screenZ = 3;
+        }
+
+        if (bA.screenZ < 0) {
+
+            bA.screenZ = 0;
+        }
+
+
+        if (!oB.ObjectVisible) {
+                bB.screenX = bA.screenX;
+                bB.screenY = -10;
+                bB.screenZ = bA.screenZ;
+            }
+
+            if (!oA.ObjectVisible) {
+                bA.screenX = bB.screenX;
+                bA.screenY = -10;
+                bA.screenZ = bB.screenZ;
+            }
+
+
+            //   console.log( bB.screenZ);
         bA.screenZ = 1;
-        bB.screenZ = 1;
+            bB.screenZ = 1;
+
 
         drawLine(context, [bA.screenX, bA.screenY], [bB.screenX, bB.screenY], bA.screenZ, bB.screenZ);
     }
@@ -151,12 +190,38 @@ function drawAllLines(thisObject, context) {
 
 function drawInteractionLines() {
 
+    // this function here needs to be more precise
+
     if (globalProgram.ObjectA) {
+
+        var oA = objectExp[globalProgram.ObjectA];
 
         var tempStart = objectExp[globalProgram.ObjectA].objectValues[globalProgram.locationInA];
 
-        drawLine(globalCanvas.context, [tempStart.screenX, tempStart.screenY], [globalStates.pointerPosition[0], globalStates.pointerPosition[1]], 1, 1);
 
+        // this is for making sure that the line is drawn out of the screen... Don't know why this got lost somewhere down the road.
+
+        if (!oA.ObjectVisible) {
+            tempStart.screenX = globalStates.pointerPosition[0];
+            tempStart.screenY = -10;
+            tempStart.screenZ = 1;
+        }
+
+
+        var thisM = globalStates.height / 500 * 1000;
+
+        tempStart.screenZ = thisM / (tempStart.screenZ);
+
+        if (tempStart.screenZ > 3) {
+            tempStart.screenZ = 3;
+        }
+        if (tempStart.screenZ < 0) {
+            tempStart.screenZ = 0;
+        }
+
+        tempStart.screenZ =1;
+
+        drawLine(globalCanvas.context, [tempStart.screenX, tempStart.screenY], [globalStates.pointerPosition[0], globalStates.pointerPosition[1]], tempStart.screenZ, 1);
     }
 
     if (globalStates.drawDotLine) {
@@ -369,5 +434,4 @@ function drawYellow(context, lineStartPoint, lineEndPoint, radius) {
     context.stroke();
     context.closePath();
 }
-
 

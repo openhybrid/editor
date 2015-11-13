@@ -56,7 +56,7 @@
  **********************************************************************************************************************/
 
 var httpPort = 8080;
-var timeForContentLoaded = 240;
+var timeForContentLoaded = 240; // temporary set to 1000x with the UI Recording mode for video recording
 
 /**********************************************************************************************************************
  ******************************************** global variables  *******************************************************
@@ -66,8 +66,16 @@ var globalStates = {
     width: window.screen.width,
     height: window.screen.height,
     guiButtonState: true,
+    UIOffMode: false,
     preferencesButtonState: false,
     extendedTracking: false,
+
+    extendedTrackingState: false,
+    developerState: false,
+    clearSkyState: false,
+    externalState:"",
+
+
     feezeButtonState: false,
     logButtonState: false,
     editingMode: false,
@@ -105,12 +113,12 @@ var globalProgram = {
 var objectExp = {};
 
 var consoleText = "";
-var rotateX = [
-    [1, 0, 0, 0],
-    [0, -1, 0, 0],
-    [0, 0, 1, 0],
-    [0, 0, 0, 1]
-];
+ var rotateX = [
+     [1, 0, 0, 0],
+     [0, -1, 0, 0],
+     [0, 0, 1, 0],
+     [0, 0, 0, 1]
+ ];
 
 var testInterlink = {};
 

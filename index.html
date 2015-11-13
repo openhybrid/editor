@@ -111,7 +111,7 @@
 <div class='Interfaces' id="preferences">
 
     <div id="content1" class='Interfaces'
-         style="position: fixed; left: 5%; top: 13%; right: 58%; bottom: 10%;  -webkit-transform-style: preserve-3d;
+         style="position: fixed; left: 5%; top: 7%; right: 58%; bottom: 10%;  -webkit-transform-style: preserve-3d;
              background-color: #a0a0a0;">
 
         <div class='Interfaces'
@@ -138,10 +138,6 @@
             </div>
 
        </div>
-
-
-
-
         <div  id="content13" class='Interfaces'
               style='position: relative;  float: left; height: 50px; width: 50%;  box-sizing: border-box;  padding-top: 5px;padding-left: 13px;
                text-align: left; font-family: Helvetica Neue, Helvetica, Arial;
@@ -180,10 +176,28 @@
         <div  id="content20" class='Interfaces'
               style='position: relative;  float: left; height: 55px; width: 100%;  box-sizing: border-box; padding-left: 13px;  padding-top: 5px; padding-bottom: 10px; margin-bottom: 3px;  padding-right: 13px;
                text-align: left; font-family: Helvetica Neue, Helvetica, Arial;
-               background-color: #aaaaaa; -webkit-transform-style: preserve-3d;'><input id="newURLText"
+               background-color: #aaaaaa; -webkit-transform-style: preserve-3d;'>
+            <input id="newURLText" style='text-align: left; font-family: Helvetica Neue, Helvetica, Arial; font-size: large;   -webkit-user-select: text;'
+                   type="url" name="newURL"  size="15" placeholder="http://..." value="http://" oninput='newURLTextLoad()'><br>
+        </div>
 
-                   style='text-align: left; font-family: Helvetica Neue, Helvetica, Arial; font-size: large;   -webkit-user-select: text;'
-                   type="text" name="newURL"  size="15" placeholder="http://..." oninput='newURLTextLoad()'><br>
+        <div  id="content30" class='Interfaces'
+              style='position: relative;  float: left; height: 50px; width: 50%;  box-sizing: border-box;  padding-top: 5px;padding-left: 13px;
+               text-align: left; font-family: Helvetica Neue, Helvetica, Arial;
+               background-color: #aaaaaa; -webkit-transform-style: preserve-3d;'>
+            <b>Clear Sky<br>(No Buttons)</b><br>
+        </div>
+
+        <div  id="content31" class='Interfaces'
+              style='position: relative;  float: left; height: 50px; width: 50%;  box-sizing: border-box;  padding: 5px; padding-left: 13px;
+               text-align: center; font-family: Helvetica Neue, Helvetica, Arial;
+               background-color: #aaaaaa; -webkit-transform-style: preserve-3d;'>
+
+            <div id="box32" style='width: 70px; -webkit-transform-style: preserve-3d;' class="clearfix">
+                <input type="checkbox" name="extendedTrackingSwitch" id="turnOffUISwitch" class="ios-toggle" oninput='setTurnOffUISwitch()'/>
+                <label for="turnOffUISwitch" class="checkbox-label" data-off="" data-on=""></label>
+            </div>
+
         </div>
 
 
@@ -229,7 +243,7 @@
 
 
     <div id="content1title" class='Interfaces'
-         style="position: fixed; left: 5%; top: 7%; right: 58%; bottom: 89%;
+         style="position: fixed; left: 5%; top: 2%; right: 58%; bottom: 89%;
            font-family: Helvetica Neue, Helvetica, Arial; font-size: 18pt;
 
              -webkit-transform-style: preserve-3d;
@@ -241,12 +255,12 @@
 
 
     <div id="content2" class='Interfaces'
-         style="position: fixed; left: 47%; top: 13%; right: 17%; bottom: 10%;  -webkit-transform-style: preserve-3d;
+         style="position: fixed; left: 47%; top: 7%; right: 17%; bottom: 10%;  -webkit-transform-style: preserve-3d;
             background-color: #a0a0a0;">
 
     </div>
     <div id="content2title" class='Interfaces'
-         style="position: fixed; left: 47%; top: 7%; right: 17%; bottom: 89%;
+         style="position: fixed; left: 47%; top: 2%; right: 17%; bottom: 89%;
            font-family: Helvetica Neue, Helvetica, Arial; font-size: 18pt;
 
              -webkit-transform-style: preserve-3d;
@@ -293,7 +307,6 @@ position: fixed;
 
     <div class='Interfaces'  id="preferencesButtonDiv"
          style="position: fixed; width: 60px;height: 60px;right: 0px; bottom: 106px;  -webkit-transform-style: preserve-3d; visibility: visible;">
-
         <img class='Interfaces'  id="preferencesButton" src="png/pref.png" width="60"
              height="60" alt=""/></div>
     <!-- ontouchmove='eventTest()'-->
