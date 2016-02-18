@@ -58,7 +58,7 @@
  * TODO - Arduino Library
  **
 
-/**********************************************************************************************************************
+ /**********************************************************************************************************************
  ******************************************** Data IO *******************************************
  **********************************************************************************************************************/
 
@@ -79,14 +79,14 @@ function addHeartbeatObject(beat) {
      */
     if (beat.id) {
         if (!objectExp[beat.id]) {
-            getData('http://' + beat.ip + ':' + httpPort +'/object/'+beat.id, beat.id, function (req, thisKey) {
+            getData('http://' + beat.ip + ':' + httpPort + '/object/' + beat.id, beat.id, function (req, thisKey) {
                 objectExp[thisKey] = req;
 
-              // this is a work around to set the state of an objects to not being visible.
+                // this is a work around to set the state of an objects to not being visible.
                 objectExp[thisKey].ObjectVisible = false;
                 objectExp[thisKey].screenZ = 1000;
 
-               console.log(objectExp[thisKey]);
+                console.log(objectExp[thisKey]);
             });
         }
     }
@@ -102,36 +102,33 @@ function addHeartbeatObject(beat) {
 function setStates(developerState, extendedTrackingState, clearSkyState, externalState) {
 
 
-
     globalStates.extendedTrackingState = extendedTrackingState;
-        globalStates.developerState = developerState;
-        globalStates.clearSkyState = clearSkyState;
+    globalStates.developerState = developerState;
+    globalStates.clearSkyState = clearSkyState;
     globalStates.externalState = externalState;
 
 
+    if (clearSkyState) {
+        // globalStates.UIOffMode = true;
+        timeForContentLoaded = 240000;
+        // document.getElementById("turnOffUISwitch").checked = true;
+    }
 
-if(clearSkyState){
-   // globalStates.UIOffMode = true;
-    timeForContentLoaded = 240000;
-   // document.getElementById("turnOffUISwitch").checked = true;
-}
-
-    if(developerState){
+    if (developerState) {
         addEventHandlers();
         globalStates.editingMode = true;
         document.getElementById("editingModeSwitch").checked = true;
     }
 
-    if(extendedTrackingState){
+    if (extendedTrackingState) {
         globalStates.extendedTracking = true;
         document.getElementById("extendedTrackingSwitch").checked = true;
     }
 
 
-    if(globalStates.externalState !==""){
+    if (globalStates.externalState !== "") {
         document.getElementById("newURLText").value = globalStates.externalState;
     }
-
 
 
 }
@@ -144,12 +141,11 @@ if(clearSkyState){
  * @return
  **/
 
-function action(action){
-   var thisAction = JSON.parse(action);
+function action(action) {
+    var thisAction = JSON.parse(action);
 
-    if (thisAction.reloadLink)
-    {
-        getData('http://' + thisAction.reloadLink.ip + ':' + httpPort +'/object/'+thisAction.reloadLink.id, thisAction.reloadLink.id, function (req, thisKey) {
+    if (thisAction.reloadLink) {
+        getData('http://' + thisAction.reloadLink.ip + ':' + httpPort + '/object/' + thisAction.reloadLink.id, thisAction.reloadLink.id, function (req, thisKey) {
             objectExp[thisKey].objectLinks = req.objectLinks;
             // console.log(objectExp[thisKey]);
             console.log("got links");
@@ -157,9 +153,8 @@ function action(action){
 
     }
 
-    if (thisAction.reloadObject)
-    {
-        getData('http://' + thisAction.reloadObject.ip + ':' + httpPort +'/object/'+thisAction.reloadObject.id, thisAction.reloadObject.id, function (req, thisKey) {
+    if (thisAction.reloadObject) {
+        getData('http://' + thisAction.reloadObject.ip + ':' + httpPort + '/object/' + thisAction.reloadObject.id, thisAction.reloadObject.id, function (req, thisKey) {
             objectExp[thisKey].x = req.x;
             objectExp[thisKey].y = req.y;
             objectExp[thisKey].scale = req.scale;
@@ -171,7 +166,7 @@ function action(action){
     }
 
 
-console.log("found action: "+action);
+    console.log("found action: " + action);
 
 }
 
@@ -208,8 +203,6 @@ function getData(url, thisKey, callback) {
         console.log("could not connect to" + url);
     }
 }
-
-
 
 
 /**********************************************************************************************************************
@@ -264,8 +257,6 @@ var conalt = "";
  **/
 
 function update(objects) {
-
-
     if (globalStates.feezeButtonState == false) {
         globalObjects = objects;
     }
@@ -281,17 +272,19 @@ function update(objects) {
     }
 
     for (var key in objectExp) {
-        if (!objectExp.hasOwnProperty(key)) { continue; }
+        if (!objectExp.hasOwnProperty(key)) {
+            continue;
+        }
 
         var generalObject = objectExp[key];
 
         // I changed this to has property.
-        if (globalObjects.hasOwnProperty(key)) {
+        if (globalObjects.obj.hasOwnProperty(key)) {
 
             generalObject.visibleCounter = timeForContentLoaded;
             generalObject.ObjectVisible = true;
 
-            var tempMatrix = multiplyMatrix(rotateX, multiplyMatrix(globalObjects[key], globalStates.projectionMatrix));
+            var tempMatrix = multiplyMatrix(rotateX, multiplyMatrix(globalObjects.obj[key], globalStates.projectionMatrix));
 
 
             //  var tempMatrix2 = multiplyMatrix(globalObjects[key], globalStates.projectionMatrix);
@@ -302,19 +295,17 @@ function update(objects) {
 
             if (globalStates.guiButtonState || Object.keys(generalObject.objectValues).length === 0) {
                 drawTransformed(generalObject, key, tempMatrix, key);
-                addElement(generalObject, key, "http://" + generalObject.ip + ":" + httpPort +"/obj/"+key.slice(0, -12)+"/");
+                addElement(generalObject, key, "http://" + generalObject.ip + ":" + httpPort + "/obj/" + key.slice(0, -12) + "/");
             }
             else {
                 hideTransformed(generalObject, key, key);
             }
 
 
-
             for (var subKey in generalObject.objectValues) {
                 // if (!generalObject.objectValues.hasOwnProperty(subKey)) { continue; }
 
                 var tempValue = generalObject.objectValues[subKey];
-
 
 
                 if (!globalStates.guiButtonState) {
@@ -383,23 +374,23 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
 
             thisObject.visible = true;
 
-            if(generalKey !== thisKey){
+            if (generalKey !== thisKey) {
                 document.getElementById(thisKey).style.visibility = 'visible';
                 document.getElementById("text" + thisKey).style.visibility = 'visible';
             }
 
 
         }
-if(generalKey === thisKey) {
-    if (globalStates.editingMode) {
-        if(!thisObject.visibleEditing && thisObject.developer){
-        thisObject.visibleEditing = true;
-        document.getElementById(thisKey).style.visibility = 'visible';
+        if (generalKey === thisKey) {
+            if (globalStates.editingMode) {
+                if (!thisObject.visibleEditing && thisObject.developer) {
+                    thisObject.visibleEditing = true;
+                    document.getElementById(thisKey).style.visibility = 'visible';
 
-        document.getElementById(thisKey).className = "mainProgram";
-    }
-    }
-}
+                    document.getElementById(thisKey).className = "mainProgram";
+                }
+            }
+        }
 
         var finalMatrixTransform = [
             [thisObject.scale, 0, 0, 0],
@@ -412,10 +403,10 @@ if(generalKey === thisKey) {
         var thisTransform = multiplyMatrix(finalMatrixTransform, thisTransform2);
 
         document.getElementById("thisObject" + thisKey).style.webkitTransform = 'matrix3d(' +
-        thisTransform[0][0] + ',' + thisTransform[0][1] + ',' + thisTransform[0][2] + ',' + thisTransform[0][3] + ',' +
-        thisTransform[1][0] + ',' + thisTransform[1][1] + ',' + thisTransform[1][2] + ',' + thisTransform[1][3] + ',' +
-        thisTransform[2][0] + ',' + thisTransform[2][1] + ',' + thisTransform[2][2] + ',' + thisTransform[2][3] + ',' +
-        thisTransform[3][0] + ',' + thisTransform[3][1] + ',' + thisTransform[3][2] + ',' + thisTransform[3][3] + ')';
+            thisTransform[0][0] + ',' + thisTransform[0][1] + ',' + thisTransform[0][2] + ',' + thisTransform[0][3] + ',' +
+            thisTransform[1][0] + ',' + thisTransform[1][1] + ',' + thisTransform[1][2] + ',' + thisTransform[1][3] + ',' +
+            thisTransform[2][0] + ',' + thisTransform[2][1] + ',' + thisTransform[2][2] + ',' + thisTransform[2][3] + ',' +
+            thisTransform[3][0] + ',' + thisTransform[3][1] + ',' + thisTransform[3][2] + ',' + thisTransform[3][3] + ')';
 
         // this is for later
         // The matrix has been changed from Vuforia 3 to 4 and 5. Instead of  thisTransform[3][2] it is now thisTransform[3][3]
@@ -424,8 +415,32 @@ if(generalKey === thisKey) {
         thisObject.screenZ = thisTransform[3][2];
 
 
+        var iFrameMsgContent = "";
+        if (typeof thisObject.sendMatrix3d !== "undefined") {
+            if (thisObject.sendMatrix3d === true) {
+                iFrameMsgContent = '{"matrix3d":';
+                iFrameMsgContent += JSON.stringify(thisTransform);
+            }
+
+        }
+
+        if (typeof globalObjects.acl !== "undefined") {
+            if (typeof thisObject.sendAcl !== "undefined") {
+                if (thisObject.sendAcl === true) {
+                    if (iFrameMsgContent !== "")  iFrameMsgContent += ","; else  iFrameMsgContent += "{";
+                    iFrameMsgContent += '"acl":';
+                    iFrameMsgContent += JSON.stringify(globalObjects.acl);
+                }
+            }
+        }
 
 
+
+        if (iFrameMsgContent !== "")
+        {   iFrameMsgContent += '}';
+        document.getElementById("iframe" + thisKey).contentWindow.postMessage(
+            iFrameMsgContent, '*');
+        }
     }
 }
 
@@ -443,22 +458,22 @@ function hideTransformed(thisObject, thisKey, generalKey) {
     if (thisObject.visible === true) {
         document.getElementById("thisObject" + thisKey).style.display = 'none';
         document.getElementById("iframe" + thisKey).style.visibility = 'hidden';
-       //document.getElementById("iframe" + thisKey).style.display = 'none';
+        //document.getElementById("iframe" + thisKey).style.display = 'none';
         document.getElementById("text" + thisKey).style.visibility = 'hidden';
-     //document.getElementById("text" + thisKey).style.display = 'none';
+        //document.getElementById("text" + thisKey).style.display = 'none';
         thisObject.visible = false;
         thisObject.visibleEditing = false;
         document.getElementById(thisKey).style.visibility = 'hidden';
-      //document.getElementById(thisKey).style.display = 'none';
+        //document.getElementById(thisKey).style.display = 'none';
 
     }
 
     /*
-    if (thisObject.visibleEditing === true) {
-        //  console.log(thisKey);
-        thisObject.visibleEditing = false;
-        document.getElementById(thisKey).style.visibility = 'hidden';
-    }*/
+     if (thisObject.visibleEditing === true) {
+     //  console.log(thisKey);
+     thisObject.visibleEditing = false;
+     document.getElementById(thisKey).style.visibility = 'hidden';
+     }*/
 }
 
 /**********************************************************************************************************************
@@ -477,23 +492,23 @@ function addElementInPreferences() {
 
 
     htmlContent += "<div class='Interfaces'" +
-    " style='position: relative;  float: left; height: 20px; width: 35%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial;background-color: #a0a0a0; -webkit-transform-style: preserve-3d;'>" +
-    "Name</div>";
+        " style='position: relative;  float: left; height: 20px; width: 35%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial;background-color: #a0a0a0; -webkit-transform-style: preserve-3d;'>" +
+        "Name</div>";
     htmlContent += "<div class='Interfaces'" +
-    " style='position: relative;  float: left; height: 20px; width: 30%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial;background-color: #a0a0a0; -webkit-transform-style: preserve-3d;'>" +
-    "IP</div>";
+        " style='position: relative;  float: left; height: 20px; width: 30%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial;background-color: #a0a0a0; -webkit-transform-style: preserve-3d;'>" +
+        "IP</div>";
 
     htmlContent += "<div class='Interfaces'" +
-    " style='position: relative;  float: left; height: 20px; width: 16%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial;background-color: #a0a0a0; -webkit-transform-style: preserve-3d; '>" +
-    "Version</div>";
+        " style='position: relative;  float: left; height: 20px; width: 16%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial;background-color: #a0a0a0; -webkit-transform-style: preserve-3d; '>" +
+        "Version</div>";
 
     htmlContent += "<div class='Interfaces'" +
-    " style='position: relative;  float: left; height: 20px; width: 7%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial; background-color: #a0a0a0;-webkit-transform-style: preserve-3d;'>" +
-    "I/O</div>";
+        " style='position: relative;  float: left; height: 20px; width: 7%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial; background-color: #a0a0a0;-webkit-transform-style: preserve-3d;'>" +
+        "I/O</div>";
 
     htmlContent += "<div class='Interfaces'" +
-    " style='position: relative;  float: left; height: 20px; width: 12%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial; background-color: #a0a0a0;-webkit-transform-style: preserve-3d;'>" +
-    "Links</div>";
+        " style='position: relative;  float: left; height: 20px; width: 12%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial; background-color: #a0a0a0;-webkit-transform-style: preserve-3d;'>" +
+        "Links</div>";
 
     var bgSwitch = false;
     var bgcolor = "";
@@ -508,25 +523,25 @@ function addElementInPreferences() {
         }
 
         htmlContent += "<div class='Interfaces' id='" +
-        "name" + keyPref +
-        "' style='position: relative;  float: left; height: 20px; width: 35%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial;" + bgcolor + " -webkit-transform-style: preserve-3d; " +
-        "'>" +
-        keyPref.slice(0, -12)
-        + "</div>";
+            "name" + keyPref +
+            "' style='position: relative;  float: left; height: 20px; width: 35%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial;" + bgcolor + " -webkit-transform-style: preserve-3d; " +
+            "'>" +
+            keyPref.slice(0, -12)
+            + "</div>";
 
         htmlContent += "<div class='Interfaces' id='" +
-        "name" + keyPref +
-        "' style='position: relative;  float: left; height: 20px; width: 30%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial;" + bgcolor + " -webkit-transform-style: preserve-3d; " +
-        "'>" +
-        objectExp[keyPref].ip
-        + "</div>";
+            "name" + keyPref +
+            "' style='position: relative;  float: left; height: 20px; width: 30%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial;" + bgcolor + " -webkit-transform-style: preserve-3d; " +
+            "'>" +
+            objectExp[keyPref].ip
+            + "</div>";
 
         htmlContent += "<div class='Interfaces' id='" +
-        "version" + keyPref +
-        "' style='position: relative;  float: left; height: 20px; width: 16%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial; " + bgcolor + "-webkit-transform-style: preserve-3d;" +
-        "'>" +
-        objectExp[keyPref].version
-        + "</div>";
+            "version" + keyPref +
+            "' style='position: relative;  float: left; height: 20px; width: 16%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial; " + bgcolor + "-webkit-transform-style: preserve-3d;" +
+            "'>" +
+            objectExp[keyPref].version
+            + "</div>";
 
         var anzahl = 0;
 
@@ -535,11 +550,11 @@ function addElementInPreferences() {
         }
 
         htmlContent += "<div class='Interfaces' id='" +
-        "io" + keyPref +
-        "' style='position: relative;  float: left; height: 20px; width: 7%;  text-align: center; font-family: Helvetica Neue, Helvetica, Arial;" + bgcolor + "-webkit-transform-style: preserve-3d;" +
-        "'>" +
-        anzahl
-        + "</div>";
+            "io" + keyPref +
+            "' style='position: relative;  float: left; height: 20px; width: 7%;  text-align: center; font-family: Helvetica Neue, Helvetica, Arial;" + bgcolor + "-webkit-transform-style: preserve-3d;" +
+            "'>" +
+            anzahl
+            + "</div>";
 
 
         anzahl = 0;
@@ -549,11 +564,11 @@ function addElementInPreferences() {
         }
 
         htmlContent += "<div class='Interfaces' id='" +
-        "links" + keyPref +
-        "' style='position: relative;  float: left; height: 20px; width: 12%; text-align: center;  font-family: Helvetica Neue, Helvetica, Arial;" + bgcolor + "-webkit-transform-style: preserve-3d;" +
-        "'>" +
-        anzahl
-        + "</div>";
+            "links" + keyPref +
+            "' style='position: relative;  float: left; height: 20px; width: 12%; text-align: center;  font-family: Helvetica Neue, Helvetica, Arial;" + bgcolor + "-webkit-transform-style: preserve-3d;" +
+            "'>" +
+            anzahl
+            + "</div>";
 
     }
 
@@ -597,20 +612,20 @@ function addElement(thisObject, thisKey, thisUrl, generalObject) {
 
         var tempAddContent =
             "<iframe id='iframe" + thisKey + "' onload='on_load(\"" +
-                generalObject + "\",\"" + thisKey + "\")' frameBorder='0' " +
-                "style='width:" + thisObject.frameSizeX + "px; height:" + thisObject.frameSizeY + "px;" +
-                "top:" + ((globalStates.width - thisObject.frameSizeX) / 2) + "px; left:" +
-                ((globalStates.height - thisObject.frameSizeY) / 2) + "px; visibility: hidden;' " +
-                "src='" + thisUrl + "' class='main'>" +
+            generalObject + "\",\"" + thisKey + "\")' frameBorder='0' " +
+            "style='width:" + thisObject.frameSizeX + "px; height:" + thisObject.frameSizeY + "px;" +
+            "top:" + ((globalStates.width - thisObject.frameSizeX) / 2) + "px; left:" +
+            ((globalStates.height - thisObject.frameSizeY) / 2) + "px; visibility: hidden;' " +
+            "src='" + thisUrl + "' class='main'>" +
             "</iframe>";
 
         tempAddContent += "<div id='" + thisKey + "' frameBorder='0' style='width:" + thisObject.frameSizeX + "px; height:" + thisObject.frameSizeY + "px;" +
-        "top:" + ((globalStates.width - thisObject.frameSizeX) / 2) + "px; left:" + ((globalStates.height - thisObject.frameSizeY) / 2) + "px; visibility: hidden;' class='mainEditing'></div>" +
-        "";
+            "top:" + ((globalStates.width - thisObject.frameSizeX) / 2) + "px; left:" + ((globalStates.height - thisObject.frameSizeY) / 2) + "px; visibility: hidden;' class='mainEditing'></div>" +
+            "";
 
         tempAddContent += "<div id='text" + thisKey + "' frameBorder='0' style='width:5px; height:5px;" +
-        "top:" + ((globalStates.width) / 2+thisObject.frameSizeX/2) + "px; left:" + ((globalStates.height - thisObject.frameSizeY) / 2) + "px; visibility: hidden;' class='mainProgram'><font color='white'>"+thisObject.name+"</font></div>" +
-        "";
+            "top:" + ((globalStates.width) / 2 + thisObject.frameSizeX / 2) + "px; left:" + ((globalStates.height - thisObject.frameSizeY) / 2) + "px; visibility: hidden;' class='mainProgram'><font color='white'>" + thisObject.name + "</font></div>" +
+            "";
 
         document.getElementById("thisObject" + thisKey).innerHTML = tempAddContent;
         var theObject = document.getElementById(thisKey);
@@ -619,11 +634,11 @@ function addElement(thisObject, thisKey, thisUrl, generalObject) {
         theObject.addEventListener("pointerdown", touchDown, false);
         theObject.addEventListener("pointerup", trueTouchUp, false);
         if (globalStates.editingMode) {
-            if(objectExp[generalObject].developer){
-            //theObject.addEventListener("touchstart", MultiTouchStart, false);
-            theObject.addEventListener("touchmove", MultiTouchMove, false);
-            theObject.addEventListener("touchend", MultiTouchEnd, false);
-            theObject.className = "mainProgram";
+            if (objectExp[generalObject].developer) {
+                //theObject.addEventListener("touchstart", MultiTouchStart, false);
+                theObject.addEventListener("touchmove", MultiTouchMove, false);
+                theObject.addEventListener("touchend", MultiTouchEnd, false);
+                theObject.className = "mainProgram";
             }
         }
         theObject.ObjectId = generalObject;
@@ -631,7 +646,7 @@ function addElement(thisObject, thisKey, thisUrl, generalObject) {
 
         if (thisKey !== generalObject) {
             theObject.style.visibility = "visible";
-          // theObject.style.display = "initial";
+            // theObject.style.display = "initial";
         }
         else {
             theObject.style.visibility = "hidden";
@@ -658,17 +673,17 @@ function killObjects(thisObject, thisKey) {
         thisObject.loaded = false;
 
         var tempElementDiv = document.getElementById("thisObject" + thisKey);
-            tempElementDiv.parentNode.removeChild(tempElementDiv);
+        tempElementDiv.parentNode.removeChild(tempElementDiv);
 
         for (var subKey in thisObject.objectValues) {
-           try{
-            tempElementDiv = document.getElementById("thisObject" +subKey);
-            tempElementDiv.parentNode.removeChild(tempElementDiv);
-      } catch(err){
-         console.log("could not find any");
-     }
+            try {
+                tempElementDiv = document.getElementById("thisObject" + subKey);
+                tempElementDiv.parentNode.removeChild(tempElementDiv);
+            } catch (err) {
+                console.log("could not find any");
+            }
             thisObject.objectValues[subKey].loaded = false;
-       }
+        }
     }
 }
 
@@ -682,12 +697,16 @@ function killObjects(thisObject, thisKey) {
  * @return
  **/
 
-function on_load(generalObject,thisKey) {
+function on_load(generalObject, thisKey) {
     globalStates.notLoading = false;
     // window.location.href = "of://event_test_"+thisKey;
 
-   // console.log("posting Msg");
-    var iFrameMessage_ = JSON.stringify({obj: generalObject, pos:thisKey, objectValues:objectExp[generalObject].objectValues});
+    // console.log("posting Msg");
+    var iFrameMessage_ = JSON.stringify({
+        obj: generalObject,
+        pos: thisKey,
+        objectValues: objectExp[generalObject].objectValues
+    });
     document.getElementById("iframe" + thisKey).contentWindow.postMessage(
         iFrameMessage_, '*');
 }

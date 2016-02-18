@@ -74,7 +74,8 @@ var globalStates = {
     developerState: false,
     clearSkyState: false,
     externalState:"",
-
+    sendMatrix3d:false,
+    sendAcl:false,
 
     feezeButtonState: false,
     logButtonState: false,

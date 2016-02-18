@@ -190,4 +190,22 @@ function postMessage(e) {
     document.getElementById("iframe" + msgContent.pos).style.top = ((globalStates.width - msgContent.height) / 2);
     document.getElementById("iframe" + msgContent.pos).style.left = ((globalStates.height - msgContent.width) / 2);
 
+
+
+    if (typeof objectExp[msgContent.obj] !== "undefined") {
+        if (typeof msgContent.sendMatrix3d !== "undefined") {
+            if(msgContent.sendMatrix3d === true) {
+                objectExp[msgContent.obj].sendMatrix3d = true;
+            }
+        }
+
+        if (typeof msgContent.sendAcl !== "undefined") {
+            if(msgContent.sendAcl === true) {
+                objectExp[msgContent.obj].sendAcl = true;
+                window.location.href = "of://sendAccelerationData";
+            }
+        }
+    }
+
+
 };
