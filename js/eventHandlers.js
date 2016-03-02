@@ -276,7 +276,7 @@ function MultiTouchMove(evt) {
         }
 
 
-        var tempMatrix = multiplyMatrix(rotateX, multiplyMatrix(globalObjects[globalStates.editingModeObject], globalStates.projectionMatrix));
+        var tempMatrix = multiplyMatrix(rotateX, multiplyMatrix(globalObjects.obj[globalStates.editingModeObject], globalStates.projectionMatrix));
 
         globalStates.angX = toAxisAngle(tempMatrix)[0];
         globalStates.angY = toAxisAngle(tempMatrix)[1];
