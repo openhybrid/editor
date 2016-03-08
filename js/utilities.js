@@ -90,6 +90,24 @@ function multiplyMatrix(matrix2, matrix1) {
  * @return
  **/
 
+function copyMatrix(matrix) {
+    var result = [];
+    for (var j = 0; j < matrix.length; j++) {
+        result[j] = [];
+        for (var k = 0; k < matrix[0].length; k++) {
+            result[j].push(matrix[j][k]);
+        }
+    }
+    return result;
+}
+
+/**
+ * @desc
+ * @param
+ * @param
+ * @return
+ **/
+
 function invertMatrix(input) {
 
     var matrix = [input[0][0], input[0][1], input[0][2], input[0][3],

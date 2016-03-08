@@ -61,6 +61,8 @@ var guiButtonImage = [];
 var preferencesButtonImage = [];
 var reloadButtonImage = [];
 var logButtonImage = [];
+var resetButtonImage = [];
+var unconstButtonImage = [];
 var editingButtonImage = [];
 var loadNewUiImage = [];
 
@@ -90,6 +92,14 @@ function GUI() {
     );
     preload(logButtonImage,
         'png/log.png', 'png/logOver.png', 'png/logSelect.png','png/logEmpty.png'
+    );
+
+    preload(resetButtonImage,
+        'png/reset.png', 'png/resetOver.png', 'png/resetSelect.png','png/resetEmpty.png'
+    );
+
+    preload(unconstButtonImage,
+        'png/unconst.png', 'png/unconstOver.png', 'png/unconstSelect.png','png/unconstEmpty.png'
     );
 
     preload(loadNewUiImage,
@@ -185,6 +195,113 @@ function GUI() {
     });
 
 
+    document.getElementById("resetButton").addEventListener("touchstart", function () {
+            if(!globalStates.UIOffMode)    document.getElementById('resetButton').src = resetButtonImage[1].src;
+
+    });
+
+    document.getElementById("resetButton").addEventListener("touchend", function () {
+
+        if(!globalStates.UIOffMode)    document.getElementById('resetButton').src = resetButtonImage[0].src;
+      //  window.location.href = "of://loadNewUI"+globalStates.newURLText;
+
+
+        for (var key in objectExp) {
+            if (!objectExp.hasOwnProperty(key)) {
+                continue;
+            }
+
+            var tempResetObject = objectExp[key];
+
+
+            tempResetObject.matrix =  [
+                [1, 0, 0, 0],
+                [0, 1, 0, 0],
+                [0, 0, 1, 0],
+                [0, 0, 0, 1]
+            ];
+
+            tempResetObject.x = 0;
+            tempResetObject.y = 0;
+            tempResetObject.scale = 1;
+
+            sendResetContent(key, key);
+
+            for (var subKey in tempResetObject.objectValues) {
+                var tempResetValue = tempResetObject.objectValues[subKey];
+
+                tempResetValue.matrix =  [
+                    [1, 0, 0, 0],
+                    [0, 1, 0, 0],
+                    [0, 0, 1, 0],
+                    [0, 0, 0, 1]
+                ];
+
+                tempResetValue.x = 0;
+                tempResetValue.y = 0;
+                tempResetValue.scale = 1;
+
+                sendResetContent(key, subKey);
+
+            }
+
+
+
+        }
+
+
+    });
+
+
+
+
+    function sendResetContent(object, location) {
+// generate action for all links to be reloaded after upload
+
+            var tempThisObject = {};
+            if (object != location) {
+                tempThisObject = objectExp[object].objectValues[location];
+            } else {
+                tempThisObject = objectExp[object];
+            }
+
+            var content = {};
+            content.x = tempThisObject.x;
+            content.y = tempThisObject.y;
+            content.scale = tempThisObject.scale;
+
+        if(typeof tempThisObject.matrix === "object"){
+                content.matrix = tempThisObject.matrix;
+            }
+
+            if(typeof content.x === "number" && typeof content.y === "number" && typeof content.scale === "number") {
+                postData('http://' + objectExp[object].ip + ':' + httpPort + '/object/' + object + "/size/" + location, content);
+            }
+
+    }
+
+
+    document.getElementById("unconstButton").addEventListener("touchstart", function () {
+        if(!globalStates.UIOffMode) document.getElementById('unconstButton').src = unconstButtonImage[1].src;
+    });
+
+    document.getElementById("unconstButton").addEventListener("touchend", function () {
+        if (globalStates.unconstrainedPositioning === true) {
+            if(!globalStates.UIOffMode)    document.getElementById('unconstButton').src = unconstButtonImage[0].src;
+            globalStates.unconstrainedPositioning = false;
+
+        }
+        else {
+            if(!globalStates.UIOffMode)    document.getElementById('unconstButton').src = unconstButtonImage[2].src;
+            globalStates.unconstrainedPositioning = true;
+
+        }
+
+    });
+
+
+
+
     document.getElementById("loadNewUI").addEventListener("touchstart", function () {
         if (globalStates.extendedTracking === true) {
             if(!globalStates.UIOffMode)    document.getElementById('loadNewUI').src = loadNewUiImage[3].src;
@@ -210,6 +327,12 @@ function GUI() {
         if (globalStates.preferencesButtonState === true) {
             preferencesHide()
 
+            if(globalStates.editingMode) {
+                document.getElementById('resetButton').style.visibility = "visible";
+                document.getElementById('unconstButton').style.visibility = "visible";
+                document.getElementById('resetButtonDiv').style.display = "inline";
+                document.getElementById('unconstButtonDiv').style.display = "inline";
+            }
 
             if(globalStates.UIOffMode){
                 document.getElementById('preferencesButton').src = preferencesButtonImage[3].src;
@@ -217,10 +340,18 @@ function GUI() {
                 document.getElementById('reloadButton').src = reloadButtonImage[2].src;
                 document.getElementById('logButton').src = logButtonImage[3].src;
                 document.getElementById('guiButtonImage').src = guiButtonImage[4].src;
+                document.getElementById('resetButton').src = resetButtonImage[3].src;
+                document.getElementById('unconstButton').src = unconstButtonImage[3].src;
             }
 
         }
         else {
+
+
+                document.getElementById('resetButton').style.visibility = "hidden";
+                document.getElementById('unconstButton').style.visibility = "hidden";
+                document.getElementById('resetButtonDiv').style.display = "none";
+                document.getElementById('unconstButtonDiv').style.display = "none";
 
 
                 addElementInPreferences();
@@ -236,6 +367,8 @@ function GUI() {
                 document.getElementById('reloadButton').src = reloadButtonImage[0].src;
                 document.getElementById('logButton').src = logButtonImage[0].src;
                 document.getElementById('guiButtonImage').src = guiButtonImage[1].src;
+                document.getElementById('resetButton').src = resetButtonImage[0].src;
+                document.getElementById('unconstButton').src = unconstButtonImage[0].src;
             }
 
         }

@@ -244,6 +244,8 @@ function MultiTouchStart(evt) {
         globalStates.editingModeLocation = this.location;
         globalStates.editingModeHaveObject = true;
     }
+    globalMatrix.matrixtouchOn = true;
+    globalMatrix.copyStillFromMatrixSwitch = true;
 
 }
 
@@ -276,8 +278,7 @@ function MultiTouchMove(evt) {
         }
 
 
-        var tempMatrix = multiplyMatrix(rotateX, multiplyMatrix(globalObjects.obj[globalStates.editingModeObject], globalStates.projectionMatrix));
-
+        var tempMatrix = copyMatrix(globalMatrix.begin);
         globalStates.angX = toAxisAngle(tempMatrix)[0];
         globalStates.angY = toAxisAngle(tempMatrix)[1];
 
@@ -338,22 +339,33 @@ function MultiTouchEnd(evt) {
         console.log("start");
         // this is where it should be send to the object..
 
-        var content = {};
-        if (globalStates.editingModeObject === globalStates.editingModeLocation) {
-            content.x = objectExp[globalStates.editingModeObject].x;
-            content.y = objectExp[globalStates.editingModeObject].y;
-            content.scale = objectExp[globalStates.editingModeObject].scale;
+        var tempThisObject = {};
+        if (globalStates.editingModeObject != globalStates.editingModeLocation) {
+            tempThisObject = objectExp[globalStates.editingModeObject].objectValues[globalStates.editingModeLocation];
         } else {
-            content.x = objectExp[globalStates.editingModeObject].objectValues[globalStates.editingModeLocation].x;
-            content.y = objectExp[globalStates.editingModeObject].objectValues[globalStates.editingModeLocation].y;
-            content.scale = objectExp[globalStates.editingModeObject].objectValues[globalStates.editingModeLocation].scale;
+            tempThisObject = objectExp[globalStates.editingModeObject];
         }
+
+
+
+        var content = {};
+        content.x = tempThisObject.x;
+        content.y = tempThisObject.y;
+        content.scale = tempThisObject.scale;
+
+        if(globalStates.unconstrainedPositioning===true) {
+            tempThisObject.matrix = copyMatrix(multiplyMatrix(globalMatrix.begin, invertMatrix(globalMatrix.temp)));
+            content.matrix = tempThisObject.matrix;
+        }
+
 if(typeof content.x === "number" && typeof content.y === "number" && typeof content.scale === "number") {
     postData('http://' + objectExp[globalStates.editingModeObject].ip + ':' + httpPort + '/object/' + globalStates.editingModeObject + "/size/" + globalStates.editingModeLocation, content);
 }
-        globalStates.editingModeHaveObject = false;
-    }
+
+    globalStates.editingModeHaveObject = false;
     globalCanvas.hasContent = true;
+    globalMatrix.matrixtouchOn = false;
+    }
 }
 
 /**

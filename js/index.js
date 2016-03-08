@@ -131,6 +131,12 @@ function setStates(developerState, extendedTrackingState, clearSkyState, externa
     }
 
 
+    if(globalStates.editingMode) {
+        document.getElementById('resetButton').style.visibility = "visible";
+        document.getElementById('unconstButton').style.visibility = "visible";
+        document.getElementById('resetButtonDiv').style.display = "inline";
+        document.getElementById('unconstButtonDiv').style.display = "inline";
+    }
 }
 
 
@@ -392,15 +398,44 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
             }
         }
 
-        var finalMatrixTransform = [
+
+
+
+        if(globalMatrix.matrixtouchOn) {
+        //if(globalStates.unconstrainedPositioning===true)
+            globalMatrix.temp = copyMatrix(thisTransform2);
+
+
+            if(globalMatrix.copyStillFromMatrixSwitch){
+                globalMatrix.visual =  copyMatrix(globalMatrix.temp);
+               if(typeof thisObject.matrix === "object")
+                   globalMatrix.begin = copyMatrix(multiplyMatrix(thisObject.matrix, globalMatrix.temp));
+               else
+                   globalMatrix.begin =copyMatrix(globalMatrix.temp);
+
+                globalMatrix.copyStillFromMatrixSwitch = false;
+            }
+
+            if(globalStates.unconstrainedPositioning===true)
+                thisTransform2 = globalMatrix.visual;
+
+        }
+
+        var finalMatrixTransform2 = [
             [thisObject.scale, 0, 0, 0],
             [0, thisObject.scale, 0, 0],
             [0, 0, 1, 0],
             [thisObject.x, thisObject.y, 0, 1]
         ];
 
-        //  thisTransform = multiplyMatrix(objMove, thisTransform);
-        var thisTransform = multiplyMatrix(finalMatrixTransform, thisTransform2);
+
+        var thisTransform = [];
+        if(typeof thisObject.matrix === "object"){
+            var finalMatrixTransform = copyMatrix(thisObject.matrix);
+            var thisTransform3 = multiplyMatrix(finalMatrixTransform, thisTransform2);
+            thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform3);}
+        else
+            thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
 
         document.getElementById("thisObject" + thisKey).style.webkitTransform = 'matrix3d(' +
             thisTransform[0][0] + ',' + thisTransform[0][1] + ',' + thisTransform[0][2] + ',' + thisTransform[0][3] + ',' +
@@ -635,7 +670,7 @@ function addElement(thisObject, thisKey, thisUrl, generalObject) {
         theObject.addEventListener("pointerup", trueTouchUp, false);
         if (globalStates.editingMode) {
             if (objectExp[generalObject].developer) {
-                //theObject.addEventListener("touchstart", MultiTouchStart, false);
+                theObject.addEventListener("touchstart", MultiTouchStart, false);
                 theObject.addEventListener("touchmove", MultiTouchMove, false);
                 theObject.addEventListener("touchend", MultiTouchEnd, false);
                 theObject.className = "mainProgram";
