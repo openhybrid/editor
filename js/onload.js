@@ -64,6 +64,14 @@
 
 window.onload = function () {
 
+// this changes the checkboxes to 3th party switchery boxes
+    var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+
+    elems.forEach(function(html) {
+        var switchery = new Switchery(html, { size: 'large',speed : '0.2s', color : '#1ee71e' });
+    });
+
+
     GUI();
 
     if (globalStates.platform !== 'iPad' && globalStates.platform !== 'iPhone' && globalStates.platform !== 'iPod') {

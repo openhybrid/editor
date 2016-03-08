@@ -55,7 +55,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Hybrid Objects - Editor</title>
 
+    <!-- Styles -->
     <link rel="stylesheet" type="text/css" href="css/index.css">
+    <link rel="stylesheet" href="thirdPartyCode/switchery.css" />
+
+    <!-- Javascript -->
+    <script src="thirdPartyCode/switchery.js"></script>
     <script src="thirdPartyCode/hand.minified-1.3.8.js"></script>
     <script src="js/globalVariables.js"></script>
     <script src="js/utilities.js"></script>
@@ -131,12 +136,7 @@
              style='position: relative;  float: left; height: 50px; width: 50%;  box-sizing: border-box; padding: 5px; padding-left: 13px;
                text-align: center; font-family: Helvetica Neue, Helvetica, Arial;
                background-color: #aaaaaa; -webkit-transform-style: preserve-3d;'>
-
-            <div id="box1" style='width: 70px; -webkit-transform-style: preserve-3d;' class="clearfix">
-                <input type="checkbox" name="editingModeSwitch" id="editingModeSwitch" class="ios-toggle"/>
-                <label for="editingModeSwitch" class="checkbox-label" data-off="" data-on=""></label>
-            </div>
-
+            <input type="checkbox" name="editingModeSwitch" id="editingModeSwitch"  class="js-switch"/>
        </div>
         <div  id="content13" class='Interfaces'
               style='position: relative;  float: left; height: 50px; width: 50%;  box-sizing: border-box;  padding-top: 5px;padding-left: 13px;
@@ -149,13 +149,8 @@
               style='position: relative;  float: left; height: 50px; width: 50%;  box-sizing: border-box;  padding: 5px; padding-left: 13px;
                text-align: center; font-family: Helvetica Neue, Helvetica, Arial;
                background-color: #aaaaaa; -webkit-transform-style: preserve-3d;'>
-
-            <div id="box2" style='width: 70px; -webkit-transform-style: preserve-3d;' class="clearfix">
-                <input type="checkbox" name="extendedTrackingSwitch" id="extendedTrackingSwitch" class="ios-toggle" oninput='setExtendetTracking()'/>
-                <label for="extendedTrackingSwitch" class="checkbox-label" data-off="" data-on=""></label>
-            </div>
-
-            </div>
+            <input type="checkbox" name="extendedTrackingSwitch" id="extendedTrackingSwitch" class="js-switch" oninput='setExtendetTracking()'/>
+        </div>
 
 
 
@@ -182,22 +177,17 @@
         </div>
 
         <div  id="content30" class='Interfaces'
-              style='position: relative;  float: left; height: 50px; width: 50%;  box-sizing: border-box;  padding-top: 5px;padding-left: 13px;
+              style='position: relative;  float: left; height: 55px; width: 50%;  box-sizing: border-box;  padding-top: 5px;padding-left: 13px;
                text-align: left; font-family: Helvetica Neue, Helvetica, Arial;
                background-color: #aaaaaa; -webkit-transform-style: preserve-3d;'>
             <b>Clear Sky<br>(No Buttons)</b><br>
         </div>
 
         <div  id="content31" class='Interfaces'
-              style='position: relative;  float: left; height: 50px; width: 50%;  box-sizing: border-box;  padding: 5px; padding-left: 13px;
+              style='position: relative;  float: left; height: 55px; width: 50%;  box-sizing: border-box; right:0px; padding: 5px; padding-left: 0px;
                text-align: center; font-family: Helvetica Neue, Helvetica, Arial;
                background-color: #aaaaaa; -webkit-transform-style: preserve-3d;'>
-
-            <div id="box32" style='width: 70px; -webkit-transform-style: preserve-3d;' class="clearfix">
-                <input type="checkbox" name="extendedTrackingSwitch" id="turnOffUISwitch" class="ios-toggle" oninput='setTurnOffUISwitch()'/>
-                <label for="turnOffUISwitch" class="checkbox-label" data-off="" data-on=""></label>
-            </div>
-
+            <input type="checkbox" name="extendedTrackingSwitch" id="turnOffUISwitch" class="js-switch" oninput='setTurnOffUISwitch()'/>
         </div>
 
 
