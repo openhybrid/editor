@@ -155,6 +155,7 @@ function GUI() {
             addEventHandlers();
             globalStates.editingMode = true;
             window.location.href = "of://developerOn";
+            globalMatrix.matrixtouchOn = "";
         }else{
             removeEventHandlers();
             globalStates.editingMode = false;
@@ -207,41 +208,45 @@ function GUI() {
 
 
         for (var key in objectExp) {
-            if (!objectExp.hasOwnProperty(key)) {
+            if (!globalObjects.obj.hasOwnProperty(key)) {
                 continue;
             }
 
+
             var tempResetObject = objectExp[key];
 
-
-            tempResetObject.matrix =  [
-                [1, 0, 0, 0],
-                [0, 1, 0, 0],
-                [0, 0, 1, 0],
-                [0, 0, 0, 1]
-            ];
-
-            tempResetObject.x = 0;
-            tempResetObject.y = 0;
-            tempResetObject.scale = 1;
-
-            sendResetContent(key, key);
-
-            for (var subKey in tempResetObject.objectValues) {
-                var tempResetValue = tempResetObject.objectValues[subKey];
-
-                tempResetValue.matrix =  [
+            if(globalStates.guiButtonState) {
+                tempResetObject.matrix = [
                     [1, 0, 0, 0],
                     [0, 1, 0, 0],
                     [0, 0, 1, 0],
                     [0, 0, 0, 1]
                 ];
 
-                tempResetValue.x = 0;
-                tempResetValue.y = 0;
-                tempResetValue.scale = 1;
+                tempResetObject.x = 0;
+                tempResetObject.y = 0;
+                tempResetObject.scale = 1;
 
-                sendResetContent(key, subKey);
+                sendResetContent(key, key);
+            }
+
+            for (var subKey in tempResetObject.objectValues) {
+                var tempResetValue = tempResetObject.objectValues[subKey];
+
+                if(!globalStates.guiButtonState) {
+                    tempResetValue.matrix = [
+                        [1, 0, 0, 0],
+                        [0, 1, 0, 0],
+                        [0, 0, 1, 0],
+                        [0, 0, 0, 1]
+                    ];
+
+                    tempResetValue.x = randomIntInc(0, 200) - 100;
+                    tempResetValue.y = randomIntInc(0, 200) - 100;
+                    tempResetValue.scale = 1;
+
+                    sendResetContent(key, subKey);
+                }
 
             }
 

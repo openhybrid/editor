@@ -244,7 +244,7 @@ function MultiTouchStart(evt) {
         globalStates.editingModeLocation = this.location;
         globalStates.editingModeHaveObject = true;
     }
-    globalMatrix.matrixtouchOn = true;
+    globalMatrix.matrixtouchOn = this.location;
     globalMatrix.copyStillFromMatrixSwitch = true;
 
 }
@@ -271,7 +271,7 @@ function MultiTouchMove(evt) {
         globalStates.editingModeObjectY = touch.pageY;
 
         var tempThisObject = {};
-        if (globalStates.editingModeObject != globalStates.editingModeLocation) {
+        if (globalStates.editingModeObject !== globalStates.editingModeLocation) {
             tempThisObject = objectExp[globalStates.editingModeObject].objectValues[globalStates.editingModeLocation];
         } else {
             tempThisObject = objectExp[globalStates.editingModeObject];
@@ -364,7 +364,7 @@ if(typeof content.x === "number" && typeof content.y === "number" && typeof cont
 
     globalStates.editingModeHaveObject = false;
     globalCanvas.hasContent = true;
-    globalMatrix.matrixtouchOn = false;
+    globalMatrix.matrixtouchOn = "";
     }
 }
 
@@ -554,7 +554,7 @@ function addEventHandlers() {
 
             thisObject3.className = "mainProgram";
 
-
+            thisObject3.addEventListener("touchstart", MultiTouchStart, false);
             thisObject3.addEventListener("touchmove", MultiTouchMove, false);
             thisObject3.addEventListener("touchend", MultiTouchEnd, false);
             //}
@@ -565,6 +565,7 @@ function addEventHandlers() {
                 var thisObject2 = document.getElementById(thisSubKey);
                 thisObject2.className = "mainProgram";
                 //if(thisObject.developer) {
+                thisObject2.addEventListener("touchstart", MultiTouchStart, false);
                 thisObject2.addEventListener("touchmove", MultiTouchMove, false);
                 thisObject2.addEventListener("touchend", MultiTouchEnd, false);
                 //}
@@ -596,6 +597,7 @@ function removeEventHandlers() {
             thisObject3.style.visibility = "hidden";
             thisObject3.className = "mainEditing";
 
+            thisObject3.removeEventListener("touchstart", MultiTouchStart, false);
             thisObject3.removeEventListener("touchmove", MultiTouchMove, false);
             thisObject3.removeEventListener("touchend", MultiTouchEnd, false);
             //  }
@@ -606,6 +608,7 @@ function removeEventHandlers() {
                 var thisObject2 = document.getElementById(thisSubKey);
                 thisObject2.className = "mainEditing";
                 //    if(thisObject.developer) {
+                thisObject2.removeEventListener("touchstart", MultiTouchStart, false);
                 thisObject2.removeEventListener("touchmove", MultiTouchMove, false);
                 thisObject2.removeEventListener("touchend", MultiTouchEnd, false);
                 //  }

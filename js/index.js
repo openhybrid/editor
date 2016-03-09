@@ -137,6 +137,21 @@ function setStates(developerState, extendedTrackingState, clearSkyState, externa
         document.getElementById('resetButtonDiv').style.display = "inline";
         document.getElementById('unconstButtonDiv').style.display = "inline";
     }
+
+
+
+
+    // Once all the states are send the alternative checkbox is loaded
+    // Its a bad hack to place it here, but it works
+
+    if(typeof checkBoxElements === "undefined") {
+        var checkBoxElements = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+
+        checkBoxElements.forEach(function (html) {
+            var switchery = new Switchery(html, {size: 'large', speed: '0.2s', color: '#1ee71e'});
+
+        });
+    }
 }
 
 
@@ -401,7 +416,7 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
 
 
 
-        if(globalMatrix.matrixtouchOn) {
+        if(globalMatrix.matrixtouchOn === thisKey && globalStates.editingMode) {
         //if(globalStates.unconstrainedPositioning===true)
             globalMatrix.temp = copyMatrix(thisTransform2);
 

@@ -478,3 +478,8 @@ function uuidTimeShort(){
     while(stampUuidTime.length<8) stampUuidTime =abcUuidTime.charAt(Math.floor(Math.random() * abcUuidTime.length))+stampUuidTime;
     return stampUuidTime
 }
+
+
+function randomIntInc(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
