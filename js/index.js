@@ -413,9 +413,6 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
             }
         }
 
-
-
-
         if(globalMatrix.matrixtouchOn === thisKey && globalStates.editingMode) {
         //if(globalStates.unconstrainedPositioning===true)
             globalMatrix.temp = copyMatrix(thisTransform2);
@@ -443,11 +440,9 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
             [thisObject.x, thisObject.y, 0, 1]
         ];
 
-
         var thisTransform = [];
         if(typeof thisObject.matrix === "object"){
-            var finalMatrixTransform = copyMatrix(thisObject.matrix);
-            var thisTransform3 = multiplyMatrix(finalMatrixTransform, thisTransform2);
+            var thisTransform3 = multiplyMatrix(thisObject.matrix, thisTransform2);
             thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform3);}
         else
             thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
@@ -666,7 +661,7 @@ function addElement(thisObject, thisKey, thisUrl, generalObject) {
             "style='width:" + thisObject.frameSizeX + "px; height:" + thisObject.frameSizeY + "px;" +
             "top:" + ((globalStates.width - thisObject.frameSizeX) / 2) + "px; left:" +
             ((globalStates.height - thisObject.frameSizeY) / 2) + "px; visibility: hidden;' " +
-            "src='" + thisUrl + "' class='main'>" +
+            "src='" + thisUrl + "' class='main' sandbox='allow-forms allow-pointer-lock allow-same-origin allow-scripts'>" +
             "</iframe>";
 
         tempAddContent += "<div id='" + thisKey + "' frameBorder='0' style='width:" + thisObject.frameSizeX + "px; height:" + thisObject.frameSizeY + "px;" +
