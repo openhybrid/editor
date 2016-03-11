@@ -217,10 +217,10 @@ function GUI() {
 
             if(globalStates.guiButtonState) {
                 tempResetObject.matrix = [
-                    [1, 0, 0, 0],
-                    [0, 1, 0, 0],
-                    [0, 0, 1, 0],
-                    [0, 0, 0, 1]
+                    1, 0, 0, 0,
+                    0, 1, 0, 0,
+                    0, 0, 1, 0,
+                    0, 0, 0, 1
                 ];
 
                 tempResetObject.x = 0;
@@ -235,10 +235,10 @@ function GUI() {
 
                 if(!globalStates.guiButtonState) {
                     tempResetValue.matrix = [
-                        [1, 0, 0, 0],
-                        [0, 1, 0, 0],
-                        [0, 0, 1, 0],
-                        [0, 0, 0, 1]
+                        1, 0, 0, 0,
+                        0, 1, 0, 0,
+                        0, 0, 1, 0,
+                        0, 0, 0, 1
                     ];
 
                     tempResetValue.x = randomIntInc(0, 200) - 100;

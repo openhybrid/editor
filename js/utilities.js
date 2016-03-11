@@ -67,19 +67,35 @@ function newURLTextLoad(){
  * @param
  * @return
  **/
-
+/*
 function multiplyMatrix(matrix2, matrix1) {
     var result = [];
-    for (var j = 0; j < matrix2.length; j++) {
-        result[j] = [];
-        for (var k = 0; k < matrix1[0].length; k++) {
-            var sum = 0;
-            for (var i = 0; i < matrix1.length; i++) {
-                sum = sum + (matrix1[i][k] * matrix2[j][i]);
-            }
-            result[j].push(sum);
-        }
-    }
+    // Cmatrix1che only the current line of the second mmatrix1trix
+    result[0] = matrix2[0]*matrix1[0] + matrix2[1]*matrix1[4] + matrix2[2]*matrix1[8] + matrix2[3]*matrix1[12];
+    result[1] = matrix2[0]*matrix1[1] + matrix2[1]*matrix1[5] + matrix2[2]*matrix1[9] + matrix2[3]*matrix1[13];
+    result[2] = matrix2[0]*matrix1[2] + matrix2[1]*matrix1[6] + matrix2[2]*matrix1[10] + matrix2[3]*matrix1[14];
+    result[3] = matrix2[0]*matrix1[3] + matrix2[1]*matrix1[7] + matrix2[2]*matrix1[11] + matrix2[3]*matrix1[15];
+    
+    result[4] = matrix2[4]*matrix1[0] + matrix2[5]*matrix1[4] + matrix2[6]*matrix1[8] + matrix2[7]*matrix1[12];
+    result[5] = matrix2[4]*matrix1[1] + matrix2[5]*matrix1[5] + matrix2[6]*matrix1[9] + matrix2[7]*matrix1[13];
+    result[6] = matrix2[4]*matrix1[2] + matrix2[5]*matrix1[6] + matrix2[6]*matrix1[10] + matrix2[7]*matrix1[14];
+    result[7] = matrix2[4]*matrix1[3] + matrix2[5]*matrix1[7] + matrix2[6]*matrix1[11] + matrix2[7]*matrix1[15];
+    
+    result[8] = matrix2[8]*matrix1[0] + matrix2[9]*matrix1[4] + matrix2[10]*matrix1[8] + matrix2[11]*matrix1[12];
+    result[9] = matrix2[8]*matrix1[1] + matrix2[9]*matrix1[5] + matrix2[10]*matrix1[9] + matrix2[11]*matrix1[13];
+    result[10] = matrix2[8]*matrix1[2] + matrix2[9]*matrix1[6] + matrix2[10]*matrix1[10] + matrix2[11]*matrix1[14];
+    result[11] = matrix2[8]*matrix1[3] + matrix2[9]*matrix1[7] + matrix2[10]*matrix1[11] + matrix2[11]*matrix1[15];
+    
+    result[12] = matrix2[12]*matrix1[0] + matrix2[13]*matrix1[4] + matrix2[14]*matrix1[8] + matrix2[15]*matrix1[12];
+    result[13] = matrix2[12]*matrix1[1] + matrix2[13]*matrix1[5] + matrix2[14]*matrix1[9] + matrix2[15]*matrix1[13];
+    result[14] = matrix2[12]*matrix1[2] + matrix2[13]*matrix1[6] + matrix2[14]*matrix1[10] + matrix2[15]*matrix1[14];
+    result[15] = matrix2[12]*matrix1[3] + matrix2[13]*matrix1[7] + matrix2[14]*matrix1[11] + matrix2[15]*matrix1[15];
+    return result;
+}*/
+
+function multiplyMatrix(matrix2, matrix1) {
+   var result = [];
+   mat4.multiply(result, mat4.clone(matrix1), mat4.clone(matrix2));
     return result;
 }
 
@@ -89,15 +105,32 @@ function multiplyMatrix(matrix2, matrix1) {
  * @param
  * @return
  **/
+
+/*
+function copyMatrix(matrix) {
+    var result = [];
+    result[0] = matrix[0];
+    result[1] = matrix[1];
+    result[2] = matrix[2];
+    result[3] = matrix[3];
+    result[4] = matrix[4];
+    result[5] = matrix[5];
+    result[6] = matrix[6];
+    result[7] = matrix[7];
+    result[8] = matrix[8];
+    result[9] = matrix[9];
+    result[10] = matrix[10];
+    result[11] = matrix[11];
+    result[12] = matrix[12];
+    result[13] = matrix[13];
+    result[14] = matrix[14];
+    result[15] = matrix[15];
+    return result;
+}*/
 
 function copyMatrix(matrix) {
     var result = [];
-    for (var j = 0; j < matrix.length; j++) {
-        result[j] = [];
-        for (var k = 0; k < matrix[0].length; k++) {
-            result[j].push(matrix[j][k]);
-        }
-    }
+     mat4.copy(result, mat4.clone(matrix));
     return result;
 }
 
@@ -107,13 +140,8 @@ function copyMatrix(matrix) {
  * @param
  * @return
  **/
-
-function invertMatrix(input) {
-
-    var matrix = [input[0][0], input[0][1], input[0][2], input[0][3],
-        input[1][0], input[1][1], input[1][2], input[1][3],
-        input[2][0], input[2][1], input[2][2], input[2][3],
-        input[3][0], input[3][1], input[3][2], input[3][3]];
+/*
+function invertMatrix(matrix) {
 
     var inverse = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
     var output = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
@@ -247,11 +275,16 @@ function invertMatrix(input) {
         output[i] = inverse[i] * detector;
     }
 
-    return [[output[0], output[1], output[2], output[3]],
-        [output[4], output[5], output[6], output[7]],
-        [output[8], output[9], output[10], output[11]],
-        [output[12], output[13], output[14], output[15]]];
+    return output;
 
+
+}*/
+
+
+function invertMatrix(matrix) {
+var result = [];
+    mat4.invert(result, mat4.clone(matrix));
+    return result;
 
 }
 
@@ -263,8 +296,8 @@ function invertMatrix(input) {
  **/
 
 function toAxisAngle(matrix) {
-    var rY = Math.atan(matrix[1][2], matrix[2][2]);
-    var rX = Math.atan(matrix[0][2], matrix[2][2]);
+    var rY = Math.atan(matrix[6], matrix[10]);
+    var rX = Math.atan(matrix[2], matrix[10]);
 
     return [rX, rY];
 

@@ -243,21 +243,23 @@ function setProjectionMatrix(matrix) {
 
     //  generate all transformations for the object that needs to be done ASAP
     var scaleZ = [
-        [1, 0, 0, 0],
-        [0, 1, 0, 0],
-        [0, 0, 2, 0],
-        [0, 0, 0, 1]
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 2, 0,
+        0, 0, 0, 1
     ];
 
     var viewportScaling = [
-        [globalStates.height, 0, 0, 0],
-        [0, -globalStates.width, 0, 0],
-        [0, 0, 1, 0],
-        [0, 0, 0, 1]
+        globalStates.height, 0, 0, 0,
+        0, -globalStates.width, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
     ];
 
     //   var thisTransform = multiplyMatrix(scaleZ, matrix);
-    globalStates.projectionMatrix = multiplyMatrix(multiplyMatrix(scaleZ, matrix), viewportScaling);
+    globalStates.projectionMatrix = multiplyMatrix(scaleZ, matrix);
+
+    globalStates.projectionMatrix = multiplyMatrix(globalStates.projectionMatrix, viewportScaling);
     window.location.href = "of://gotProjectionMatrix";
 
 
@@ -305,8 +307,8 @@ function update(objects) {
             generalObject.visibleCounter = timeForContentLoaded;
             generalObject.ObjectVisible = true;
 
-            var tempMatrix = multiplyMatrix(rotateX, multiplyMatrix(globalObjects.obj[key], globalStates.projectionMatrix));
-
+            var tempMatrix = multiplyMatrix(globalObjects.obj[key], globalStates.projectionMatrix);
+                tempMatrix = multiplyMatrix(rotateX, tempMatrix);
 
             //  var tempMatrix2 = multiplyMatrix(globalObjects[key], globalStates.projectionMatrix);
 
@@ -434,10 +436,10 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
         }
 
         var finalMatrixTransform2 = [
-            [thisObject.scale, 0, 0, 0],
-            [0, thisObject.scale, 0, 0],
-            [0, 0, 1, 0],
-            [thisObject.x, thisObject.y, 0, 1]
+            thisObject.scale, 0, 0, 0,
+            0, thisObject.scale, 0, 0,
+            0, 0, 1, 0,
+            thisObject.x, thisObject.y, 0, 1
         ];
 
         var thisTransform = [];
@@ -448,22 +450,22 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
             thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
 
         document.getElementById("thisObject" + thisKey).style.webkitTransform = 'matrix3d(' +
-            thisTransform[0][0] + ',' + thisTransform[0][1] + ',' + thisTransform[0][2] + ',' + thisTransform[0][3] + ',' +
-            thisTransform[1][0] + ',' + thisTransform[1][1] + ',' + thisTransform[1][2] + ',' + thisTransform[1][3] + ',' +
-            thisTransform[2][0] + ',' + thisTransform[2][1] + ',' + thisTransform[2][2] + ',' + thisTransform[2][3] + ',' +
-            thisTransform[3][0] + ',' + thisTransform[3][1] + ',' + thisTransform[3][2] + ',' + thisTransform[3][3] + ')';
+            thisTransform[0] + ',' + thisTransform[1] + ',' + thisTransform[2] + ',' + thisTransform[3] + ',' +
+            thisTransform[4] + ',' + thisTransform[5] + ',' + thisTransform[6] + ',' + thisTransform[7] + ',' +
+            thisTransform[8] + ',' + thisTransform[9] + ',' + thisTransform[10] + ',' + thisTransform[11] + ',' +
+            thisTransform[12] + ',' + thisTransform[13] + ',' + thisTransform[14] + ',' + thisTransform[15] + ')';
 
         // this is for later
-        // The matrix has been changed from Vuforia 3 to 4 and 5. Instead of  thisTransform[3][2] it is now thisTransform[3][3]
-        thisObject.screenX = thisTransform[3][0] / thisTransform[3][3] + (globalStates.height / 2);
-        thisObject.screenY = thisTransform[3][1] / thisTransform[3][3] + (globalStates.width / 2);
-        thisObject.screenZ = thisTransform[3][2];
+        // The matrix has been changed from Vuforia 3 to 4 and 5. Instead of  thisTransform[14] it is now thisTransform[15]
+        thisObject.screenX = thisTransform[12] / thisTransform[15] + (globalStates.height / 2);
+        thisObject.screenY = thisTransform[13] / thisTransform[15] + (globalStates.width / 2);
+        thisObject.screenZ = thisTransform[14];
 
 
         var iFrameMsgContent = "";
         if (typeof thisObject.sendMatrix3d !== "undefined") {
             if (thisObject.sendMatrix3d === true) {
-                iFrameMsgContent = '{"matrix3d":';
+                iFrameMsgContent = '{"matrix":';
                 iFrameMsgContent += JSON.stringify(thisTransform);
             }
 

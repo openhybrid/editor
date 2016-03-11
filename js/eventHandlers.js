@@ -282,8 +282,8 @@ function MultiTouchMove(evt) {
         globalStates.angX = toAxisAngle(tempMatrix)[0];
         globalStates.angY = toAxisAngle(tempMatrix)[1];
 
-        var screenCoordinateX = tempMatrix[3][2] * (touch.pageX - globalStates.height / 2);
-        var screenCoordinateY = tempMatrix[3][2] * (touch.pageY - globalStates.width / 2);
+        var screenCoordinateX = tempMatrix[14] * (touch.pageX - globalStates.height / 2);
+        var screenCoordinateY = tempMatrix[14] * (touch.pageY - globalStates.width / 2);
 
 
         // this functions are somehow ok.... The Projection Matrix gives funky interverences once the angle is sharp.
@@ -304,18 +304,18 @@ function MultiTouchMove(evt) {
         }
 
         var tempObjectMatrix = [
-            [tempMatrix[0][0], tempMatrix[0][1], tempMatrix[0][2], tempMatrix[0][3]],
-            [tempMatrix[1][0], tempMatrix[1][1], tempMatrix[1][2], tempMatrix[1][3]],
-            [tempMatrix[2][0], tempMatrix[2][1], tempMatrix[2][2], tempMatrix[2][3]],
-            [possitionX, possitionY, tempMatrix[3][2], tempMatrix[3][3]]
+            tempMatrix[0], tempMatrix[1], tempMatrix[2], tempMatrix[3],
+            tempMatrix[4], tempMatrix[5], tempMatrix[6], tempMatrix[7],
+            tempMatrix[8], tempMatrix[9], tempMatrix[10], tempMatrix[11],
+            possitionX, possitionY, tempMatrix[14], tempMatrix[15]
         ];
 
         var invertedObjectMatrix = invertMatrix(tempMatrix);
         var resultMatrix = multiplyMatrix(tempObjectMatrix, invertedObjectMatrix);
 
-        if(typeof resultMatrix[3][0] === "number" && typeof resultMatrix[3][1] === "number") {
-            tempThisObject.x = resultMatrix[3][0];
-            tempThisObject.y = resultMatrix[3][1];
+        if(typeof resultMatrix[12] === "number" && typeof resultMatrix[13] === "number") {
+            tempThisObject.x = resultMatrix[12];
+            tempThisObject.y = resultMatrix[13];
         }
     }
 
