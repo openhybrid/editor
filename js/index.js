@@ -468,9 +468,9 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
 
 
         var iFrameMsgContent = "";
-        if (typeof thisObject.sendMatrix3d !== "undefined") {
-            if (thisObject.sendMatrix3d === true) {
-                iFrameMsgContent = '{"matrix3d":';
+        if (typeof thisObject.sendMatrixCSS !== "undefined") {
+            if (thisObject.sendMatrixCSS === true) {
+                iFrameMsgContent = '{"matrixCSS":';
                 iFrameMsgContent += JSON.stringify(thisTransform);
             }
 

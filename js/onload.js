@@ -193,9 +193,9 @@ function postMessage(e) {
 
 
     if (typeof objectExp[msgContent.obj] !== "undefined") {
-        if (typeof msgContent.sendMatrix3d !== "undefined") {
-            if(msgContent.sendMatrix3d === true) {
-                objectExp[msgContent.obj].sendMatrix3d = true;
+        if (typeof msgContent.sendMatrixCSS !== "undefined") {
+            if(msgContent.sendMatrixCSS === true) {
+                objectExp[msgContent.obj].sendMatrixCSS = true;
             }
         }
 
