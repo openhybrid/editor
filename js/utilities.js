@@ -108,151 +108,30 @@ function copyMatrix(matrix) {
  * @return
  **/
 
-function invertMatrix(input) {
-
-    var matrix = [input[0][0], input[0][1], input[0][2], input[0][3],
-        input[1][0], input[1][1], input[1][2], input[1][3],
-        input[2][0], input[2][1], input[2][2], input[2][3],
-        input[3][0], input[3][1], input[3][2], input[3][3]];
-
-    var inverse = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
-    var output = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
-
-    inverse[0] = matrix[5] * matrix[10] * matrix[15] -
-    matrix[5] * matrix[11] * matrix[14] -
-    matrix[9] * matrix[6] * matrix[15] +
-    matrix[9] * matrix[7] * matrix[14] +
-    matrix[13] * matrix[6] * matrix[11] -
-    matrix[13] * matrix[7] * matrix[10];
-
-    inverse[4] = -matrix[4] * matrix[10] * matrix[15] +
-    matrix[4] * matrix[11] * matrix[14] +
-    matrix[8] * matrix[6] * matrix[15] -
-    matrix[8] * matrix[7] * matrix[14] -
-    matrix[12] * matrix[6] * matrix[11] +
-    matrix[12] * matrix[7] * matrix[10];
-
-    inverse[8] = matrix[4] * matrix[9] * matrix[15] -
-    matrix[4] * matrix[11] * matrix[13] -
-    matrix[8] * matrix[5] * matrix[15] +
-    matrix[8] * matrix[7] * matrix[13] +
-    matrix[12] * matrix[5] * matrix[11] -
-    matrix[12] * matrix[7] * matrix[9];
-
-    inverse[12] = -matrix[4] * matrix[9] * matrix[14] +
-    matrix[4] * matrix[10] * matrix[13] +
-    matrix[8] * matrix[5] * matrix[14] -
-    matrix[8] * matrix[6] * matrix[13] -
-    matrix[12] * matrix[5] * matrix[10] +
-    matrix[12] * matrix[6] * matrix[9];
-
-    inverse[1] = -matrix[1] * matrix[10] * matrix[15] +
-    matrix[1] * matrix[11] * matrix[14] +
-    matrix[9] * matrix[2] * matrix[15] -
-    matrix[9] * matrix[3] * matrix[14] -
-    matrix[13] * matrix[2] * matrix[11] +
-    matrix[13] * matrix[3] * matrix[10];
-
-    inverse[5] = matrix[0] * matrix[10] * matrix[15] -
-    matrix[0] * matrix[11] * matrix[14] -
-    matrix[8] * matrix[2] * matrix[15] +
-    matrix[8] * matrix[3] * matrix[14] +
-    matrix[12] * matrix[2] * matrix[11] -
-    matrix[12] * matrix[3] * matrix[10];
-
-    inverse[9] = -matrix[0] * matrix[9] * matrix[15] +
-    matrix[0] * matrix[11] * matrix[13] +
-    matrix[8] * matrix[1] * matrix[15] -
-    matrix[8] * matrix[3] * matrix[13] -
-    matrix[12] * matrix[1] * matrix[11] +
-    matrix[12] * matrix[3] * matrix[9];
-
-    inverse[13] = matrix[0] * matrix[9] * matrix[14] -
-    matrix[0] * matrix[10] * matrix[13] -
-    matrix[8] * matrix[1] * matrix[14] +
-    matrix[8] * matrix[2] * matrix[13] +
-    matrix[12] * matrix[1] * matrix[10] -
-    matrix[12] * matrix[2] * matrix[9];
-
-    inverse[2] = matrix[1] * matrix[6] * matrix[15] -
-    matrix[1] * matrix[7] * matrix[14] -
-    matrix[5] * matrix[2] * matrix[15] +
-    matrix[5] * matrix[3] * matrix[14] +
-    matrix[13] * matrix[2] * matrix[7] -
-    matrix[13] * matrix[3] * matrix[6];
-
-    inverse[6] = -matrix[0] * matrix[6] * matrix[15] +
-    matrix[0] * matrix[7] * matrix[14] +
-    matrix[4] * matrix[2] * matrix[15] -
-    matrix[4] * matrix[3] * matrix[14] -
-    matrix[12] * matrix[2] * matrix[7] +
-    matrix[12] * matrix[3] * matrix[6];
-
-    inverse[10] = matrix[0] * matrix[5] * matrix[15] -
-    matrix[0] * matrix[7] * matrix[13] -
-    matrix[4] * matrix[1] * matrix[15] +
-    matrix[4] * matrix[3] * matrix[13] +
-    matrix[12] * matrix[1] * matrix[7] -
-    matrix[12] * matrix[3] * matrix[5];
-
-    inverse[14] = -matrix[0] * matrix[5] * matrix[14] +
-    matrix[0] * matrix[6] * matrix[13] +
-    matrix[4] * matrix[1] * matrix[14] -
-    matrix[4] * matrix[2] * matrix[13] -
-    matrix[12] * matrix[1] * matrix[6] +
-    matrix[12] * matrix[2] * matrix[5];
-
-    inverse[3] = -matrix[1] * matrix[6] * matrix[11] +
-    matrix[1] * matrix[7] * matrix[10] +
-    matrix[5] * matrix[2] * matrix[11] -
-    matrix[5] * matrix[3] * matrix[10] -
-    matrix[9] * matrix[2] * matrix[7] +
-    matrix[9] * matrix[3] * matrix[6];
-
-    inverse[7] = matrix[0] * matrix[6] * matrix[11] -
-    matrix[0] * matrix[7] * matrix[10] -
-    matrix[4] * matrix[2] * matrix[11] +
-    matrix[4] * matrix[3] * matrix[10] +
-    matrix[8] * matrix[2] * matrix[7] -
-    matrix[8] * matrix[3] * matrix[6];
-
-    inverse[11] = -matrix[0] * matrix[5] * matrix[11] +
-    matrix[0] * matrix[7] * matrix[9] +
-    matrix[4] * matrix[1] * matrix[11] -
-    matrix[4] * matrix[3] * matrix[9] -
-    matrix[8] * matrix[1] * matrix[7] +
-    matrix[8] * matrix[3] * matrix[5];
-
-    inverse[15] = matrix[0] * matrix[5] * matrix[10] -
-    matrix[0] * matrix[6] * matrix[9] -
-    matrix[4] * matrix[1] * matrix[10] +
-    matrix[4] * matrix[2] * matrix[9] +
-    matrix[8] * matrix[1] * matrix[6] -
-    matrix[8] * matrix[2] * matrix[5];
-
-    var detector = matrix[0] * inverse[0] + matrix[1] * inverse[4] + matrix[2] * inverse[8] + matrix[3] * inverse[12];
-
-    if (detector == 0) {
-        return [[matrix[0], matrix[1], matrix[2], matrix[3]],
-            [matrix[4], matrix[5], matrix[6], matrix[7]],
-            [matrix[8], matrix[9], matrix[10], matrix[11]],
-            [matrix[12], matrix[13], matrix[14], matrix[15]]];
-
-
-    }
-
-    detector = 1.0 / detector;
-
-    for ( var i = 0; i < 16; i++) {
-        output[i] = inverse[i] * detector;
-    }
-
-    return [[output[0], output[1], output[2], output[3]],
-        [output[4], output[5], output[6], output[7]],
-        [output[8], output[9], output[10], output[11]],
-        [output[12], output[13], output[14], output[15]]];
-
-
+function invertMatrix(a) {
+    b =[];
+    var c = a[0][0], d = a[0][1], e = a[0][2], g = a[0][3], f = a[1][0], h = a[1][1], i = a[1][2], j = a[1][3], k = a[2][0], l = a[2][1], o = a[2][2], m = a[2][3], n = a[3][0], p = a[3][1], r = a[3][2], s = a[3][3], A = c * h - d * f, B = c * i - e * f, t = c * j - g * f, u = d * i - e * h, v = d * j - g * h, w = e * j - g * i, x = k * p - l * n, y = k * r - o * n, z = k * s - m * n, C = l * r - o * p, D = l * s - m * p, E = o * s - m * r, q = 1 / (A * E - B * D + t * C + u * z - v * y + w * x);
+    b[0] = [];
+    b[0].push((h * E - i * D + j * C) * q);
+    b[0].push(( - d * E + e * D - g * C) * q);
+    b[0].push((p * w - r * v + s * u) * q);
+    b[0].push(( - l * w + o * v - m * u) * q);
+    b[1] = [];
+    b[1].push(( - f * E + i * z - j * y) * q);
+    b[1].push((c * E - e * z + g * y) * q);
+    b[1].push(( - n * w + r * t - s * B) * q);
+    b[1].push((k * w - o * t + m * B) * q);
+    b[2] = [];
+    b[2].push((f * D - h * z + j * x) * q);
+    b[2].push(( - c * D + d * z - g * x) * q);
+    b[2].push((n * v - p * t + s * A) * q);
+    b[2].push(( - k * v + l * t - m * A) * q);
+    b[3] = [];
+    b[3].push(( - f * C + h * y - i * x) * q);
+    b[3].push((c * C - d * y + e * x) * q);
+    b[3].push(( - n * u + p * B - r * A) * q);
+    b[3].push((k * u - l * B + o * A) * q);
+    return b;
 }
 
 /**

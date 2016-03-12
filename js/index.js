@@ -268,7 +268,7 @@ function setProjectionMatrix(matrix) {
 /**********************************************************************************************************************
  ******************************************** update and draw the 3D Interface ****************************************
  **********************************************************************************************************************/
-var conalt = "";
+//var conalt = "";
 
 /**
  * @desc
@@ -281,11 +281,11 @@ function update(objects) {
     if (globalStates.feezeButtonState == false) {
         globalObjects = objects;
     }
-    if (consoleText !== "") {
+   /* if (consoleText !== "") {
         consoleText = "";
         document.getElementById("consolelog").innerHTML = "";
     }
-    conalt = "";
+    conalt = "";*/
 
     if (globalCanvas.hasContent === true) {
         globalCanvas.context.clearRect(0, 0, globalCanvas.canvas.width, globalCanvas.canvas.height);
@@ -407,7 +407,6 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
                 if (!thisObject.visibleEditing && thisObject.developer) {
                     thisObject.visibleEditing = true;
                     document.getElementById(thisKey).style.visibility = 'visible';
-
                     document.getElementById(thisKey).className = "mainProgram";
                 }
             }
@@ -421,7 +420,10 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
             if(globalMatrix.copyStillFromMatrixSwitch){
                 globalMatrix.visual =  copyMatrix(globalMatrix.temp);
                if(typeof thisObject.matrix === "object")
-                   globalMatrix.begin = copyMatrix(multiplyMatrix(thisObject.matrix, globalMatrix.temp));
+                   if (thisObject.matrix.length > 0)
+                       globalMatrix.begin = copyMatrix(multiplyMatrix(thisObject.matrix, globalMatrix.temp));
+                   else
+                       globalMatrix.begin =copyMatrix(globalMatrix.temp);
                else
                    globalMatrix.begin =copyMatrix(globalMatrix.temp);
 
@@ -441,9 +443,14 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
         ];
 
         var thisTransform = [];
-        if(typeof thisObject.matrix === "object"){
-            var thisTransform3 = multiplyMatrix(thisObject.matrix, thisTransform2);
-            thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform3);}
+        if(typeof thisObject.matrix === "object") {
+            if (thisObject.matrix.length > 0) {
+                var thisTransform3 = multiplyMatrix(thisObject.matrix, thisTransform2);
+                thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform3);
+                console.log("I get here");
+            }else
+                thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
+        }
         else
             thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
 
@@ -478,8 +485,6 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
                 }
             }
         }
-
-
 
         if (iFrameMsgContent !== "")
         {   iFrameMsgContent += '}';
