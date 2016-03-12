@@ -107,37 +107,37 @@ var globalProgram = {
 
 var objectExp = {};
 
-var globalMatrix = {};
 
-
-    var projectionMatrix = mat4.create();
-var  modelViewMatrix = mat4.create();
-var  rotateMatrixX = mat4.clone([
-    1, 0, 0, 0,
-    0, -1, 0, 0,
-    0, 0, 1, 0,
-    0, 0, 0, 1
-]);
-var  resultMatrix = mat4.create();
-var resultMatrix2 = mat4.create();
-var  projectionResultMatrix = mat4.create();
-var  tempMatrix = mat4.create();
-var  matrix2dTransform = mat4.create();
-var  finalTransform = mat4.create();
-var  temp = mat4.create();
-var  temp2= mat4.create();
-var  begin= mat4.create();
-var  end = mat4.create();
-var  visual = mat4.create();
-    var matrixtouchOn = false;
-    var copyStillFromMatrixSwitch = false;
-
+var globalMatrix = {
+    temp: [
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
+    ],
+    begin: [
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
+    ],
+    end: [
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
+    ],
+    matrixtouchOn : false,
+    copyStillFromMatrixSwitch : false
+};
 
 var consoleText = "";
-
+ var rotateX = [
+     1, 0, 0, 0,
+     0, -1, 0, 0,
+     0, 0, 1, 0,
+     0, 0, 0, 1
+ ];
 
 var testInterlink = {};
 
-var mat4Result1 = mat4.create();
-var mat4Result2 = mat4.create();
-var mat4Result3 = mat4.create();

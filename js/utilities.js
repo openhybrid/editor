@@ -67,9 +67,9 @@ function newURLTextLoad(){
  * @param
  * @return
  **/
-/*
-function multiplyMatrix(result, matrix2, matrix1) {
 
+function multiplyMatrix(matrix2, matrix1) {
+    var result = [];
     // Cmatrix1che only the current line of the second mmatrix1trix
     result[0] = matrix2[0]*matrix1[0] + matrix2[1]*matrix1[4] + matrix2[2]*matrix1[8] + matrix2[3]*matrix1[12];
     result[1] = matrix2[0]*matrix1[1] + matrix2[1]*matrix1[5] + matrix2[2]*matrix1[9] + matrix2[3]*matrix1[13];
@@ -92,15 +92,23 @@ function multiplyMatrix(result, matrix2, matrix1) {
     result[15] = matrix2[12]*matrix1[3] + matrix2[13]*matrix1[7] + matrix2[14]*matrix1[11] + matrix2[15]*matrix1[15];
     return result;
 }
-*/
+/*
+function multiplyMatrix(matrix2, matrix1) {
+   var result = [];
+   mat4.multiply(result, mat4.clone(matrix1), mat4.clone(matrix2));
+    return result;
+}*/
+
 /**
  * @desc
  * @param
  * @param
  * @return
  **/
-/*
-function copyMatrix(result, matrix) {
+
+
+function copyMatrix(matrix) {
+    var result = [];
     result[0] = matrix[0];
     result[1] = matrix[1];
     result[2] = matrix[2];
@@ -119,7 +127,7 @@ function copyMatrix(result, matrix) {
     result[15] = matrix[15];
     return result;
 }
-*/
+
 /**
  * @desc
  * @param
@@ -266,8 +274,9 @@ function invertMatrix(matrix) {
 
 }*/
 
-/*
-function invertMatrix(result, a) {
+
+function invertMatrix(a) {
+var out = [];
     var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
         a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
         a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
@@ -294,26 +303,26 @@ function invertMatrix(result, a) {
     }
     det = 1.0 / det;
 
-    result[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
-    result[1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
-    result[2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
-    result[3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
-    result[4] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
-    result[5] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
-    result[6] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
-    result[7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
-    result[8] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
-    result[9] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
-    result[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
-    result[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
-    result[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
-    result[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
-    result[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
-    result[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
-    
-    return result;
+    out[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
+    out[1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
+    out[2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
+    out[3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
+    out[4] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
+    out[5] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
+    out[6] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
+    out[7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
+    out[8] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
+    out[9] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
+    out[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
+    out[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
+    out[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
+    out[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
+    out[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
+    out[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
+
+    return out;
 }
-*/
+
 /**
  * @desc
  * @param
