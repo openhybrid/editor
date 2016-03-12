@@ -244,8 +244,8 @@ function MultiTouchStart(evt) {
         globalStates.editingModeLocation = this.location;
         globalStates.editingModeHaveObject = true;
     }
-    globalMatrix.matrixtouchOn = this.location;
-    globalMatrix.copyStillFromMatrixSwitch = true;
+    matrixtouchOn = this.location;
+    copyStillFromMatrixSwitch = true;
 
 }
 
@@ -278,7 +278,11 @@ function MultiTouchMove(evt) {
         }
 
 
-        var tempMatrix = copyMatrix(globalMatrix.begin);
+        var tempMatrix = new Float32Array(16);
+
+        mat4.copy(tempMatrix, begin);
+
+
         globalStates.angX = toAxisAngle(tempMatrix)[0];
         globalStates.angY = toAxisAngle(tempMatrix)[1];
 
@@ -309,13 +313,18 @@ function MultiTouchMove(evt) {
             tempMatrix[8], tempMatrix[9], tempMatrix[10], tempMatrix[11],
             possitionX, possitionY, tempMatrix[14], tempMatrix[15]
         ];
+        var invertMatrix2 = new Float32Array(16);
+        mat4.invert(invertMatrix2, tempMatrix);
 
-        var invertedObjectMatrix = invertMatrix(tempMatrix);
-        var resultMatrix = multiplyMatrix(tempObjectMatrix, invertedObjectMatrix);
+        var resultMatrix2 = new Float32Array(16);
+         mat4.multiply(resultMatrix2, invertMatrix2,tempObjectMatrix);
 
-        if(typeof resultMatrix[12] === "number" && typeof resultMatrix[13] === "number") {
-            tempThisObject.x = resultMatrix[12];
-            tempThisObject.y = resultMatrix[13];
+
+
+        if(typeof resultMatrix2[12] === "number" && typeof resultMatrix2[13] === "number") {
+            tempThisObject.x = resultMatrix2[12];
+            tempThisObject.y = resultMatrix2[13];
+
         }
     }
 
@@ -354,7 +363,9 @@ function MultiTouchEnd(evt) {
         content.scale = tempThisObject.scale;
 
         if(globalStates.unconstrainedPositioning===true) {
-            tempThisObject.matrix = copyMatrix(multiplyMatrix(globalMatrix.begin, invertMatrix(globalMatrix.temp)));
+            mat4.invert(resultMatrix2,temp);
+            mat4.multiply(resultMatrix2,resultMatrix2,begin);
+            tempThisObject.matrix = Array.prototype.slice.call(resultMatrix2);
             content.matrix = tempThisObject.matrix;
         }
 
@@ -364,7 +375,7 @@ if(typeof content.x === "number" && typeof content.y === "number" && typeof cont
 
     globalStates.editingModeHaveObject = false;
     globalCanvas.hasContent = true;
-    globalMatrix.matrixtouchOn = "";
+    matrixtouchOn = "";
     }
 }
 
@@ -448,10 +459,10 @@ function scaleEvent(touch) {
 
     if (thisRadius < globalStates.editingScaledistance) {
 
-        drawRed(globalCanvas.context, [globalStates.editingModeObjectX, globalStates.editingModeObjectY], [touch.pageX, touch.pageY], thisRadius);
+       drawRed(globalCanvas.context, [globalStates.editingModeObjectX, globalStates.editingModeObjectY], [touch.pageX, touch.pageY], thisRadius);
 
     } else {
-        drawGreen(globalCanvas.context, [globalStates.editingModeObjectX, globalStates.editingModeObjectY], [touch.pageX, touch.pageY], thisRadius);
+       drawGreen(globalCanvas.context, [globalStates.editingModeObjectX, globalStates.editingModeObjectY], [touch.pageX, touch.pageY], thisRadius);
 
     }
 

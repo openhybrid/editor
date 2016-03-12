@@ -76,7 +76,6 @@ var globalStates = {
     externalState:"",
     sendMatrix3d:false,
     sendAcl:false,
-
     feezeButtonState: false,
     logButtonState: false,
     editingMode: false,
@@ -89,12 +88,6 @@ var globalStates = {
     drawDotLineX: 0,
     drawDotLineY: 0,
     pointerPosition: [0, 0],
-    projectionMatrix: [
-        1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1
-    ],
     editingModeHaveObject: false,
     angX: 0,
     angY: 0,
@@ -116,42 +109,32 @@ var objectExp = {};
 
 var globalMatrix = {};
 
-function GlobalMatrix() {
-    this.temp= mat4.fromValues([
-        1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1
-    ]);
-    this.temp2= mat4.fromValues([
-        1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1
-    ]);
-    this.begin= mat4.fromValues([
-        1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1
-    ]);
-    this.end = mat4.fromValues([
-        1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1
-    ]);
-    this.matrixtouchOn = false;
-    this.copyStillFromMatrixSwitch = false;
-}
+
+    var projectionMatrix = mat4.create();
+var  modelViewMatrix = mat4.create();
+var  rotateMatrixX = mat4.clone([
+    1, 0, 0, 0,
+    0, -1, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1
+]);
+var  resultMatrix = mat4.create();
+var resultMatrix2 = mat4.create();
+var  projectionResultMatrix = mat4.create();
+var  tempMatrix = mat4.create();
+var  matrix2dTransform = mat4.create();
+var  finalTransform = mat4.create();
+var  temp = mat4.create();
+var  temp2= mat4.create();
+var  begin= mat4.create();
+var  end = mat4.create();
+var  visual = mat4.create();
+    var matrixtouchOn = false;
+    var copyStillFromMatrixSwitch = false;
+
 
 var consoleText = "";
- var rotateX = [
-     1, 0, 0, 0,
-     0, -1, 0, 0,
-     0, 0, 1, 0,
-     0, 0, 0, 1
- ];
+
 
 var testInterlink = {};
 

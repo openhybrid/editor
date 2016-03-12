@@ -63,13 +63,6 @@
  **/
 
 window.onload = function () {
-    globalMatrix = new GlobalMatrix();
-    rotateX_ = [
-        1, 0, 0, 0,
-        0, -1, 0, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1
-    ];
 
     GUI();
 

@@ -238,39 +238,33 @@ function getData(url, thisKey, callback) {
  **/
 
 function setProjectionMatrix(matrix) {
-    // globalStates.projectionMatrix = matrix;
-
 
     //  generate all transformations for the object that needs to be done ASAP
-    var scaleZ = [
+    var scaleZ = mat4.clone([
         1, 0, 0, 0,
         0, 1, 0, 0,
         0, 0, 2, 0,
         0, 0, 0, 1
-    ];
+    ]);
 
-    var viewportScaling = [
+    var viewportScaling = mat4.clone([
         globalStates.height, 0, 0, 0,
         0, -globalStates.width, 0, 0,
         0, 0, 1, 0,
         0, 0, 0, 1
-    ];
+    ]);
 
     //   var thisTransform = multiplyMatrix(scaleZ, matrix);
-    globalStates.projectionMatrix = multiplyMatrix(scaleZ, matrix);
+    mat4.multiply(projectionMatrix, matrix, scaleZ);
+    mat4.multiply(projectionMatrix, viewportScaling, projectionMatrix);
 
-    globalStates.projectionMatrix = multiplyMatrix(globalStates.projectionMatrix, viewportScaling);
     window.location.href = "of://gotProjectionMatrix";
-
-
-    //   onceTransform();
 }
 
 
 /**********************************************************************************************************************
  ******************************************** update and draw the 3D Interface ****************************************
  **********************************************************************************************************************/
-var conalt = "";
 
 /**
  * @desc
@@ -283,11 +277,10 @@ function update(objects) {
     if (globalStates.feezeButtonState == false) {
         globalObjects = objects;
     }
-    if (consoleText !== "") {
+    /*if (consoleText !== "") {
         consoleText = "";
         document.getElementById("consolelog").innerHTML = "";
-    }
-    conalt = "";
+    }*/
 
     if (globalCanvas.hasContent === true) {
         globalCanvas.context.clearRect(0, 0, globalCanvas.canvas.width, globalCanvas.canvas.height);
@@ -301,38 +294,31 @@ function update(objects) {
 
         var generalObject = objectExp[key];
 
-        // I changed this to has property.
         if (globalObjects.obj.hasOwnProperty(key)) {
 
             generalObject.visibleCounter = timeForContentLoaded;
             generalObject.ObjectVisible = true;
 
-            var tempMatrix = multiplyMatrix(globalObjects.obj[key], globalStates.projectionMatrix);
-                tempMatrix = multiplyMatrix(rotateX, tempMatrix);
-
-            //  var tempMatrix2 = multiplyMatrix(globalObjects[key], globalStates.projectionMatrix);
-
-
-            //   document.getElementById("controls").innerHTML = (toAxisAngle(tempMatrix2)[0]).toFixed(1)+" "+(toAxisAngle(tempMatrix2)[1]).toFixed(1);
+            mat4.copy(modelViewMatrix, globalObjects.obj[key]);
+            mat4.multiply(modelViewMatrix, projectionMatrix, modelViewMatrix);
+            mat4.multiply(modelViewMatrix, modelViewMatrix, rotateMatrixX);
 
 
             if (globalStates.guiButtonState || Object.keys(generalObject.objectValues).length === 0) {
-                drawTransformed(generalObject, key, tempMatrix, key);
+                drawTransformed(generalObject, key, modelViewMatrix, key);
                 addElement(generalObject, key, "http://" + generalObject.ip + ":" + httpPort + "/obj/" + key.slice(0, -12) + "/");
             }
             else {
                 hideTransformed(generalObject, key, key);
             }
 
-
             for (var subKey in generalObject.objectValues) {
                 // if (!generalObject.objectValues.hasOwnProperty(subKey)) { continue; }
 
                 var tempValue = generalObject.objectValues[subKey];
 
-
                 if (!globalStates.guiButtonState) {
-                    drawTransformed(tempValue, subKey, tempMatrix, key);
+                    drawTransformed(tempValue, subKey, modelViewMatrix, key);
                     addElement(tempValue, subKey, "http://" + generalObject.ip + ":" + httpPort + "/obj/dataPointInterfaces/" + tempValue.plugin + "/", key);
                 } else {
                     hideTransformed(tempValue, subKey, key);
@@ -389,17 +375,26 @@ function update(objects) {
  **/
 
 function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
-    if (globalStates.notLoading !== thisKey && thisObject.loaded === true) {
-        if (!thisObject.visible) {
-            document.getElementById("thisObject" + thisKey).style.display = 'initial';
 
-            document.getElementById("iframe" + thisKey).style.visibility = 'visible';
+    if (globalStates.notLoading !== thisKey && thisObject.loaded === true) {
+
+       var thisObjectKey = document.getElementById("thisObject" + thisKey);
+       var iframeKey = document.getElementById("iframe" + thisKey)
+        var justKey = document.getElementById(thisKey);
+        var textKey;
+        if (generalKey !== thisKey)
+            textKey = document.getElementById("text" + thisKey);
+
+
+        if (!thisObject.visible) {
+            thisObjectKey.style.display = 'initial';
+            iframeKey.style.visibility = 'visible';
 
             thisObject.visible = true;
 
             if (generalKey !== thisKey) {
-                document.getElementById(thisKey).style.visibility = 'visible';
-                document.getElementById("text" + thisKey).style.visibility = 'visible';
+                justKey.style.visibility = 'visible';
+                textKey.style.visibility = 'visible';
             }
 
 
@@ -408,65 +403,62 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
             if (globalStates.editingMode) {
                 if (!thisObject.visibleEditing && thisObject.developer) {
                     thisObject.visibleEditing = true;
-                    document.getElementById(thisKey).style.visibility = 'visible';
+                    justKey.style.visibility = 'visible';
 
-                    document.getElementById(thisKey).className = "mainProgram";
+                    justKey.className = "mainProgram";
                 }
             }
         }
 
-        if(globalMatrix.matrixtouchOn === thisKey && globalStates.editingMode) {
+        if(matrixtouchOn === thisKey && globalStates.editingMode) {
         //if(globalStates.unconstrainedPositioning===true)
-            globalMatrix.temp = copyMatrix(thisTransform2);
+             mat4.copy(temp, thisTransform2);
 
-
-            if(globalMatrix.copyStillFromMatrixSwitch){
-                globalMatrix.visual =  copyMatrix(globalMatrix.temp);
-               if(typeof thisObject.matrix === "object")
-                   globalMatrix.begin = copyMatrix(multiplyMatrix(thisObject.matrix, globalMatrix.temp));
+            if(copyStillFromMatrixSwitch){
+                mat4.copy(visual, temp);
+               if(typeof thisObject.matrix === "object") {
+                    mat4.multiply(tempMatrix, temp, thisObject.matrix);
+                    mat4.copy(begin, tempMatrix);
+               }
                else
-                   globalMatrix.begin =copyMatrix(globalMatrix.temp);
-
-                globalMatrix.copyStillFromMatrixSwitch = false;
+                    mat4.copy(begin, temp);
+                copyStillFromMatrixSwitch = false;
             }
 
             if(globalStates.unconstrainedPositioning===true)
-                thisTransform2 = globalMatrix.visual;
+                thisTransform2 = visual;
 
         }
 
-        var finalMatrixTransform2 = [
-            thisObject.scale, 0, 0, 0,
-            0, thisObject.scale, 0, 0,
-            0, 0, 1, 0,
-            thisObject.x, thisObject.y, 0, 1
-        ];
+        matrix2dTransform[0] = thisObject.scale;
+        matrix2dTransform[5] = thisObject.scale;
+        matrix2dTransform[12] = thisObject.x;
+        matrix2dTransform[13] = thisObject.y;
 
-        var thisTransform = [];
         if(typeof thisObject.matrix === "object"){
-            var thisTransform3 = multiplyMatrix(thisObject.matrix, thisTransform2);
-            thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform3);}
+          // var thisMatrixTransform = mat4.clone(thisObject.matrix);
+             mat4.multiply(finalTransform, thisTransform2, thisObject.matrix);
+            mat4.multiply(finalTransform, finalTransform, matrix2dTransform);}
         else
-            thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
+            mat4.multiply(finalTransform, thisTransform2, matrix2dTransform);
 
-        document.getElementById("thisObject" + thisKey).style.webkitTransform = 'matrix3d(' +
-            thisTransform[0] + ',' + thisTransform[1] + ',' + thisTransform[2] + ',' + thisTransform[3] + ',' +
-            thisTransform[4] + ',' + thisTransform[5] + ',' + thisTransform[6] + ',' + thisTransform[7] + ',' +
-            thisTransform[8] + ',' + thisTransform[9] + ',' + thisTransform[10] + ',' + thisTransform[11] + ',' +
-            thisTransform[12] + ',' + thisTransform[13] + ',' + thisTransform[14] + ',' + thisTransform[15] + ')';
+        thisObjectKey.style.webkitTransform = 'matrix3d(' +
+            finalTransform[0] + ',' + finalTransform[1] + ',' + finalTransform[2] + ',' + finalTransform[3] + ',' +
+            finalTransform[4] + ',' + finalTransform[5] + ',' + finalTransform[6] + ',' + finalTransform[7] + ',' +
+            finalTransform[8] + ',' + finalTransform[9] + ',' + finalTransform[10] + ',' + finalTransform[11] + ',' +
+            finalTransform[12] + ',' + finalTransform[13] + ',' + finalTransform[14] + ',' + finalTransform[15] + ')';
 
         // this is for later
-        // The matrix has been changed from Vuforia 3 to 4 and 5. Instead of  thisTransform[14] it is now thisTransform[15]
-        thisObject.screenX = thisTransform[12] / thisTransform[15] + (globalStates.height / 2);
-        thisObject.screenY = thisTransform[13] / thisTransform[15] + (globalStates.width / 2);
-        thisObject.screenZ = thisTransform[14];
-
+        // The matrix has been changed from Vuforia 3 to 4 and 5. Instead of  finalTransform[14] it is now finalTransform[15]
+        thisObject.screenX = finalTransform[12] / finalTransform[15] + (globalStates.height / 2);
+        thisObject.screenY = finalTransform[13] / finalTransform[15] + (globalStates.width / 2);
+        thisObject.screenZ = finalTransform[14];
 
         var iFrameMsgContent = "";
         if (typeof thisObject.sendMatrix3d !== "undefined") {
             if (thisObject.sendMatrix3d === true) {
                 iFrameMsgContent = '{"matrix":';
-                iFrameMsgContent += JSON.stringify(thisTransform);
+                iFrameMsgContent += JSON.stringify(Array.prototype.slice.call(finalTransform));
             }
 
         }
@@ -481,13 +473,9 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
             }
         }
 
-
-
-        if (iFrameMsgContent !== "")
-        {   iFrameMsgContent += '}';
-        document.getElementById("iframe" + thisKey).contentWindow.postMessage(
-            iFrameMsgContent, '*');
-        }
+        if (iFrameMsgContent !== "") {
+            iframeKey.contentWindow.postMessage(
+            iFrameMsgContent + '}', '*');}
     }
 }
 
