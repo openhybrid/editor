@@ -182,6 +182,7 @@ function GUI() {
 
         }else{
             globalStates.UIOffMode = false;
+            timeForContentLoaded = 240;
             window.location.href = "of://clearSkyOff";
 /*
             document.getElementById('guiButtonImage').style.visibility = "visible";

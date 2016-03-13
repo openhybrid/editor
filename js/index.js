@@ -110,7 +110,7 @@ function setStates(developerState, extendedTrackingState, clearSkyState, externa
 
     if (clearSkyState) {
         // globalStates.UIOffMode = true;
-        timeForContentLoaded = 240000;
+      //  timeForContentLoaded = 240000;
         // document.getElementById("turnOffUISwitch").checked = true;
     }
 
@@ -721,7 +721,6 @@ function killObjects(thisObject, thisKey) {
         thisObject.visibleCounter--;
     } else if (thisObject.loaded) {
         thisObject.loaded = false;
-
         var tempElementDiv = document.getElementById("thisObject" + thisKey);
         tempElementDiv.parentNode.removeChild(tempElementDiv);
 

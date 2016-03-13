@@ -70,11 +70,11 @@ function newURLTextLoad(){
 
 function multiplyMatrix(matrix2, matrix1) {
     var result = [];
-    for (var j = 0; j < matrix2.length; j++) {
+    for (var j = 0; j < 4; j++) {
         result[j] = [];
-        for (var k = 0; k < matrix1[0].length; k++) {
+        for (var k = 0; k < 4; k++) {
             var sum = 0;
-            for (var i = 0; i < matrix1.length; i++) {
+            for (var i = 0; i < 4; i++) {
                 sum = sum + (matrix1[i][k] * matrix2[j][i]);
             }
             result[j].push(sum);
@@ -92,9 +92,9 @@ function multiplyMatrix(matrix2, matrix1) {
 
 function copyMatrix(matrix) {
     var result = [];
-    for (var j = 0; j < matrix.length; j++) {
+    for (var j = 0; j < 4; j++) {
         result[j] = [];
-        for (var k = 0; k < matrix[0].length; k++) {
+        for (var k = 0; k < 4; k++) {
             result[j].push(matrix[j][k]);
         }
     }
