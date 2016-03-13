@@ -87,6 +87,8 @@ function addHeartbeatObject(beat) {
                 objectExp[thisKey].screenZ = 1000;
 
                 console.log(objectExp[thisKey]);
+                    addElementInPreferences();
+
             });
         }
     }

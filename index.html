@@ -71,30 +71,6 @@
     <script src="js/interactWithLines.js"></script>
     <script src="js/onload.js"></script>
 
-
-    <style type="text/css">
-        A:link {
-            background: #FFCCFF;
-            text-decoration: none
-        }
-
-        A:visited {
-            background: #00CC00;
-            text-decoration: none
-        }
-
-        A:active {
-            background: #FF0000;
-            text-decoration: none
-        }
-
-        A:hover {
-            background: #00FFFF;
-            font-weight: bold;
-            color: green;
-        }
-    </style>
-
 </head>
 <body text="#ffffff">
 
@@ -103,13 +79,14 @@
              background-color: #333333; visibility: visible"></div>--->
 
 <!-- This is the console terminal -->
+<div class='main' id="GUI"></div>
 
-<div class='Interfaces' id="consolelog"></div>
+
 
 <!-- This is the div in which all the interaction will be passed
 -->
 
-<div class='main' id="GUI"></div>
+
 
 <!-- This is the console terminal -->
 
@@ -264,6 +241,8 @@
 </div>
 <!-- This is the Interface frontend GUI part -->
 
+
+
 <div class='Interfaces' id="UIButtons" style="
   -webkit-transform-style: preserve-3d;
    visibility: hidden;
@@ -315,6 +294,7 @@ position: fixed;
 
 </div>
 <canvas class="Canvas" id="canvas"></canvas>
+<div class='Interfaces' id="consolelog"></div>
 </body>
 </html>
 
