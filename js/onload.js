@@ -63,7 +63,7 @@
  **/
 
 window.onload = function () {
-
+    uiButtons = document.getElementById("GUI");
     GUI();
 
     if (globalStates.platform !== 'iPad' && globalStates.platform !== 'iPhone' && globalStates.platform !== 'iPod') {
@@ -159,14 +159,19 @@ window.onload = function () {
     globalCanvas.canvas.handjs_forcePreventDefault = true;
 
     globalCanvas.canvas.addEventListener("pointerdown", canvasPointerDown, false);
+    ec++;
 
     document.addEventListener("pointermove", getPossition, false);
+    ec++;
     document.addEventListener("pointerdown", getPossition, false);
+    ec++;
     document.addEventListener("pointerup", documentPointerUp, false);
+    ec++;
     window.addEventListener("message", postMessage, false);
+    ec++;
 
 
-
+    console.log("onload");
 
 };
 
@@ -177,7 +182,7 @@ window.onload = function () {
  * @return
  **/
 
-function postMessage(e) {
+var postMessage = function (e) {
     console.log(e.data);
     var msgContent = JSON.parse(e.data);
     document.getElementById(msgContent.pos).style.width = msgContent.width;
@@ -207,5 +212,6 @@ function postMessage(e) {
         }
     }
 
+    console.log("postMessage");
 
 };

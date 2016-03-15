@@ -55,10 +55,10 @@
  ******************************************** Utilities Section ******************************************************
  **********************************************************************************************************************/
 
-function newURLTextLoad(){
-
+var newURLTextLoad = function (){
     globalStates.newURLText = encodeURIComponent(document.getElementById('newURLText').value);
-}
+    console.log("newURLTextLoad");
+};
 
 
 /**
@@ -68,7 +68,7 @@ function newURLTextLoad(){
  * @return
  **/
 
-function multiplyMatrix(matrix2, matrix1) {
+var multiplyMatrix = function (matrix2, matrix1) {
     var result = [];
     for (var j = 0; j < 4; j++) {
         result[j] = [];
@@ -81,7 +81,7 @@ function multiplyMatrix(matrix2, matrix1) {
         }
     }
     return result;
-}
+};
 
 /**
  * @desc
@@ -90,7 +90,7 @@ function multiplyMatrix(matrix2, matrix1) {
  * @return
  **/
 
-function copyMatrix(matrix) {
+var copyMatrix = function (matrix) {
     var result = [];
     for (var j = 0; j < 4; j++) {
         result[j] = [];
@@ -99,7 +99,7 @@ function copyMatrix(matrix) {
         }
     }
     return result;
-}
+};
 
 /**
  * @desc
@@ -108,7 +108,7 @@ function copyMatrix(matrix) {
  * @return
  **/
 
-function invertMatrix(a) {
+var invertMatrix = function (a) {
     b =[];
     var c = a[0][0], d = a[0][1], e = a[0][2], g = a[0][3], f = a[1][0], h = a[1][1], i = a[1][2], j = a[1][3], k = a[2][0], l = a[2][1], o = a[2][2], m = a[2][3], n = a[3][0], p = a[3][1], r = a[3][2], s = a[3][3], A = c * h - d * f, B = c * i - e * f, t = c * j - g * f, u = d * i - e * h, v = d * j - g * h, w = e * j - g * i, x = k * p - l * n, y = k * r - o * n, z = k * s - m * n, C = l * r - o * p, D = l * s - m * p, E = o * s - m * r, q = 1 / (A * E - B * D + t * C + u * z - v * y + w * x);
     b[0] = [];
@@ -132,7 +132,7 @@ function invertMatrix(a) {
     b[3].push(( - n * u + p * B - r * A) * q);
     b[3].push((k * u - l * B + o * A) * q);
     return b;
-}
+};
 
 /**
  * @desc
@@ -141,13 +141,13 @@ function invertMatrix(a) {
  * @return
  **/
 
-function toAxisAngle(matrix) {
+var toAxisAngle = function (matrix) {
     var rY = Math.atan(matrix[1][2], matrix[2][2]);
     var rX = Math.atan(matrix[0][2], matrix[2][2]);
 
     return [rX, rY];
 
-}
+};
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -158,9 +158,9 @@ function toAxisAngle(matrix) {
  * @param {Array} y 2d vector B can also be of type {Number}
  * @return {Array} representing the 2d vector
  **/
-function vMN(x, y) {
+var vMN = function (x, y) {
     return ([x[0] * y, x[1] * y]);
-}
+};
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -172,9 +172,9 @@ function vMN(x, y) {
  * @return {Array} representing the 2d vector
  **/
 
-function vA(x, y) {
+var vA = function (x, y) {
     return ([x[0] + y[0], x[1] + y[1]]);
-}
+};
 
 
 /**********************************************************************************************************************
@@ -187,9 +187,9 @@ function vA(x, y) {
  * @return {Array} representing the 2d vector
  **/
 
-function vD(x, y) {
+var vD = function (x, y) {
     return ([x[0] - y[0], x[1] - y[1]]);
-}
+};
 
 
 /**********************************************************************************************************************
@@ -202,10 +202,10 @@ function vD(x, y) {
  * @return {Array} representing the rotated 2d vector.
  **/
 
-function vR(vector, rotation) {
+var vR = function (vector, rotation) {
     return ([Math.cos(rotation) * vector[0] - Math.sin(rotation) * vector[1],
         Math.sin(rotation) * vector[0] + Math.cos(rotation) * vector[1]]);
-}
+};
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -216,7 +216,7 @@ function vR(vector, rotation) {
  * @param
  * @return
  **/
-function checkLineCross(x11, y11, x12, y12, x21, y21, x22, y22, w, h) {
+var checkLineCross = function (x11, y11, x12, y12, x21, y21, x22, y22, w, h) {
     var l1 = lineEq(x11, y11, x12, y12),
         l2 = lineEq(x21, y21, x22, y22);
   
@@ -236,7 +236,7 @@ function checkLineCross(x11, y11, x12, y12, x21, y21, x22, y22, w, h) {
     //  console.log("point on line --- checking on segment now");
     return (checkBetween(x11, x12, interX) && checkBetween(y11, y12, interY)
     && checkBetween(x21, x22, interX) && checkBetween(y21, y22, interY));
-}
+};
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -342,23 +342,35 @@ var checkBetween = function (e1, e2, p) {
 };
 
 // created by Valentin
-function uuidTime(){
+var uuidTime = function (){
     var dateUuidTime =new Date();
     var abcUuidTime = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     var stampUuidTime = parseInt(Math.floor((Math.random() * 199) + 1)+""+dateUuidTime.getTime()).toString(36);
     while(stampUuidTime.length<12) stampUuidTime =abcUuidTime.charAt(Math.floor(Math.random() * abcUuidTime.length))+stampUuidTime;
     return stampUuidTime
-}
+};
 
-function uuidTimeShort(){
+var uuidTimeShort = function (){
     var dateUuidTime =new Date();
     var abcUuidTime = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     var stampUuidTime = parseInt(""+dateUuidTime.getMilliseconds()+dateUuidTime.getMinutes()+dateUuidTime.getHours()+dateUuidTime.getDay()).toString(36);
     while(stampUuidTime.length<8) stampUuidTime =abcUuidTime.charAt(Math.floor(Math.random() * abcUuidTime.length))+stampUuidTime;
     return stampUuidTime
-}
+};
 
 
-function randomIntInc(min, max) {
+var randomIntInc = function (min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
-}
+};
+
+
+
+/**
+ * @author Erik Karlsson, www.nonobtrusive.com
+ **/
+var countEventHandlers = function (){
+
+
+   console.log("amount of event listenrs: " +ec);
+
+};

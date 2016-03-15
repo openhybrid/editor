@@ -53,7 +53,7 @@
  * @return
  **/
 
-function touchDown(evt) {
+var touchDown = function (evt) {
     if (!globalStates.editingMode) {
         if (!globalStates.guiButtonState) {
             if (!globalProgram.ObjectA) {
@@ -66,7 +66,8 @@ function touchDown(evt) {
         globalStates.editingModeLocation = this.location;
         globalStates.editingModeHaveObject = true;
     }
-}
+    console.log("touchDown");
+};
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -78,13 +79,14 @@ function touchDown(evt) {
  * @return
  **/
 
-function falseTouchUp() {
+var falseTouchUp = function () {
     if (!globalStates.guiButtonState) {
         globalProgram.ObjectA = false;
         globalProgram.locationInA = false;
     }
     globalCanvas.hasContent = true;
-}
+    console.log("falseTouchUp");
+};
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -96,7 +98,7 @@ function falseTouchUp() {
  * @return
  **/
 
-function trueTouchUp() {
+var trueTouchUp = function () {
     if (!globalStates.guiButtonState) {
         if (globalProgram.ObjectA) {
 
@@ -166,7 +168,9 @@ function trueTouchUp() {
         }
     }
     globalCanvas.hasContent = true;
-}
+
+    console.log("trueTouchUp");
+};
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -178,7 +182,7 @@ function trueTouchUp() {
  * @return
  **/
 
-function documentPointerUp(evt) {
+var documentPointerUp = function (evt) {
 
     if (!globalStates.guiButtonState) {
         falseTouchUp();
@@ -188,7 +192,9 @@ function documentPointerUp(evt) {
         globalStates.drawDotLine = false;
     }
     globalCanvas.hasContent = true;
-}
+
+    console.log("documentPointerUp");
+};
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -200,7 +206,7 @@ function documentPointerUp(evt) {
  * @return
  **/
 
-function canvasPointerDown(evt) {
+var canvasPointerDown = function (evt) {
     if (!globalStates.guiButtonState && !globalStates.editingMode) {
         if (!globalProgram.ObjectA) {
             globalStates.drawDotLine = true;
@@ -209,7 +215,8 @@ function canvasPointerDown(evt) {
 
         }
     }
-}
+    console.log("canvasPointerDown");
+};
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -221,11 +228,13 @@ function canvasPointerDown(evt) {
  * @return
  **/
 
-function getPossition(evt) {
+var getPossition = function (evt) {
 
     globalStates.pointerPosition = [evt.clientX, evt.clientY];
 
-}
+    console.log("getPossition");
+
+};
 
 
 /**
@@ -235,7 +244,7 @@ function getPossition(evt) {
  * @return
  **/
 
-function MultiTouchStart(evt) {
+var MultiTouchStart = function (evt) {
     evt.preventDefault();
 // generate action for all links to be reloaded after upload
 
@@ -246,8 +255,8 @@ function MultiTouchStart(evt) {
     }
     globalMatrix.matrixtouchOn = this.location;
     globalMatrix.copyStillFromMatrixSwitch = true;
-
-}
+    console.log("MultiTouchStart");
+};
 
 /**
  * @desc
@@ -256,7 +265,7 @@ function MultiTouchStart(evt) {
  * @return
  **/
 
-function MultiTouchMove(evt) {
+var MultiTouchMove = function (evt) {
     evt.preventDefault();
 // generate action for all links to be reloaded after upload
 
@@ -322,7 +331,8 @@ function MultiTouchMove(evt) {
     if (globalStates.editingModeHaveObject && globalStates.editingMode && evt.targetTouches.length === 2) {
         scaleEvent(evt.touches[1]);
     }
-}
+    console.log("MultiTouchMove");
+};
 
 /**
  * @desc
@@ -331,7 +341,7 @@ function MultiTouchMove(evt) {
  * @return
  **/
 
-function MultiTouchEnd(evt) {
+var MultiTouchEnd = function (evt) {
     evt.preventDefault();
 // generate action for all links to be reloaded after upload
     if (globalStates.editingModeHaveObject) {
@@ -366,7 +376,8 @@ if(typeof content.x === "number" && typeof content.y === "number" && typeof cont
     globalCanvas.hasContent = true;
     globalMatrix.matrixtouchOn = "";
     }
-}
+    console.log("MultiTouchEnd");
+};
 
 /**
  * @desc
@@ -375,7 +386,7 @@ if(typeof content.x === "number" && typeof content.y === "number" && typeof cont
  * @return
  **/
 
-function MultiTouchCanvasStart(evt) {
+var MultiTouchCanvasStart = function (evt) {
 
     evt.preventDefault();
 // generate action for all links to be reloaded after upload
@@ -394,8 +405,8 @@ function MultiTouchCanvasStart(evt) {
         }
         globalStates.editingScaledistanceOld = tempThisObject.scale;
     }
-
-}
+    console.log("MultiTouchCanvasStart");
+};
 
 /**
  * @desc
@@ -404,7 +415,7 @@ function MultiTouchCanvasStart(evt) {
  * @return
  **/
 
-function MultiTouchCanvasMove(evt) {
+var MultiTouchCanvasMove = function (evt) {
     evt.preventDefault();
 // generate action for all links to be reloaded after upload
     if (globalStates.editingModeHaveObject && globalStates.editingMode && evt.targetTouches.length === 1) {
@@ -415,8 +426,8 @@ function MultiTouchCanvasMove(evt) {
         scaleEvent(touch)
 
     }
-
-}
+    console.log("MultiTouchCanvasMove");
+};
 
 
 /**
@@ -426,7 +437,7 @@ function MultiTouchCanvasMove(evt) {
  * @return
  **/
 
-function scaleEvent(touch) {
+var scaleEvent = function (touch) {
     var thisRadius = Math.sqrt(Math.pow((globalStates.editingModeObjectX - touch.pageX), 2) + Math.pow((globalStates.editingModeObjectY - touch.pageY), 2));
     var thisScale = (thisRadius - globalStates.editingScaledistance) / 300 + globalStates.editingScaledistanceOld;
 
@@ -454,8 +465,8 @@ function scaleEvent(touch) {
         drawGreen(globalCanvas.context, [globalStates.editingModeObjectX, globalStates.editingModeObjectY], [touch.pageX, touch.pageY], thisRadius);
 
     }
-
-}
+    console.log("scaleEvent");
+};
 
 /**
  * @desc
@@ -464,7 +475,7 @@ function scaleEvent(touch) {
  * @return
  **/
 
-function postData(url, body) {
+var postData = function (url, body) {
 
     var request = new XMLHttpRequest();
     var params = JSON.stringify(body);
@@ -476,8 +487,8 @@ function postData(url, body) {
     //request.setRequestHeader("Content-length", params.length);
     // request.setRequestHeader("Connection", "close");
     request.send(params);
-
-}
+    console.log("postData");
+};
 
 
 /**
@@ -487,7 +498,7 @@ function postData(url, body) {
  * @return
  **/
 
-function deleteData(url) {
+var deleteData = function (url) {
 
     var request = new XMLHttpRequest();
     request.open('DELETE', url, true);
@@ -498,8 +509,8 @@ function deleteData(url) {
     //request.setRequestHeader("Content-length", params.length);
     // request.setRequestHeader("Connection", "close");
     request.send();
-
-}
+    console.log("deleteData");
+};
 
 /**
  * @desc
@@ -508,13 +519,14 @@ function deleteData(url) {
  * @return
  **/
 
-function uploadNewLink(ip, thisObjectKey, thisKey, content) {
+var uploadNewLink = function (ip, thisObjectKey, thisKey, content) {
 // generate action for all links to be reloaded after upload
     console.log("sending Link");
     postData('http://' + ip + ':' + httpPort + '/object/' + thisObjectKey + "/link/" + thisKey, content);
     // postData('http://' +ip+ ':' + httpPort+"/", content);
+    console.log("uploadNewLink");
 
-}
+};
 
 /**
  * @desc
@@ -523,11 +535,12 @@ function uploadNewLink(ip, thisObjectKey, thisKey, content) {
  * @return
  **/
 
-function deleteLinkFromObject(ip, thisObjectKey, thisKey) {
+var deleteLinkFromObject = function (ip, thisObjectKey, thisKey) {
 // generate action for all links to be reloaded after upload
     console.log("I am deleting a link: " + ip);
     deleteData('http://' + ip + ':' + httpPort + '/object/' + thisObjectKey + "/link/" + thisKey);
-}
+    console.log("deleteLinkFromObject");
+};
 
 /**
  * @desc
@@ -536,10 +549,12 @@ function deleteLinkFromObject(ip, thisObjectKey, thisKey) {
  * @return
  **/
 
-function addEventHandlers() {
+var addEventHandlers = function () {
 
     globalCanvas.canvas.addEventListener("touchstart", MultiTouchCanvasStart, false);
+    ec++;
     globalCanvas.canvas.addEventListener("touchmove", MultiTouchCanvasMove, false);
+    ec++;
 
 
     for (var thisKey in objectExp) {
@@ -555,8 +570,11 @@ function addEventHandlers() {
             thisObject3.className = "mainProgram";
 
             thisObject3.addEventListener("touchstart", MultiTouchStart, false);
+            ec++;
             thisObject3.addEventListener("touchmove", MultiTouchMove, false);
+            ec++;
             thisObject3.addEventListener("touchend", MultiTouchEnd, false);
+            ec++;
             //}
         }
 
@@ -566,16 +584,19 @@ function addEventHandlers() {
                 thisObject2.className = "mainProgram";
                 //if(thisObject.developer) {
                 thisObject2.addEventListener("touchstart", MultiTouchStart, false);
+                ec++;
                 thisObject2.addEventListener("touchmove", MultiTouchMove, false);
+                ec++;
                 thisObject2.addEventListener("touchend", MultiTouchEnd, false);
+                ec++;
                 //}
             }
         }
     }
     }
 
-
-}
+    console.log("addEventHandlers");
+};
 
 /**
  * @desc
@@ -584,22 +605,26 @@ function addEventHandlers() {
  * @return
  **/
 
-function removeEventHandlers() {
+var removeEventHandlers = function () {
 
     globalCanvas.canvas.removeEventListener("touchstart", MultiTouchCanvasStart, false);
+    ec--;
     globalCanvas.canvas.removeEventListener("touchmove", MultiTouchCanvasMove, false);
-
+    ec--;
     for (var thisKey in objectExp) {
         var generalObject2 = objectExp[thisKey];
          if(generalObject2.developer) {
         if (document.getElementById(thisKey)) {
             var thisObject3 = document.getElementById(thisKey);
             thisObject3.style.visibility = "hidden";
-            thisObject3.className = "mainEditing";
+            thisObject3.className = "mainEdimainting";
 
             thisObject3.removeEventListener("touchstart", MultiTouchStart, false);
             thisObject3.removeEventListener("touchmove", MultiTouchMove, false);
             thisObject3.removeEventListener("touchend", MultiTouchEnd, false);
+            ec--;
+            ec--;
+            ec--;
             //  }
         }
 
@@ -611,10 +636,15 @@ function removeEventHandlers() {
                 thisObject2.removeEventListener("touchstart", MultiTouchStart, false);
                 thisObject2.removeEventListener("touchmove", MultiTouchMove, false);
                 thisObject2.removeEventListener("touchend", MultiTouchEnd, false);
+                ec--;
+                ec--;
+                ec--;
                 //  }
             }
         }
 
     }
     }
-}
+
+    console.log("removeEventHandlers");
+};

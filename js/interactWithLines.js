@@ -54,7 +54,7 @@
  * @return
  **/
 
-function deleteLines(x21, y21, x22, y22) {
+var deleteLines = function (x21, y21, x22, y22) {
     // window.location.href = "of://gotsome";
     for (var keysome in objectExp) {
         if (!objectExp.hasOwnProperty(keysome)) {
@@ -83,7 +83,7 @@ function deleteLines(x21, y21, x22, y22) {
         }
     }
 
-}
+};
 /**********************************************************************************************************************
  **********************************************************************************************************************/
 
@@ -94,7 +94,7 @@ function deleteLines(x21, y21, x22, y22) {
  * @return
  **/
 
-function drawAllLines(thisObject, context) {
+var drawAllLines = function (thisObject, context) {
     for (var subKey in thisObject.objectLinks) {
         if (!thisObject.objectLinks.hasOwnProperty(subKey)) {
             continue;
@@ -176,7 +176,7 @@ function drawAllLines(thisObject, context) {
         drawLine(context, [bA.screenX, bA.screenY], [bB.screenX, bB.screenY], bA.screenZ, bB.screenZ);
     }
     globalCanvas.hasContent = true;
-}
+};
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -188,7 +188,7 @@ function drawAllLines(thisObject, context) {
  * @return
  **/
 
-function drawInteractionLines() {
+var drawInteractionLines = function () {
 
     // this function here needs to be more precise
 
@@ -229,7 +229,7 @@ function drawInteractionLines() {
     }
 
     globalCanvas.hasContent = true;
-}
+};
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -241,7 +241,7 @@ function drawInteractionLines() {
  * @return
  **/
 
-function drawLine(context, lineStartPoint, lineEndPoint, lineStartWeight, lineEndWeight) {
+var drawLine = function (context, lineStartPoint, lineEndPoint, lineStartWeight, lineEndWeight) {
 
     // calculating all needed values for drawing the line
     var linePointWeight2 = (lineStartWeight * 3 / 4) + (lineEndWeight / 4);
@@ -343,7 +343,7 @@ function drawLine(context, lineStartPoint, lineEndPoint, lineStartWeight, lineEn
     context.fillStyle = "#00fdff";
     context.fill();
     context.closePath();
-}
+};
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -355,7 +355,7 @@ function drawLine(context, lineStartPoint, lineEndPoint, lineStartWeight, lineEn
  * @return
  **/
 
-function drawDotLine(context, lineStartPoint, lineEndPoint, b1, b2) {
+var drawDotLine = function (context, lineStartPoint, lineEndPoint, b1, b2) {
     context.beginPath();
     context.moveTo(lineStartPoint[0], lineStartPoint[1]);
     context.lineTo(lineEndPoint[0], lineEndPoint[1]);
@@ -364,7 +364,7 @@ function drawDotLine(context, lineStartPoint, lineEndPoint, b1, b2) {
     context.strokeStyle = "#00fdff";
     context.stroke();
     context.closePath();
-}
+};
 
 /**
  * @desc
@@ -373,7 +373,7 @@ function drawDotLine(context, lineStartPoint, lineEndPoint, b1, b2) {
  * @return
  **/
 
-function drawGreen(context, lineStartPoint, lineEndPoint, radius) {
+var drawGreen = function (context, lineStartPoint, lineEndPoint, radius) {
     context.beginPath();
     context.arc(lineStartPoint[0], lineStartPoint[1], radius, 0, Math.PI * 2);
     context.strokeStyle = "#7bff08";
@@ -382,7 +382,7 @@ function drawGreen(context, lineStartPoint, lineEndPoint, radius) {
     context.stroke();
     context.closePath();
 
-}
+};
 
 /**
  * @desc
@@ -391,7 +391,7 @@ function drawGreen(context, lineStartPoint, lineEndPoint, radius) {
  * @return
  **/
 
-function drawRed(context, lineStartPoint, lineEndPoint, radius) {
+var drawRed = function (context, lineStartPoint, lineEndPoint, radius) {
     context.beginPath();
     context.arc(lineStartPoint[0], lineStartPoint[1], radius, 0, Math.PI * 2);
     context.strokeStyle = "#ff036a";
@@ -399,7 +399,7 @@ function drawRed(context, lineStartPoint, lineEndPoint, radius) {
     context.setLineDash([7]);
     context.stroke();
     context.closePath();
-}
+};
 
 /**
  * @desc
@@ -408,7 +408,7 @@ function drawRed(context, lineStartPoint, lineEndPoint, radius) {
  * @return
  **/
 
-function drawBlue(context, lineStartPoint, lineEndPoint, radius) {
+var drawBlue = function (context, lineStartPoint, lineEndPoint, radius) {
     context.beginPath();
     context.arc(lineStartPoint[0], lineStartPoint[1], radius, 0, Math.PI * 2);
     context.strokeStyle = "#01fffd";
@@ -416,7 +416,7 @@ function drawBlue(context, lineStartPoint, lineEndPoint, radius) {
     context.setLineDash([7]);
     context.stroke();
     context.closePath();
-}
+};
 
 /**
  * @desc
@@ -425,7 +425,7 @@ function drawBlue(context, lineStartPoint, lineEndPoint, radius) {
  * @return
  **/
 
-function drawYellow(context, lineStartPoint, lineEndPoint, radius) {
+var drawYellow = function (context, lineStartPoint, lineEndPoint, radius) {
     context.beginPath();
     context.arc(lineStartPoint[0], lineStartPoint[1], radius, 0, Math.PI * 2);
     context.strokeStyle = "#FFFF00";
@@ -433,5 +433,5 @@ function drawYellow(context, lineStartPoint, lineEndPoint, radius) {
     context.setLineDash([7]);
     context.stroke();
     context.closePath();
-}
+};
 

@@ -76,7 +76,7 @@ var loadNewUiImage = [];
  * @return
  **/
 
-function GUI() {
+var GUI = function () {
 
     preload(freezeButtonImage,
         'png/freeze.png', 'png/freezeOver.png', 'png/freezeSelect.png','png/freezeEmpty.png'
@@ -113,6 +113,7 @@ function GUI() {
         if(!globalStates.UIOffMode)     document.getElementById('guiButtonImage').src = guiButtonImage[0].src;
         // kickoff();
     });
+    ec++;
 
     document.getElementById("guiButtonImage1").addEventListener("touchend", function () {
         if (globalStates.guiButtonState === false) {
@@ -124,10 +125,12 @@ function GUI() {
         }
 
     });
+    ec++;
 
     document.getElementById("guiButtonImage2").addEventListener("touchstart", function () {
         if(!globalStates.UIOffMode)     document.getElementById('guiButtonImage').src = guiButtonImage[2].src;
     });
+    ec++;
 
     document.getElementById("guiButtonImage2").addEventListener("touchend", function () {
         if (globalStates.guiButtonState === true) {
@@ -138,6 +141,7 @@ function GUI() {
             if(!globalStates.UIOffMode)    document.getElementById('guiButtonImage').src = guiButtonImage[3].src;
         }
     });
+    ec++;
 
     document.getElementById("extendedTrackingSwitch").addEventListener("change", function () {
         if(document.getElementById("extendedTrackingSwitch").checked){
@@ -148,6 +152,7 @@ function GUI() {
             window.location.href = "of://extendedTrackingOff";
         }
     });
+    ec++;
 
     document.getElementById("editingModeSwitch").addEventListener("change", function () {
 
@@ -162,6 +167,7 @@ function GUI() {
             window.location.href = "of://developerOff";
         }
     });
+    ec++;
 
     document.getElementById("turnOffUISwitch").addEventListener("change", function () {
         if(document.getElementById("turnOffUISwitch").checked){
@@ -195,12 +201,14 @@ function GUI() {
 */
         }
     });
+    ec++;
 
 
     document.getElementById("resetButton").addEventListener("touchstart", function () {
             if(!globalStates.UIOffMode)    document.getElementById('resetButton').src = resetButtonImage[1].src;
 
     });
+    ec++;
 
     document.getElementById("resetButton").addEventListener("touchend", function () {
 
@@ -248,11 +256,11 @@ function GUI() {
 
 
     });
+    ec++;
 
 
 
-
-    function sendResetContent(object, location) {
+  var sendResetContent =  function (object, location) {
 // generate action for all links to be reloaded after upload
 
             var tempThisObject = {};
@@ -275,12 +283,13 @@ function GUI() {
                 postData('http://' + objectExp[object].ip + ':' + httpPort + '/object/' + object + "/size/" + location, content);
             }
 
-    }
+    };
 
 
     document.getElementById("unconstButton").addEventListener("touchstart", function () {
         if(!globalStates.UIOffMode) document.getElementById('unconstButton').src = unconstButtonImage[1].src;
     });
+    ec++;
 
     document.getElementById("unconstButton").addEventListener("touchend", function () {
         if (globalStates.unconstrainedPositioning === true) {
@@ -295,7 +304,7 @@ function GUI() {
         }
 
     });
-
+    ec++;
 
 
 
@@ -307,6 +316,7 @@ function GUI() {
             if(!globalStates.UIOffMode)    document.getElementById('loadNewUI').src = loadNewUiImage[1].src;
         }
     });
+    ec++;
 
     document.getElementById("loadNewUI").addEventListener("touchend", function () {
 
@@ -314,11 +324,13 @@ function GUI() {
             window.location.href = "of://loadNewUI"+globalStates.newURLText;
 
     });
+    ec++;
 
 
     document.getElementById("preferencesButton").addEventListener("touchstart", function () {
         if(!globalStates.UIOffMode)    document.getElementById('preferencesButton').src = preferencesButtonImage[1].src;
     });
+    ec++;
 
     document.getElementById("preferencesButton").addEventListener("touchend", function () {
         if (globalStates.preferencesButtonState === true) {
@@ -371,12 +383,12 @@ function GUI() {
         }
 
     });
-
+    ec++;
 
     document.getElementById("feezeButton").addEventListener("touchstart", function () {
         if(!globalStates.UIOffMode) document.getElementById('feezeButton').src = freezeButtonImage[1].src;
     });
-
+    ec++;
     document.getElementById("feezeButton").addEventListener("touchend", function () {
         if (globalStates.feezeButtonState === true) {
             if(!globalStates.UIOffMode)    document.getElementById('feezeButton').src = freezeButtonImage[0].src;
@@ -391,23 +403,23 @@ function GUI() {
 
     });
 
-
+    ec++;
     document.getElementById("reloadButton").addEventListener("touchstart", function () {
         if(!globalStates.UIOffMode)    document.getElementById('reloadButton').src = reloadButtonImage[0].src;
         window.location.href = "of://reload";
     });
-
+    ec++;
     document.getElementById("reloadButton").addEventListener("touchend", function () {
         // location.reload(true);
 
         window.open("index.html?v=" + Math.floor((Math.random() * 100) + 1));
     });
-
+    ec++;
 
     document.getElementById("logButton").addEventListener("touchstart", function () {
         if(!globalStates.UIOffMode)    document.getElementById('logButton').src = logButtonImage[1].src;
     });
-
+    ec++;
     document.getElementById("logButton").addEventListener("touchend", function () {
         if (globalStates.logButtonState === true) {
             consoleHide();
@@ -422,9 +434,9 @@ function GUI() {
         }
 
     });
-
-
-}
+    console.log("GUI");
+    ec++;
+};
 
 
 /**
@@ -434,12 +446,14 @@ function GUI() {
  * @return
  **/
 
-function consoleHide() {
+var consoleHide = function () {
     if(!globalStates.UIOffMode)    document.getElementById('logButton').src = logButtonImage[0].src;
     globalStates.logButtonState = false;
     document.getElementById("consolelog").style.visibility = "hidden";
     document.getElementById("consolelog").innerText = "";
-}
+
+    console.log("consoleHide");
+};
 
 /**
  * @desc
@@ -448,12 +462,13 @@ function consoleHide() {
  * @return
  **/
 
-function preferencesHide() {
+var preferencesHide = function () {
     if(!globalStates.UIOffMode)    document.getElementById('preferencesButton').src = preferencesButtonImage[0].src;
     globalStates.preferencesButtonState = false;
     document.getElementById("preferences").style.visibility = "hidden" ; //= "hidden";
     document.getElementById("preferences").style.dispaly = "none" ; //= "hidden";
-}
+    console.log("preferencesHide");
+};
 
 
 /**
@@ -463,12 +478,13 @@ function preferencesHide() {
  * @return
  **/
 
-function preferencesVisible() {
+var preferencesVisible = function () {
     if(!globalStates.UIOffMode)    document.getElementById('preferencesButton').src = preferencesButtonImage[2].src;
     globalStates.preferencesButtonState = true;
     document.getElementById("preferences").style.visibility = "visible" ; //
     document.getElementById("preferences").style.display = "inline" ; //= "hidden";
-}
+    console.log("preferencesVisible");
+};
 
 
 /**********************************************************************************************************************
@@ -481,13 +497,14 @@ function preferencesVisible() {
  * @return
  **/
 
-function preload(array) {
+var preload = function (array) {
     for (var i = 0; i < preload.arguments.length - 1; i++) {
         array[i] = new Image();
         array[i].src = preload.arguments[i + 1];
     }
 
-}
+    console.log("preload");
+};
 
 
 

@@ -55,6 +55,10 @@
  ******************************************** constant settings *******************************************************
  **********************************************************************************************************************/
 
+    var ec = 0;
+var disp = {};
+
+var uiButtons;
 var httpPort = 8080;
 var timeForContentLoaded = 240; // temporary set to 1000x with the UI Recording mode for video recording
 
