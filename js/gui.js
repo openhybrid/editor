@@ -217,7 +217,7 @@ var GUI = function () {
 
 
         for (var key in objectExp) {
-            if (!globalObjects.obj.hasOwnProperty(key)) {
+            if (!globalObjects.hasOwnProperty(key)) {
                 continue;
             }
 

@@ -311,12 +311,12 @@ var update = function (objects) {
         var generalObject = objectExp[key];
 
         // I changed this to has property.
-        if (globalObjects.obj.hasOwnProperty(key)) {
+        if (globalObjects.hasOwnProperty(key)) {
 
             generalObject.visibleCounter = timeForContentLoaded;
             generalObject.ObjectVisible = true;
 
-            var tempMatrix = multiplyMatrix(rotateX, multiplyMatrix(globalObjects.obj[key], globalStates.projectionMatrix));
+            var tempMatrix = multiplyMatrix(rotateX, multiplyMatrix(globalObjects[key], globalStates.projectionMatrix));
 
 
             //  var tempMatrix2 = multiplyMatrix(globalObjects[key], globalStates.projectionMatrix);
@@ -492,17 +492,15 @@ var drawTransformed = function (thisObject, thisKey, thisTransform2, generalKey)
         thisObject.screenY = thisTransform[3][1] / thisTransform[3][3] + (globalStates.width / 2);
         thisObject.screenZ = thisTransform[3][2];
 
-
-        var iFrameMsgContent = "";
         if (typeof thisObject.sendMatrixCSS !== "undefined") {
             if (thisObject.sendMatrixCSS === true) {
-                iFrameMsgContent = '{"matrixCSS":';
-                iFrameMsgContent += JSON.stringify(thisTransform);
+                document.getElementById("iframe" + thisKey).contentWindow.postMessage(
+                    '{"matrixCSS":'+JSON.stringify(thisTransform)+"}", '*');
             }
-
         }
 
-        if (typeof globalObjects.acl !== "undefined") {
+        // acceleration data can be accessed via html directly
+       /* if (typeof globalObjects.acl !== "undefined") {
             if (typeof thisObject.sendAcl !== "undefined") {
                 if (thisObject.sendAcl === true) {
                     if (iFrameMsgContent !== "")  iFrameMsgContent += ","; else  iFrameMsgContent += "{";
@@ -510,13 +508,7 @@ var drawTransformed = function (thisObject, thisKey, thisTransform2, generalKey)
                     iFrameMsgContent += JSON.stringify(globalObjects.acl);
                 }
             }
-        }
-
-        if (iFrameMsgContent !== "")
-        {   iFrameMsgContent += '}';
-        document.getElementById("iframe" + thisKey).contentWindow.postMessage(
-            iFrameMsgContent, '*');
-        }
+        }*/
       //  console.log("drawTransformed");
     }
 

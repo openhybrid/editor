@@ -197,19 +197,19 @@ var postMessage = function (e) {
 
 
 
-    if (typeof objectExp[msgContent.obj] !== "undefined") {
+    if (typeof objectExp[msgContent] !== "undefined") {
         if (typeof msgContent.sendMatrixCSS !== "undefined") {
             if(msgContent.sendMatrixCSS === true) {
-                objectExp[msgContent.obj].sendMatrixCSS = true;
+                objectExp[msgContent].sendMatrixCSS = true;
             }
         }
 
-        if (typeof msgContent.sendAcl !== "undefined") {
+       /* if (typeof msgContent.sendAcl !== "undefined") {
             if(msgContent.sendAcl === true) {
                 objectExp[msgContent.obj].sendAcl = true;
                 window.location.href = "of://sendAccelerationData";
             }
-        }
+        }*/
     }
 
     console.log("postMessage");
