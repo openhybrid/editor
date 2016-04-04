@@ -56,11 +56,11 @@
  **********************************************************************************************************************
  ******************************************** style content ***********************************************************
  **********************************************************************************************************************/
-/** {
+* {
     -webkit-transform-style: preserve-3d;
     -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
-   -webkit-user-select: none;
-}*/
+   -webkit-user-select: none;  /*   Disable selection/Copy of UIWebView */
+}
 
 body {
     -webkit-transform-style: preserve-3d;
@@ -86,25 +86,58 @@ body {
 
 .mainProgram {
     -webkit-transform-style: preserve-3d;
-    position: fixed;
+    position: fixed; /**/
     margin: 0;
     padding: 0;
     border-width: 0px;
-
+    /*background-color: rgba(0, 0, 0, 0.2);*/
     background:repeating-linear-gradient(-45deg, transparent, transparent 22px, rgba(1, 255, 252, 0.5) 22px, rgba(1, 255, 252, 0.5) 44px);
     -webkit-filter: contrast(200%);
-
+    /*border: 10px dashed green;*/
     z-index: 2;
     -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 
 }
 
-.mainEditing {
+.mainCanvas {
     -webkit-transform-style: preserve-3d;
-    position: fixed;
+    position: fixed; /**/
     margin: 0;
     padding: 0;
     border-width: 0px;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0.5;
+    /*background:repeating-linear-gradient(-45deg, transparent, transparent 22px, rgba(1, 255, 1, 0.5) 22px, rgba(1, 255, 1, 0.5) 44px);*/
+    -webkit-filter: contrast(200%);
+    /*border: 10px dashed green;*/
+    z-index: 2;
+    -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    pointer-events:none; /*stops canvas from capturing touches so they propogate to elements behind it*/
+}
+
+.mainProgramInvalid {
+    -webkit-transform-style: preserve-3d;
+    position: fixed; /**/
+    margin: 0;
+    padding: 0;
+    border-width: 0px;
+    /*background-color: rgba(0, 0, 0, 0.2);*/
+    background:repeating-linear-gradient(-45deg, transparent, transparent 22px, rgba(255, 1, 1, 0.5) 22px, rgba(255, 1, 1, 0.5) 44px);
+    -webkit-filter: contrast(200%);
+    /*border: 10px dashed green;*/
+    z-index: 2;
+    -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+
+}
+
+
+.mainEditing {
+    -webkit-transform-style: preserve-3d;
+    position: fixed; /**/
+    margin: 0;
+    padding: 0;
+    border-width: 0px;
+    /* background-color: rgba(0, 0, 0, 1);*/
     z-index: 2;
     -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 }
@@ -118,7 +151,7 @@ body {
     -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 
 }
-/*
+
 .contentRotation {
     -webkit-transform-style: preserve-3d;
     position: fixed;
@@ -129,8 +162,8 @@ body {
     visibility: hidden;
     -webkit-transform: rotate3d(1, 0, 0, 180deg) translate3d(0, 0, 0) scale3d(1, 1, 1);
 
-}*/
-/*
+}
+
 #consolelog {
     visibility: hidden;
     -webkit-transform-style: preserve-3d;
@@ -144,7 +177,7 @@ body {
     background-color: rgba(0, 0, 0, 0.50);
     -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 
-}*/
+}
 
 #preferences {
     display: inline;
@@ -164,10 +197,10 @@ body {
     -webkit-transform-style: preserve-3d;
     -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 }
-/*
+
 .interfaceSourceURL {
  /*   -webkit-user-select: text;*/
-/*}*/
+}
 
 .Canvas {
     visibility: visible;

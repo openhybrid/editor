@@ -71,7 +71,7 @@
  * @return
  **/
 
-var addHeartbeatObject = function (beat) {
+function addHeartbeatObject(beat) {
     /*
      if (globalStates.platform) {
      window.location.href = "of://gotbeat_" + beat.id;
@@ -87,12 +87,10 @@ var addHeartbeatObject = function (beat) {
                 objectExp[thisKey].screenZ = 1000;
 
                 console.log(objectExp[thisKey]);
-                    addElementInPreferences();
-
             });
         }
     }
-};
+}
 
 /**
  * @desc
@@ -101,7 +99,7 @@ var addHeartbeatObject = function (beat) {
  * @return
  **/
 
-var setStates = function (developerState, extendedTrackingState, clearSkyState, externalState) {
+function setStates(developerState, extendedTrackingState, clearSkyState, externalState) {
 
 
     globalStates.extendedTrackingState = extendedTrackingState;
@@ -112,7 +110,7 @@ var setStates = function (developerState, extendedTrackingState, clearSkyState, 
 
     if (clearSkyState) {
         // globalStates.UIOffMode = true;
-      //  timeForContentLoaded = 240000;
+        timeForContentLoaded = 240000;
         // document.getElementById("turnOffUISwitch").checked = true;
     }
 
@@ -154,7 +152,7 @@ var setStates = function (developerState, extendedTrackingState, clearSkyState, 
 
         });
     }
-};
+}
 
 
 /**
@@ -164,7 +162,7 @@ var setStates = function (developerState, extendedTrackingState, clearSkyState, 
  * @return
  **/
 
-var action = function (action) {
+function action(action) {
     var thisAction = JSON.parse(action);
 
     if (thisAction.reloadLink) {
@@ -191,7 +189,7 @@ var action = function (action) {
 
     console.log("found action: " + action);
 
-};
+}
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -203,7 +201,7 @@ var action = function (action) {
  * @return
  **/
 
-var getData = function (url, thisKey, callback) {
+function getData(url, thisKey, callback) {
     var req = new XMLHttpRequest();
     try {
         req.open('GET', url, true);
@@ -225,7 +223,7 @@ var getData = function (url, thisKey, callback) {
     catch (e) {
         console.log("could not connect to" + url);
     }
-};
+}
 
 
 /**********************************************************************************************************************
@@ -239,7 +237,7 @@ var getData = function (url, thisKey, callback) {
  * @return
  **/
 
-var setProjectionMatrix = function (matrix) {
+function setProjectionMatrix(matrix) {
     // globalStates.projectionMatrix = matrix;
 
 
@@ -264,13 +262,13 @@ var setProjectionMatrix = function (matrix) {
 
 
     //   onceTransform();
-};
+}
 
 
 /**********************************************************************************************************************
  ******************************************** update and draw the 3D Interface ****************************************
  **********************************************************************************************************************/
-//var conalt = "";
+var conalt = "";
 
 /**
  * @desc
@@ -279,24 +277,15 @@ var setProjectionMatrix = function (matrix) {
  * @return
  **/
 
-var updateReDraw =  function () {
-    disp = uiButtons.style.display;
-    uiButtons.style.display = 'none';
-    uiButtons.style.display = disp;
-};
-
-var update = function (objects) {
-    disp = uiButtons.style.display;
-    uiButtons.style.display = 'none';
-
+function update(objects) {
     if (globalStates.feezeButtonState == false) {
         globalObjects = objects;
     }
-   /* if (consoleText !== "") {
+    if (consoleText !== "") {
         consoleText = "";
         document.getElementById("consolelog").innerHTML = "";
     }
-    conalt = "";*/
+    conalt = "";
 
     if (globalCanvas.hasContent === true) {
         globalCanvas.context.clearRect(0, 0, globalCanvas.canvas.width, globalCanvas.canvas.height);
@@ -311,12 +300,12 @@ var update = function (objects) {
         var generalObject = objectExp[key];
 
         // I changed this to has property.
-        if (globalObjects.hasOwnProperty(key)) {
+        if (globalObjects.obj.hasOwnProperty(key)) {
 
             generalObject.visibleCounter = timeForContentLoaded;
             generalObject.ObjectVisible = true;
 
-            var tempMatrix = multiplyMatrix(rotateX, multiplyMatrix(globalObjects[key], globalStates.projectionMatrix));
+            var tempMatrix = multiplyMatrix(rotateX, multiplyMatrix(globalObjects.obj[key], globalStates.projectionMatrix));
 
 
             //  var tempMatrix2 = multiplyMatrix(globalObjects[key], globalStates.projectionMatrix);
@@ -377,22 +366,14 @@ var update = function (objects) {
 
         }
         drawInteractionLines();
-      //  console.log("drawlines");
     }
 
     if (globalStates.logButtonState) {
         generalLog(consoleText);
     }
- //   window.location.href = "of://newframe";
-   // console.log("update");
-
-  //  countEventHandlers()
 
 
-    uiButtons.style.display = disp;
-
-
-};
+}
 
 /**********************************************************************************************************************
  ******************************************** 3D Transforms & Utilities ***********************************************
@@ -405,7 +386,7 @@ var update = function (objects) {
  * @return
  **/
 
-var drawTransformed = function (thisObject, thisKey, thisTransform2, generalKey) {
+function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
     if (globalStates.notLoading !== thisKey && thisObject.loaded === true) {
         if (!thisObject.visible) {
             document.getElementById("thisObject" + thisKey).style.display = 'initial';
@@ -425,7 +406,9 @@ var drawTransformed = function (thisObject, thisKey, thisTransform2, generalKey)
             if (globalStates.editingMode) {
                 if (!thisObject.visibleEditing && thisObject.developer) {
                     thisObject.visibleEditing = true;
+                    console.log(thisKey + " is the lines");
                     document.getElementById(thisKey).style.visibility = 'visible';
+
                     document.getElementById(thisKey).className = "mainProgram";
                 }
             }
@@ -439,10 +422,7 @@ var drawTransformed = function (thisObject, thisKey, thisTransform2, generalKey)
             if(globalMatrix.copyStillFromMatrixSwitch){
                 globalMatrix.visual =  copyMatrix(globalMatrix.temp);
                if(typeof thisObject.matrix === "object")
-                   if (thisObject.matrix.length > 0)
-                       globalMatrix.begin = copyMatrix(multiplyMatrix(thisObject.matrix, globalMatrix.temp));
-                   else
-                       globalMatrix.begin =copyMatrix(globalMatrix.temp);
+                   globalMatrix.begin = copyMatrix(multiplyMatrix(thisObject.matrix, globalMatrix.temp));
                else
                    globalMatrix.begin =copyMatrix(globalMatrix.temp);
 
@@ -454,13 +434,6 @@ var drawTransformed = function (thisObject, thisKey, thisTransform2, generalKey)
 
         }
 
-
-
-
-
-
-
-
         var finalMatrixTransform2 = [
             [thisObject.scale, 0, 0, 0],
             [0, thisObject.scale, 0, 0],
@@ -469,14 +442,9 @@ var drawTransformed = function (thisObject, thisKey, thisTransform2, generalKey)
         ];
 
         var thisTransform = [];
-        if(typeof thisObject.matrix === "object") {
-            if (thisObject.matrix.length > 0) {
-                var thisTransform3 = multiplyMatrix(thisObject.matrix, thisTransform2);
-                thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform3);
-              //  console.log("I get here");
-            }else
-                thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
-        }
+        if(typeof thisObject.matrix === "object"){
+            var thisTransform3 = multiplyMatrix(thisObject.matrix, thisTransform2);
+            thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform3);}
         else
             thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
 
@@ -492,15 +460,16 @@ var drawTransformed = function (thisObject, thisKey, thisTransform2, generalKey)
         thisObject.screenY = thisTransform[3][1] / thisTransform[3][3] + (globalStates.width / 2);
         thisObject.screenZ = thisTransform[3][2];
 
-        if (typeof thisObject.sendMatrixCSS !== "undefined") {
-            if (thisObject.sendMatrixCSS === true) {
-                document.getElementById("iframe" + thisKey).contentWindow.postMessage(
-                    '{"matrixCSS":'+JSON.stringify(thisTransform)+"}", '*');
+        var iFrameMsgContent = "";
+        if (typeof thisObject.sendMatrix3d !== "undefined") {
+            if (thisObject.sendMatrix3d === true) {
+                iFrameMsgContent = '{"matrix3d":';
+                iFrameMsgContent += JSON.stringify(thisTransform);
             }
+
         }
 
-        // acceleration data can be accessed via html directly
-       /* if (typeof globalObjects.acl !== "undefined") {
+        if (typeof globalObjects.acl !== "undefined") {
             if (typeof thisObject.sendAcl !== "undefined") {
                 if (thisObject.sendAcl === true) {
                     if (iFrameMsgContent !== "")  iFrameMsgContent += ","; else  iFrameMsgContent += "{";
@@ -508,11 +477,17 @@ var drawTransformed = function (thisObject, thisKey, thisTransform2, generalKey)
                     iFrameMsgContent += JSON.stringify(globalObjects.acl);
                 }
             }
-        }*/
-      //  console.log("drawTransformed");
-    }
+        }
 
-};
+
+
+        if (iFrameMsgContent !== "")
+        {   iFrameMsgContent += '}';
+        document.getElementById("iframe" + thisKey).contentWindow.postMessage(
+            iFrameMsgContent, '*');
+        }
+    }
+}
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -524,7 +499,7 @@ var drawTransformed = function (thisObject, thisKey, thisTransform2, generalKey)
  * @return
  **/
 
-var hideTransformed = function (thisObject, thisKey, generalKey) {
+function hideTransformed(thisObject, thisKey, generalKey) {
     if (thisObject.visible === true) {
         document.getElementById("thisObject" + thisKey).style.display = 'none';
         document.getElementById("iframe" + thisKey).style.visibility = 'hidden';
@@ -535,7 +510,7 @@ var hideTransformed = function (thisObject, thisKey, generalKey) {
         thisObject.visibleEditing = false;
         document.getElementById(thisKey).style.visibility = 'hidden';
         //document.getElementById(thisKey).style.display = 'none';
-        console.log("hideTransformed");
+
     }
 
     /*
@@ -544,7 +519,7 @@ var hideTransformed = function (thisObject, thisKey, generalKey) {
      thisObject.visibleEditing = false;
      document.getElementById(thisKey).style.visibility = 'hidden';
      }*/
-};
+}
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -556,7 +531,7 @@ var hideTransformed = function (thisObject, thisKey, generalKey) {
  * @return
  **/
 
-var addElementInPreferences = function () {
+function addElementInPreferences() {
 
     var htmlContent = "";
 
@@ -644,8 +619,7 @@ var addElementInPreferences = function () {
 
     document.getElementById("content2").innerHTML = htmlContent;
 
-    console.log("addElementInPreferences");
-};
+}
 /*
  <div class='Interfaces'
  style="position: relative; float: left; height: 30px; width: 25%; -webkit-transform-style: preserve-3d;  visibility: visible;
@@ -659,7 +633,7 @@ var addElementInPreferences = function () {
  * @return
  **/
 
-var addElement = function (thisObject, thisKey, thisUrl, generalObject) {
+function addElement(thisObject, thisKey, thisUrl, generalObject) {
     if (globalStates.notLoading !== true && globalStates.notLoading !== thisKey && thisObject.loaded !== true) {
 
         if (typeof generalObject === 'undefined') {
@@ -684,7 +658,7 @@ var addElement = function (thisObject, thisKey, thisUrl, generalObject) {
         var tempAddContent =
             "<iframe id='iframe" + thisKey + "' onload='on_load(\"" +
             generalObject + "\",\"" + thisKey + "\")' frameBorder='0' " +
-            "style='width:0px; height:0px;" +
+            "style='width:" + thisObject.frameSizeX + "px; height:" + thisObject.frameSizeY + "px;" +
             "top:" + ((globalStates.width - thisObject.frameSizeX) / 2) + "px; left:" +
             ((globalStates.height - thisObject.frameSizeY) / 2) + "px; visibility: hidden;' " +
             "src='" + thisUrl + "' class='main' sandbox='allow-forms allow-pointer-lock allow-same-origin allow-scripts'>" +
@@ -694,26 +668,33 @@ var addElement = function (thisObject, thisKey, thisUrl, generalObject) {
             "top:" + ((globalStates.width - thisObject.frameSizeX) / 2) + "px; left:" + ((globalStates.height - thisObject.frameSizeY) / 2) + "px; visibility: hidden;' class='mainEditing'></div>" +
             "";
 
+        // tempAddContent += "<canvas id='contentCanvas" + thisKey + "' frameBorder='0' style='width:" + thisObject.frameSizeX + "px; height:" + thisObject.frameSizeY + "px;" +
+        //     "top:" + ((globalStates.width - thisObject.frameSizeX) / 2) + "px; left:" + ((globalStates.height - thisObject.frameSizeY) / 2) + "px; visibility: visible;' class='mainCanvas'></canvas>" +
+        //     "";
+
+        // tempAddContent += "<canvas id='contentCanvas" + thisKey + "' frameBorder='0' style='width:" + thisObject.frameSizeX + "px; height:" + thisObject.frameSizeY + "px; top: 0px; left: 0px; visibility: visible;' class='mainCanvas'></canvas>";
+
+        // console.log(thisObject.frameSizeX, thisObject.frameSizeY);
+
+        tempAddContent += "<canvas id='canvas" + thisKey + "'style='width:5px; height:5px; visibility:visible;' class='mainCanvas'></canvas>";
+
+            /// TODO: modify to add canvas object, not just background CSS
         tempAddContent += "<div id='text" + thisKey + "' frameBorder='0' style='width:5px; height:5px;" +
             "top:" + ((globalStates.width) / 2 + thisObject.frameSizeX / 2) + "px; left:" + ((globalStates.height - thisObject.frameSizeY) / 2) + "px; visibility: hidden;' class='mainProgram'><font color='white'>" + thisObject.name + "</font></div>" +
             "";
 
         document.getElementById("thisObject" + thisKey).innerHTML = tempAddContent;
         var theObject = document.getElementById(thisKey);
+
         theObject.style["touch-action"] = "none";
         theObject["handjs_forcePreventDefault"] = true;
         theObject.addEventListener("pointerdown", touchDown, false);
-        ec++;
         theObject.addEventListener("pointerup", trueTouchUp, false);
-        ec++;
         if (globalStates.editingMode) {
             if (objectExp[generalObject].developer) {
                 theObject.addEventListener("touchstart", MultiTouchStart, false);
-                ec++;
                 theObject.addEventListener("touchmove", MultiTouchMove, false);
-                ec++;
                 theObject.addEventListener("touchend", MultiTouchEnd, false);
-                ec++;
                 theObject.className = "mainProgram";
             }
         }
@@ -728,9 +709,26 @@ var addElement = function (thisObject, thisKey, thisUrl, generalObject) {
             theObject.style.visibility = "hidden";
             //theObject.style.display = "none";
         }
-        console.log("addElementInPreferences");
+
+        var iframe = document.getElementById("iframe"+thisKey);
+
+        var thisCanvas = document.getElementById("canvas"+thisKey); //theObject.querySelector("#canvas");
+        // // var thisCanvas = document.createElement("canvas");
+        // // thisCanvas.id = "canvastarget"+thisKey;
+        // // thisCanvas.className = "mainCanvas";
+        // // console.log(thisObject.width, theObject.height);
+        // // theObject.width = iframe.width;
+        // // theObject.height = iframe.height;
+        // console.log("canvas"+thisKey);
+        // console.log(thisCanvas);
+        // var ctx = thisCanvas.getContext("2d");
+        // ctx.clearRect(0, 0, thisCanvas.width, thisCanvas.height);
+        // ctx.fillRect(0,0,thisCanvas.width,thisCanvas.height);
+
+        // // theObject.appendChild(thisCanvas);
+
     }
-};
+}
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -742,12 +740,13 @@ var addElement = function (thisObject, thisKey, thisUrl, generalObject) {
  * @return
  **/
 
-var killObjects = function (thisObject, thisKey) {
+function killObjects(thisObject, thisKey) {
 
     if (thisObject.visibleCounter > 0) {
         thisObject.visibleCounter--;
     } else if (thisObject.loaded) {
         thisObject.loaded = false;
+
         var tempElementDiv = document.getElementById("thisObject" + thisKey);
         tempElementDiv.parentNode.removeChild(tempElementDiv);
 
@@ -760,9 +759,8 @@ var killObjects = function (thisObject, thisKey) {
             }
             thisObject.objectValues[subKey].loaded = false;
         }
-        console.log("killObjects");
     }
-};
+}
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -774,7 +772,7 @@ var killObjects = function (thisObject, thisKey) {
  * @return
  **/
 
-var on_load = function (generalObject, thisKey) {
+function on_load(generalObject, thisKey) {
     globalStates.notLoading = false;
     // window.location.href = "of://event_test_"+thisKey;
 
@@ -786,8 +784,7 @@ var on_load = function (generalObject, thisKey) {
     });
     document.getElementById("iframe" + thisKey).contentWindow.postMessage(
         iFrameMessage_, '*');
-    console.log("on_load");
-};
+}
 
 function fire(thisKey) {
     // globalStates.notLoading = false;

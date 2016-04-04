@@ -53,7 +53,7 @@
  * @return
  **/
 
-var touchDown = function (evt) {
+function touchDown(evt) {
     if (!globalStates.editingMode) {
         if (!globalStates.guiButtonState) {
             if (!globalProgram.ObjectA) {
@@ -66,8 +66,7 @@ var touchDown = function (evt) {
         globalStates.editingModeLocation = this.location;
         globalStates.editingModeHaveObject = true;
     }
-    console.log("touchDown");
-};
+}
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -79,14 +78,13 @@ var touchDown = function (evt) {
  * @return
  **/
 
-var falseTouchUp = function () {
+function falseTouchUp() {
     if (!globalStates.guiButtonState) {
         globalProgram.ObjectA = false;
         globalProgram.locationInA = false;
     }
     globalCanvas.hasContent = true;
-    console.log("falseTouchUp");
-};
+}
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -98,7 +96,7 @@ var falseTouchUp = function () {
  * @return
  **/
 
-var trueTouchUp = function () {
+function trueTouchUp() {
     if (!globalStates.guiButtonState) {
         if (globalProgram.ObjectA) {
 
@@ -168,9 +166,7 @@ var trueTouchUp = function () {
         }
     }
     globalCanvas.hasContent = true;
-
-    console.log("trueTouchUp");
-};
+}
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -182,7 +178,7 @@ var trueTouchUp = function () {
  * @return
  **/
 
-var documentPointerUp = function (evt) {
+function documentPointerUp(evt) {
 
     if (!globalStates.guiButtonState) {
         falseTouchUp();
@@ -192,9 +188,7 @@ var documentPointerUp = function (evt) {
         globalStates.drawDotLine = false;
     }
     globalCanvas.hasContent = true;
-
-    console.log("documentPointerUp");
-};
+}
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -206,7 +200,7 @@ var documentPointerUp = function (evt) {
  * @return
  **/
 
-var canvasPointerDown = function (evt) {
+function canvasPointerDown(evt) {
     if (!globalStates.guiButtonState && !globalStates.editingMode) {
         if (!globalProgram.ObjectA) {
             globalStates.drawDotLine = true;
@@ -215,8 +209,7 @@ var canvasPointerDown = function (evt) {
 
         }
     }
-    console.log("canvasPointerDown");
-};
+}
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -228,13 +221,11 @@ var canvasPointerDown = function (evt) {
  * @return
  **/
 
-var getPossition = function (evt) {
+function getPossition(evt) {
 
     globalStates.pointerPosition = [evt.clientX, evt.clientY];
 
-    console.log("getPossition");
-
-};
+}
 
 
 /**
@@ -244,7 +235,7 @@ var getPossition = function (evt) {
  * @return
  **/
 
-var MultiTouchStart = function (evt) {
+function MultiTouchStart(evt) {
     evt.preventDefault();
 // generate action for all links to be reloaded after upload
 
@@ -255,8 +246,8 @@ var MultiTouchStart = function (evt) {
     }
     globalMatrix.matrixtouchOn = this.location;
     globalMatrix.copyStillFromMatrixSwitch = true;
-    console.log("MultiTouchStart");
-};
+
+}
 
 /**
  * @desc
@@ -265,7 +256,7 @@ var MultiTouchStart = function (evt) {
  * @return
  **/
 
-var MultiTouchMove = function (evt) {
+function MultiTouchMove(evt) {
     evt.preventDefault();
 // generate action for all links to be reloaded after upload
 
@@ -326,13 +317,150 @@ var MultiTouchMove = function (evt) {
             tempThisObject.x = resultMatrix[3][0];
             tempThisObject.y = resultMatrix[3][1];
         }
+
+        // for interface repositioning... check if it's inside the marker and 
+        var newMatrix = copyMatrix(multiplyMatrix(globalMatrix.begin, invertMatrix(globalMatrix.temp)));
+        var zPosition = newMatrix[3][2];
+        var epsilon = 50.0;
+        // console.log(tempThisObject);
+        // console.log(globalStates.editingModeObject);
+        var theObject = document.getElementById(globalStates.editingModeObject);
+
+        drawMarkerIntersection(theObject, newMatrix);
+
+        if (zPosition < 0 - epsilon) {
+            console.log("placed behind the marker!");
+            theObject.className = "mainProgramInvalid";
+            // drawMarkerIntersection(theObject, newMatrix);
+        } else {
+            theObject.className = "mainProgram";
+            // clearMarkerIntersection(theObject);
+        }
     }
 
     if (globalStates.editingModeHaveObject && globalStates.editingMode && evt.targetTouches.length === 2) {
         scaleEvent(evt.touches[1]);
     }
-    console.log("MultiTouchMove");
-};
+}
+
+var mat1x16From4x4 = function(matrix) {
+    return [matrix[0][0], matrix[0][1], matrix[0][2], matrix[0][3],
+            matrix[1][0], matrix[1][1], matrix[1][2], matrix[1][3],
+            matrix[2][0], matrix[2][1], matrix[2][2], matrix[2][3],
+            matrix[3][0], matrix[3][1], matrix[3][2], matrix[3][3]];
+}
+
+var getEdgesClockwise = function (canvas, spacing) {
+    var edges = [];
+    for (var x = 0; x < canvas.width; x += spacing) {
+        var isCorner = (x == 0);
+        edges.push([x, 0, isCorner]);
+    }
+    for (var y = 0; y < canvas.height; y += spacing) {
+        var isCorner = (y == 0);
+        edges.push([canvas.width, y, isCorner]);
+    }
+    for (var x = canvas.width; x >= 0; x -= spacing) {
+        var isCorner = (x == canvas.width);
+        edges.push([x, canvas.height, isCorner]);
+    }
+    for (var y = canvas.height; y >= 0; y -= spacing) {
+        var isCorner = (y == canvas.height);
+        edges.push([0, y, isCorner]);
+    }
+    return edges;
+}
+
+function drawMarkerIntersection(theObject, matrix) {
+
+    console.log("canvas"+theObject.id);
+    var canv = document.getElementById("canvas"+theObject.id); //theObject.querySelector(".mainCanvas");
+    // console.log(theObject, thisCanvas);
+    var ctx = canv.getContext("2d");
+    ctx.clearRect(0, 0, canv.width, canv.height);
+    // ctx.fillStyle = 'red';
+
+    var mCanvas = mat4.clone(mat1x16From4x4(matrix));
+
+    var spacing = Math.min(canv.width/30, canv.height/30);
+    var edges = getEdgesClockwise(canvas, spacing);
+    var firstEdge = null;
+    var lastEdge = null;
+    var wasLastFilled = false;
+    var filledCorners = [];
+
+    console.log("length: ", edges.length);
+
+    edges.forEach(function(edge, index) {
+        var x = edge[0] - canv.width/2;
+        var y = edge[1] - canv.height/2;
+        var isCorner = edge[2];
+        var input = vec4.clone([x,y,0,1]);
+        var out = vec4.create();
+        vec4.transformMat4(out, input, mCanvas);
+        var z = out[2];
+        if (z < 0) {
+            if (isCorner) {
+                filledCorners.push([edge, index]);
+                // console.log(z);
+            }
+            if (!wasLastFilled) {
+                firstEdge = [edge, index];
+                console.log(firstEdge);
+            }
+            wasLastFilled = true;
+        } else {
+            if (wasLastFilled) {
+                lastEdge = [edge, index];
+                console.log(lastEdge);
+            }
+            wasLastFilled = false;
+        }
+    });
+
+    if (firstEdge != null) {
+       filledCorners.push(firstEdge); 
+    }
+    if (lastEdge != null) {
+        filledCorners.push(lastEdge);
+    }
+
+    console.log(filledCorners);
+
+    filledCorners.sort(function(a,b) {
+        return a[1] - b[1];
+    });
+
+    //console.log(filledCorners);
+
+    ctx.beginPath();
+    ctx.moveTo(filledCorners[0][0][0], filledCorners[0][0][1]);
+    filledCorners.forEach(function(edge, index) {
+        // if (index > 2) return;
+        ctx.lineTo(edge[0][0], edge[0][1]);
+    });
+    ctx.closePath();
+    ctx.fill();
+
+}
+
+// function drawMarkerIntersection_simple(theObject) {
+//     var thisCanvas = document.getElementById("canvas"+theObject.id); //theObject.querySelector(".mainCanvas");
+//     // console.log(theObject, thisCanvas);
+//     var ctx = thisCanvas.getContext("2d");
+//     ctx.clearRect(0, 0, thisCanvas.width, thisCanvas.height);
+//     ctx.fillStyle = 'red';
+//     ctx.fillRect(0,0,thisCanvas.width,thisCanvas.height);
+// }
+
+// function clearMarkerIntersection(theObject) {
+//     var thisCanvas = document.getElementById("canvas"+theObject.id); //theObject.querySelector(".mainCanvas");
+//     // console.log(theObject, thisCanvas);
+//     var ctx = thisCanvas.getContext("2d");
+//     ctx.clearRect(0, 0, thisCanvas.width, thisCanvas.height);
+//     ctx.fillStyle = 'blue';
+//     ctx.fillRect(0,0,thisCanvas.width,thisCanvas.height);
+// }
 
 /**
  * @desc
@@ -341,7 +469,7 @@ var MultiTouchMove = function (evt) {
  * @return
  **/
 
-var MultiTouchEnd = function (evt) {
+function MultiTouchEnd(evt) {
     evt.preventDefault();
 // generate action for all links to be reloaded after upload
     if (globalStates.editingModeHaveObject) {
@@ -366,9 +494,24 @@ var MultiTouchEnd = function (evt) {
         if(globalStates.unconstrainedPositioning===true) {
             tempThisObject.matrix = copyMatrix(multiplyMatrix(globalMatrix.begin, invertMatrix(globalMatrix.temp)));
             content.matrix = tempThisObject.matrix;
+
+            // var zPosition = content.matrix[3][2];
+            // var epsilon = 50.0;
+            // console.log(tempThisObject);
+            // console.log(globalStates.editingModeObject);
+            // var theObject = document.getElementById(globalStates.editingModeObject);
+            // if (zPosition < 0 - epsilon) {
+            //     console.log("placed behind the marker!");
+            //     theObject.className = "mainProgramInvalid";
+            // } else {
+            //     theObject.className = "mainProgram";
+            // }
         }
 
 if(typeof content.x === "number" && typeof content.y === "number" && typeof content.scale === "number") {
+    // console.log('http://' + objectExp[globalStates.editingModeObject].ip + ':' + httpPort + '/object/' + globalStates.editingModeObject + "/size/" + globalStates.editingModeLocation);
+    // console.log(content);
+
     postData('http://' + objectExp[globalStates.editingModeObject].ip + ':' + httpPort + '/object/' + globalStates.editingModeObject + "/size/" + globalStates.editingModeLocation, content);
 }
 
@@ -376,8 +519,7 @@ if(typeof content.x === "number" && typeof content.y === "number" && typeof cont
     globalCanvas.hasContent = true;
     globalMatrix.matrixtouchOn = "";
     }
-    console.log("MultiTouchEnd");
-};
+}
 
 /**
  * @desc
@@ -386,7 +528,7 @@ if(typeof content.x === "number" && typeof content.y === "number" && typeof cont
  * @return
  **/
 
-var MultiTouchCanvasStart = function (evt) {
+function MultiTouchCanvasStart(evt) {
 
     evt.preventDefault();
 // generate action for all links to be reloaded after upload
@@ -405,8 +547,8 @@ var MultiTouchCanvasStart = function (evt) {
         }
         globalStates.editingScaledistanceOld = tempThisObject.scale;
     }
-    console.log("MultiTouchCanvasStart");
-};
+
+}
 
 /**
  * @desc
@@ -415,7 +557,7 @@ var MultiTouchCanvasStart = function (evt) {
  * @return
  **/
 
-var MultiTouchCanvasMove = function (evt) {
+function MultiTouchCanvasMove(evt) {
     evt.preventDefault();
 // generate action for all links to be reloaded after upload
     if (globalStates.editingModeHaveObject && globalStates.editingMode && evt.targetTouches.length === 1) {
@@ -426,8 +568,8 @@ var MultiTouchCanvasMove = function (evt) {
         scaleEvent(touch)
 
     }
-    console.log("MultiTouchCanvasMove");
-};
+
+}
 
 
 /**
@@ -437,7 +579,7 @@ var MultiTouchCanvasMove = function (evt) {
  * @return
  **/
 
-var scaleEvent = function (touch) {
+function scaleEvent(touch) {
     var thisRadius = Math.sqrt(Math.pow((globalStates.editingModeObjectX - touch.pageX), 2) + Math.pow((globalStates.editingModeObjectY - touch.pageY), 2));
     var thisScale = (thisRadius - globalStates.editingScaledistance) / 300 + globalStates.editingScaledistanceOld;
 
@@ -465,8 +607,8 @@ var scaleEvent = function (touch) {
         drawGreen(globalCanvas.context, [globalStates.editingModeObjectX, globalStates.editingModeObjectY], [touch.pageX, touch.pageY], thisRadius);
 
     }
-    console.log("scaleEvent");
-};
+
+}
 
 /**
  * @desc
@@ -475,7 +617,7 @@ var scaleEvent = function (touch) {
  * @return
  **/
 
-var postData = function (url, body) {
+function postData(url, body) {
 
     var request = new XMLHttpRequest();
     var params = JSON.stringify(body);
@@ -487,8 +629,8 @@ var postData = function (url, body) {
     //request.setRequestHeader("Content-length", params.length);
     // request.setRequestHeader("Connection", "close");
     request.send(params);
-    console.log("postData");
-};
+
+}
 
 
 /**
@@ -498,7 +640,7 @@ var postData = function (url, body) {
  * @return
  **/
 
-var deleteData = function (url) {
+function deleteData(url) {
 
     var request = new XMLHttpRequest();
     request.open('DELETE', url, true);
@@ -509,8 +651,8 @@ var deleteData = function (url) {
     //request.setRequestHeader("Content-length", params.length);
     // request.setRequestHeader("Connection", "close");
     request.send();
-    console.log("deleteData");
-};
+
+}
 
 /**
  * @desc
@@ -519,14 +661,13 @@ var deleteData = function (url) {
  * @return
  **/
 
-var uploadNewLink = function (ip, thisObjectKey, thisKey, content) {
+function uploadNewLink(ip, thisObjectKey, thisKey, content) {
 // generate action for all links to be reloaded after upload
     console.log("sending Link");
     postData('http://' + ip + ':' + httpPort + '/object/' + thisObjectKey + "/link/" + thisKey, content);
     // postData('http://' +ip+ ':' + httpPort+"/", content);
-    console.log("uploadNewLink");
 
-};
+}
 
 /**
  * @desc
@@ -535,12 +676,11 @@ var uploadNewLink = function (ip, thisObjectKey, thisKey, content) {
  * @return
  **/
 
-var deleteLinkFromObject = function (ip, thisObjectKey, thisKey) {
+function deleteLinkFromObject(ip, thisObjectKey, thisKey) {
 // generate action for all links to be reloaded after upload
     console.log("I am deleting a link: " + ip);
     deleteData('http://' + ip + ':' + httpPort + '/object/' + thisObjectKey + "/link/" + thisKey);
-    console.log("deleteLinkFromObject");
-};
+}
 
 /**
  * @desc
@@ -549,12 +689,10 @@ var deleteLinkFromObject = function (ip, thisObjectKey, thisKey) {
  * @return
  **/
 
-var addEventHandlers = function () {
+function addEventHandlers() {
 
     globalCanvas.canvas.addEventListener("touchstart", MultiTouchCanvasStart, false);
-    ec++;
     globalCanvas.canvas.addEventListener("touchmove", MultiTouchCanvasMove, false);
-    ec++;
 
 
     for (var thisKey in objectExp) {
@@ -570,11 +708,8 @@ var addEventHandlers = function () {
             thisObject3.className = "mainProgram";
 
             thisObject3.addEventListener("touchstart", MultiTouchStart, false);
-            ec++;
             thisObject3.addEventListener("touchmove", MultiTouchMove, false);
-            ec++;
             thisObject3.addEventListener("touchend", MultiTouchEnd, false);
-            ec++;
             //}
         }
 
@@ -584,19 +719,16 @@ var addEventHandlers = function () {
                 thisObject2.className = "mainProgram";
                 //if(thisObject.developer) {
                 thisObject2.addEventListener("touchstart", MultiTouchStart, false);
-                ec++;
                 thisObject2.addEventListener("touchmove", MultiTouchMove, false);
-                ec++;
                 thisObject2.addEventListener("touchend", MultiTouchEnd, false);
-                ec++;
                 //}
             }
         }
     }
     }
 
-    console.log("addEventHandlers");
-};
+
+}
 
 /**
  * @desc
@@ -605,26 +737,22 @@ var addEventHandlers = function () {
  * @return
  **/
 
-var removeEventHandlers = function () {
+function removeEventHandlers() {
 
     globalCanvas.canvas.removeEventListener("touchstart", MultiTouchCanvasStart, false);
-    ec--;
     globalCanvas.canvas.removeEventListener("touchmove", MultiTouchCanvasMove, false);
-    ec--;
+
     for (var thisKey in objectExp) {
         var generalObject2 = objectExp[thisKey];
          if(generalObject2.developer) {
         if (document.getElementById(thisKey)) {
             var thisObject3 = document.getElementById(thisKey);
             thisObject3.style.visibility = "hidden";
-            thisObject3.className = "mainEdimainting";
+            thisObject3.className = "mainEditing";
 
             thisObject3.removeEventListener("touchstart", MultiTouchStart, false);
             thisObject3.removeEventListener("touchmove", MultiTouchMove, false);
             thisObject3.removeEventListener("touchend", MultiTouchEnd, false);
-            ec--;
-            ec--;
-            ec--;
             //  }
         }
 
@@ -636,15 +764,10 @@ var removeEventHandlers = function () {
                 thisObject2.removeEventListener("touchstart", MultiTouchStart, false);
                 thisObject2.removeEventListener("touchmove", MultiTouchMove, false);
                 thisObject2.removeEventListener("touchend", MultiTouchEnd, false);
-                ec--;
-                ec--;
-                ec--;
                 //  }
             }
         }
 
     }
     }
-
-    console.log("removeEventHandlers");
-};
+}
