@@ -444,7 +444,12 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
         var thisTransform = [];
         if(typeof thisObject.matrix === "object"){
             var thisTransform3 = multiplyMatrix(thisObject.matrix, thisTransform2);
-            thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform3);}
+            thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform3);
+
+            if(globalMatrix.matrixtouchOn === thisKey && globalStates.editingMode) {
+                console.log("drawMarkerIntersection", thisKey, thisTransform);
+            }   
+        }
         else
             thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
 

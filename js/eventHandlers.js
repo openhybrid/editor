@@ -371,7 +371,145 @@ var getEdgesClockwise = function (canvas, spacing) {
     return edges;
 }
 
+var getCornersClockwise = function(thisCanvas) {
+    return [[0, 0, 0],
+            [thisCanvas.width, 0, 0],
+            [thisCanvas.width, thisCanvas.height, 0],
+            [0, thisCanvas.height, 0]];
+
+    // return {topLeft: [0, 0, 0],
+    //         topRight: [thisCanvas.width, 0, 0],
+    //         bottomRight: [thisCanvas.width, thisCanvas.height, 0],
+    //         bottomLeft: [0, thisCanvas.height, 0]};
+}
+
 function drawMarkerIntersection(theObject, matrix) {
+
+    console.log("canvas"+theObject.id);
+    var canv = document.getElementById("canvas"+theObject.id); //theObject.querySelector(".mainCanvas");
+    // console.log(theObject, thisCanvas);
+    var ctx = canv.getContext("2d");
+    ctx.clearRect(0, 0, canv.width, canv.height);
+    // ctx.fillStyle = 'red';
+
+    var mCanvas = mat4.clone(mat1x16From4x4(matrix));
+
+    var corners = getCornersClockwise(canvas);
+    corners.forEach(function(corner, index) {
+        var x = corner[0] - canv.width/2;
+        var y = corner[1] - canv.height/2;
+        var isCorner = corner[2];
+        var input = vec4.clone([x,y,0,1]);
+        var out = vec4.create();
+        vec4.transformMat4(out, input, mCanvas);
+        // var z = getTransformedZ(matrix,x,y)
+        var z = out[2];
+        corner[2] = z;
+    });
+
+    console.log("corners", corners);
+    var oppositeCornerPairs = [];
+    corners.forEach(function(corner1) {
+        corners.forEach(function(corner2) {
+            // only check adjacent pairs of corners
+
+            // ignore same corner
+            if (corner1[0] === corner2[0] && corner1[1] === corner2[1]) return; 
+
+            // ignore symmetric corner pair already in list
+            if (oppositeCornerPairs.length > 0) {
+                oppositeCornerPairs.forEach(function(pairList) {
+                    var existingCorner1 = pairList[0];
+                    var existingCorner2 = pairList[1];
+                    if (existingCorner1[0] === corner2[0] && existingCorner1[1] === corner2[1]) {
+                        if (existingCorner2[0] === corner1[0] && existingCorner2[1] === corner1[1]) {
+                            return;
+                        }
+                    }
+                });
+            }
+
+            // x or y should be the same
+            if (corner1[0] === corner2[0] || corner1[1] === corner2[1]) { 
+                var z1 = corner1[2];
+                var z2 = corner2[2];
+                var oppositeSign = ((z1 * z2) < 0);
+                if (oppositeSign) {
+                    oppositeCornerPairs.push([corner1, corner2]);
+                }
+            }
+        });
+    });
+
+    console.log("oppositeCornerPairs", oppositeCornerPairs);
+
+    var spacing = Math.min(canv.width/30, canv.height/30);
+    var edges = getEdgesClockwise(canvas, spacing);
+    var firstEdge = null;
+    var lastEdge = null;
+    var wasLastFilled = false;
+    var filledCorners = [];
+
+    console.log("length: ", edges.length);
+
+    edges.forEach(function(edge, index) {
+        var x = edge[0] - canv.width/2;
+        var y = edge[1] - canv.height/2;
+        var isCorner = edge[2];
+        var input = vec4.clone([x,y,0,1]);
+        var out = vec4.create();
+        vec4.transformMat4(out, input, mCanvas);
+        // var z = getTransformedZ(matrix,x,y)
+        var z = out[2];
+        if (z < 0) {
+            if (isCorner) {
+                filledCorners.push([edge, index]);
+                // console.log("input", input);
+                // console.log("mCanvas", mCanvas);
+                // console.log("out", out);
+                // console.log("z'", getTransformedZ(matrix,x,y));
+            }
+            if (!wasLastFilled) {
+                firstEdge = [edge, index];
+                console.log(firstEdge);
+            }
+            wasLastFilled = true;
+        } else {
+            if (wasLastFilled) {
+                lastEdge = [edge, index];
+                console.log(lastEdge);
+            }
+            wasLastFilled = false;
+        }
+    });
+
+    if (firstEdge != null) {
+       filledCorners.push(firstEdge); 
+    }
+    if (lastEdge != null) {
+        filledCorners.push(lastEdge);
+    }
+
+    console.log(filledCorners);
+
+    filledCorners.sort(function(a,b) {
+        return a[1] - b[1];
+    });
+
+    //console.log(filledCorners);
+
+    ctx.beginPath();
+    ctx.moveTo(filledCorners[0][0][0], filledCorners[0][0][1]);
+    filledCorners.forEach(function(edge, index) {
+        // if (index > 2) return;
+        ctx.lineTo(edge[0][0], edge[0][1]);
+    });
+    ctx.closePath();
+    ctx.fill();
+
+}
+
+function drawMarkerIntersection_slow(theObject, matrix) {
 
     console.log("canvas"+theObject.id);
     var canv = document.getElementById("canvas"+theObject.id); //theObject.querySelector(".mainCanvas");
@@ -398,11 +536,15 @@ function drawMarkerIntersection(theObject, matrix) {
         var input = vec4.clone([x,y,0,1]);
         var out = vec4.create();
         vec4.transformMat4(out, input, mCanvas);
+        // var z = getTransformedZ(matrix,x,y)
         var z = out[2];
         if (z < 0) {
             if (isCorner) {
                 filledCorners.push([edge, index]);
-                // console.log(z);
+                // console.log("input", input);
+                // console.log("mCanvas", mCanvas);
+                // console.log("out", out);
+                // console.log("z'", getTransformedZ(matrix,x,y));
             }
             if (!wasLastFilled) {
                 firstEdge = [edge, index];

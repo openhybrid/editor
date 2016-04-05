@@ -374,3 +374,24 @@ var countEventHandlers = function (){
    console.log("amount of event listenrs: " +ec);
 
 };
+
+/**********************************************************************************************************************
+ **********************************************************************************************************************/
+
+//@author Ben Reynolds
+// given a 4x4 matrix and a 
+// return true - if p is between thw two segment points,  false otherwise
+
+/**
+ * @desc Given a 4x4 transformation matrix and an x, y coordinate pair,
+            calculates the z-position of the resulting point
+ * @return the resulting z-coordinate (float)
+ * @author Ben Reynolds
+ **/
+
+var getTransformedZ = function (matrix, x, y) {
+    // console.log(x, y);
+    // console.log(matrix);
+    return matrix[2][0] * x + matrix[2][1] * y + matrix[2][3];
+};
+
