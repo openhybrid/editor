@@ -99,6 +99,12 @@ var globalStates = {
         [0, 0, 1, 0],
         [0, 0, 0, 1]
     ],
+    realProjectionMatrix: [
+        [1, 0, 0, 0],
+        [0, 1, 0, 0],
+        [0, 0, 1, 0],
+        [0, 0, 0, 1]
+    ],
     editingModeHaveObject: false,
     angX: 0,
     angY: 0,

@@ -183,7 +183,7 @@ window.onload = function () {
  **/
 
 var postMessage = function (e) {
-    console.log(e.data);
+    console.log("received: "+ e.data);
     var msgContent = JSON.parse(e.data);
     document.getElementById(msgContent.pos).style.width = msgContent.width;
     document.getElementById(msgContent.pos).style.height = msgContent.height;
@@ -197,12 +197,34 @@ var postMessage = function (e) {
 
 
 
-    if (typeof objectExp[msgContent] !== "undefined") {
-        if (typeof msgContent.sendMatrixCSS !== "undefined") {
-            if(msgContent.sendMatrixCSS === true) {
-                objectExp[msgContent].sendMatrixCSS = true;
+    if (typeof objectExp[msgContent.pos] !== "undefined") {
+        if (typeof msgContent.sendMatrix !== "undefined") {
+            if (msgContent.sendMatrix === true) {
+                objectExp[msgContent.pos].sendMatrix = true;
+
+                document.getElementById("iframe" + msgContent.pos).contentWindow.postMessage(
+                    '{"projectionMatrix":' + JSON.stringify(globalStates.realProjectionMatrix) + "}", '*');
             }
         }
+
+
+        if (typeof msgContent.fullScreen !== "undefined") {
+            console.log("this is the content of fullscreen: " + objectExp[msgContent.pos].fullScreen);
+            if (msgContent.fullScreen === true) {
+                objectExp[msgContent.pos].fullScreen = true;
+
+                document.getElementById("thisObject" + msgContent.pos).style.webkitTransform =
+                    'matrix3d(1, 0, 0, 0,'+
+                             '0, 1, 0, 0,'+
+                             '0, 0, 1, 0,'+
+                             '0, 0, 0, 1)';
+
+            } else if (msgContent.fullScreen === false) {
+                objectExp[msgContent.pos].fullScreen = false;
+            }
+
+        }
+    }
 
        /* if (typeof msgContent.sendAcl !== "undefined") {
             if(msgContent.sendAcl === true) {
@@ -210,7 +232,7 @@ var postMessage = function (e) {
                 window.location.href = "of://sendAccelerationData";
             }
         }*/
-    }
+
 
     console.log("postMessage");
 

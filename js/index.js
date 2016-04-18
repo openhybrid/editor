@@ -85,6 +85,8 @@ var addHeartbeatObject = function (beat) {
                 // this is a work around to set the state of an objects to not being visible.
                 objectExp[thisKey].ObjectVisible = false;
                 objectExp[thisKey].screenZ = 1000;
+                objectExp[thisKey].fullScreen = false;
+                objectExp[thisKey].sendMatrix = false;
 
                 console.log(objectExp[thisKey]);
                     addElementInPreferences();
@@ -257,6 +259,8 @@ var setProjectionMatrix = function (matrix) {
         [0, 0, 1, 0],
         [0, 0, 0, 1]
     ];
+
+    globalStates.realProjectionMatrix = matrix;
 
     //   var thisTransform = multiplyMatrix(scaleZ, matrix);
     globalStates.projectionMatrix = multiplyMatrix(multiplyMatrix(scaleZ, matrix), viewportScaling);
@@ -431,74 +435,73 @@ var drawTransformed = function (thisObject, thisKey, thisTransform2, generalKey)
             }
         }
 
-        if(globalMatrix.matrixtouchOn === thisKey && globalStates.editingMode) {
-        //if(globalStates.unconstrainedPositioning===true)
-            globalMatrix.temp = copyMatrix(thisTransform2);
+
+        if (thisObject.fullScreen === false) {
+                if (globalMatrix.matrixtouchOn === thisKey && globalStates.editingMode) {
+                    //if(globalStates.unconstrainedPositioning===true)
+                    globalMatrix.temp = copyMatrix(thisTransform2);
 
 
-            if(globalMatrix.copyStillFromMatrixSwitch){
-                globalMatrix.visual =  copyMatrix(globalMatrix.temp);
-               if(typeof thisObject.matrix === "object")
-                   if (thisObject.matrix.length > 0)
-                       globalMatrix.begin = copyMatrix(multiplyMatrix(thisObject.matrix, globalMatrix.temp));
-                   else
-                       globalMatrix.begin =copyMatrix(globalMatrix.temp);
-               else
-                   globalMatrix.begin =copyMatrix(globalMatrix.temp);
+                    if (globalMatrix.copyStillFromMatrixSwitch) {
+                        globalMatrix.visual = copyMatrix(globalMatrix.temp);
+                        if (typeof thisObject.matrix === "object")
+                            if (thisObject.matrix.length > 0)
+                                globalMatrix.begin = copyMatrix(multiplyMatrix(thisObject.matrix, globalMatrix.temp));
+                            else
+                                globalMatrix.begin = copyMatrix(globalMatrix.temp);
+                        else
+                            globalMatrix.begin = copyMatrix(globalMatrix.temp);
 
-                globalMatrix.copyStillFromMatrixSwitch = false;
+                        globalMatrix.copyStillFromMatrixSwitch = false;
+                    }
+
+                    if (globalStates.unconstrainedPositioning === true)
+                        thisTransform2 = globalMatrix.visual;
+
+                }
+
+                var finalMatrixTransform2 = [
+                    [thisObject.scale, 0, 0, 0],
+                    [0, thisObject.scale, 0, 0],
+                    [0, 0, 1, 0],
+                    [thisObject.x, thisObject.y, 0, 1]
+                ];
+
+                var thisTransform = [];
+                if (typeof thisObject.matrix === "object") {
+                    if (thisObject.matrix.length > 0) {
+                        var thisTransform3 = multiplyMatrix(thisObject.matrix, thisTransform2);
+                        thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform3);
+                        //  console.log("I get here");
+                    } else
+                        thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
+                }
+                else
+                    thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
+
+
+
+             document.getElementById("thisObject" + thisKey).style.webkitTransform = 'matrix3d(' +
+                 thisTransform[0][0] + ',' + thisTransform[0][1] + ',' + thisTransform[0][2] + ',' + thisTransform[0][3] + ',' +
+                 thisTransform[1][0] + ',' + thisTransform[1][1] + ',' + thisTransform[1][2] + ',' + thisTransform[1][3] + ',' +
+                 thisTransform[2][0] + ',' + thisTransform[2][1] + ',' + thisTransform[2][2] + ',' + thisTransform[2][3] + ',' +
+                 thisTransform[3][0] + ',' + thisTransform[3][1] + ',' + thisTransform[3][2] + ',' + thisTransform[3][3] + ')';
+
+
+                // this is for later
+                // The matrix has been changed from Vuforia 3 to 4 and 5. Instead of  thisTransform[3][2] it is now thisTransform[3][3]
+                thisObject.screenX = thisTransform[3][0] / thisTransform[3][3] + (globalStates.height / 2);
+                thisObject.screenY = thisTransform[3][1] / thisTransform[3][3] + (globalStates.width / 2);
+                thisObject.screenZ = thisTransform[3][2];
+
+        }
+
+            if (thisObject.sendMatrix === true) {
+                if (generalKey === thisKey) {
+                    document.getElementById("iframe" + thisKey).contentWindow.postMessage(
+                        '{"modelViewMatrix":' + JSON.stringify(globalObjects[thisKey]) + "}", '*');
+                }
             }
-
-            if(globalStates.unconstrainedPositioning===true)
-                thisTransform2 = globalMatrix.visual;
-
-        }
-
-
-
-
-
-
-
-
-        var finalMatrixTransform2 = [
-            [thisObject.scale, 0, 0, 0],
-            [0, thisObject.scale, 0, 0],
-            [0, 0, 1, 0],
-            [thisObject.x, thisObject.y, 0, 1]
-        ];
-
-        var thisTransform = [];
-        if(typeof thisObject.matrix === "object") {
-            if (thisObject.matrix.length > 0) {
-                var thisTransform3 = multiplyMatrix(thisObject.matrix, thisTransform2);
-                thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform3);
-              //  console.log("I get here");
-            }else
-                thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
-        }
-        else
-            thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
-
-        document.getElementById("thisObject" + thisKey).style.webkitTransform = 'matrix3d(' +
-            thisTransform[0][0] + ',' + thisTransform[0][1] + ',' + thisTransform[0][2] + ',' + thisTransform[0][3] + ',' +
-            thisTransform[1][0] + ',' + thisTransform[1][1] + ',' + thisTransform[1][2] + ',' + thisTransform[1][3] + ',' +
-            thisTransform[2][0] + ',' + thisTransform[2][1] + ',' + thisTransform[2][2] + ',' + thisTransform[2][3] + ',' +
-            thisTransform[3][0] + ',' + thisTransform[3][1] + ',' + thisTransform[3][2] + ',' + thisTransform[3][3] + ')';
-
-        // this is for later
-        // The matrix has been changed from Vuforia 3 to 4 and 5. Instead of  thisTransform[3][2] it is now thisTransform[3][3]
-        thisObject.screenX = thisTransform[3][0] / thisTransform[3][3] + (globalStates.height / 2);
-        thisObject.screenY = thisTransform[3][1] / thisTransform[3][3] + (globalStates.width / 2);
-        thisObject.screenZ = thisTransform[3][2];
-
-        if (typeof thisObject.sendMatrixCSS !== "undefined") {
-            if (thisObject.sendMatrixCSS === true) {
-                document.getElementById("iframe" + thisKey).contentWindow.postMessage(
-                    '{"matrixCSS":'+JSON.stringify(thisTransform)+"}", '*');
-            }
-        }
-
         // acceleration data can be accessed via html directly
        /* if (typeof globalObjects.acl !== "undefined") {
             if (typeof thisObject.sendAcl !== "undefined") {
