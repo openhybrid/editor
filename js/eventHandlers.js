@@ -172,6 +172,52 @@ var trueTouchUp = function () {
     console.log("trueTouchUp");
 };
 
+
+
+/**********************************************************************************************************************
+ **********************************************************************************************************************/
+
+/**
+ * @desc
+ * @param
+ * @param
+ * @return
+ **/
+
+var canvasPointerDown = function (evt) {
+    if (!globalStates.guiButtonState && !globalStates.editingMode) {
+        if (!globalProgram.ObjectA) {
+            globalStates.drawDotLine = true;
+            globalStates.drawDotLineX = evt.clientX;
+            globalStates.drawDotLineY = evt.clientY;
+
+        }
+    }
+
+    console.log("canvasPointerDown");
+};
+
+/**********************************************************************************************************************
+ **********************************************************************************************************************/
+
+/**
+ * @desc
+ * @param
+ * @param
+ * @return
+ **/
+
+var getPossition = function (evt) {
+
+    globalStates.pointerPosition = [evt.clientX, evt.clientY];
+
+    overlayDiv.style.left =  evt.clientX-60;
+    overlayDiv.style.top =   evt.clientY-60;
+
+    console.log("getPossition");
+
+};
+
 /**********************************************************************************************************************
  **********************************************************************************************************************/
 
@@ -193,11 +239,11 @@ var documentPointerUp = function (evt) {
     }
     globalCanvas.hasContent = true;
 
+    overlayDiv.style.visibility = "hidden";
+
     console.log("documentPointerUp");
 };
 
-/**********************************************************************************************************************
- **********************************************************************************************************************/
 
 /**
  * @desc
@@ -206,35 +252,17 @@ var documentPointerUp = function (evt) {
  * @return
  **/
 
-var canvasPointerDown = function (evt) {
-    if (!globalStates.guiButtonState && !globalStates.editingMode) {
-        if (!globalProgram.ObjectA) {
-            globalStates.drawDotLine = true;
-            globalStates.drawDotLineX = evt.clientX;
-            globalStates.drawDotLineY = evt.clientY;
-
-        }
-    }
-    console.log("canvasPointerDown");
-};
-
-/**********************************************************************************************************************
- **********************************************************************************************************************/
-
-/**
- * @desc
- * @param
- * @param
- * @return
- **/
-
-var getPossition = function (evt) {
+var documentPointerDown = function (evt) {
 
     globalStates.pointerPosition = [evt.clientX, evt.clientY];
 
-    console.log("getPossition");
+    overlayDiv.style.visibility = "visible";
+    overlayDiv.style.left =  evt.clientX-60;
+    overlayDiv.style.top =  evt.clientY-60;
 
+    console.log("documentPointerDown");
 };
+
 
 
 /**

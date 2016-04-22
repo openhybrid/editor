@@ -414,7 +414,13 @@ var drawTransformed = function (thisObject, thisKey, thisTransform2, generalKey)
         if (!thisObject.visible) {
             document.getElementById("thisObject" + thisKey).style.display = 'initial';
 
-            document.getElementById("iframe" + thisKey).style.visibility = 'visible';
+            var thisIframe =  document.getElementById("iframe" + thisKey);
+            thisIframe.style.visibility = 'visible';
+            thisIframe.contentWindow.postMessage(
+                JSON.stringify(
+                    {
+                        "visibility": "visible"
+                    }), '*');
 
             thisObject.visible = true;
 
@@ -529,8 +535,17 @@ var drawTransformed = function (thisObject, thisKey, thisTransform2, generalKey)
 
 var hideTransformed = function (thisObject, thisKey, generalKey) {
     if (thisObject.visible === true) {
+
         document.getElementById("thisObject" + thisKey).style.display = 'none';
-        document.getElementById("iframe" + thisKey).style.visibility = 'hidden';
+
+        var thisIframe =  document.getElementById("iframe" + thisKey);
+        thisIframe.style.visibility = 'hidden';
+        thisIframe.contentWindow.postMessage(
+            JSON.stringify(
+                {
+                    "visibility": "hidden"
+                }), '*');
+
         //document.getElementById("iframe" + thisKey).style.display = 'none';
         document.getElementById("text" + thisKey).style.visibility = 'hidden';
         //document.getElementById("text" + thisKey).style.display = 'none';
@@ -538,6 +553,10 @@ var hideTransformed = function (thisObject, thisKey, generalKey) {
         thisObject.visibleEditing = false;
         document.getElementById(thisKey).style.visibility = 'hidden';
         //document.getElementById(thisKey).style.display = 'none';
+
+
+
+
         console.log("hideTransformed");
     }
 

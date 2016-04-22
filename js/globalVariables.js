@@ -158,3 +158,5 @@ var consoleText = "";
 
 var testInterlink = {};
 
+var overlayDiv;
+

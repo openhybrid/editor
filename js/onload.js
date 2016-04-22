@@ -70,6 +70,7 @@ window.onload = function () {
         globalStates.platform = false;
     }
 
+    overlayDiv = document.getElementById('overlay');
 
     if (globalStates.platform === 'iPhone') {
         document.getElementById("logButtonDiv").style.visibility = "hidden";
@@ -163,12 +164,19 @@ window.onload = function () {
 
     document.addEventListener("pointermove", getPossition, false);
     ec++;
-    document.addEventListener("pointerdown", getPossition, false);
+    document.addEventListener("pointerdown", documentPointerDown, false);
+    //document.addEventListener("pointerdown", getPossition, false);
+
     ec++;
     document.addEventListener("pointerup", documentPointerUp, false);
     ec++;
     window.addEventListener("message", postMessage, false);
     ec++;
+
+
+
+    overlayDiv.addEventListener('touchstart', function(e){e.preventDefault();});
+
 
 
     console.log("onload");
