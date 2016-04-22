@@ -183,21 +183,43 @@ window.onload = function () {
  **/
 
 var postMessage = function (e) {
-    console.log("received: "+ e.data);
+  //  console.log("received: "+ e.data);
     var msgContent = JSON.parse(e.data);
-    document.getElementById(msgContent.pos).style.width = msgContent.width;
-    document.getElementById(msgContent.pos).style.height = msgContent.height;
-    document.getElementById(msgContent.pos).style.top = ((globalStates.width - msgContent.height) / 2);
-    document.getElementById(msgContent.pos).style.left = ((globalStates.height - msgContent.width) / 2);
-
-    document.getElementById("iframe" + msgContent.pos).style.width = msgContent.width;
-    document.getElementById("iframe" + msgContent.pos).style.height = msgContent.height;
-    document.getElementById("iframe" + msgContent.pos).style.top = ((globalStates.width - msgContent.height) / 2);
-    document.getElementById("iframe" + msgContent.pos).style.left = ((globalStates.height - msgContent.width) / 2);
-
-
 
     if (typeof objectExp[msgContent.pos] !== "undefined") {
+
+// forward postMessages to all iFrames
+        if (typeof msgContent.ohGlobalMessage !== "undefined") {
+            var iframes = document.getElementsByTagName('iframe');
+            for(var i=0; i<iframes.length; i++) {
+
+                if (iframes[i].id !== "iframe" + msgContent.pos && iframes[i].style.visibility !== "hidden") {
+
+                    iframes[i].contentWindow.postMessage(
+                        JSON.stringify(
+                            {
+                                "ohGlobalMessage": msgContent.ohGlobalMessage
+                            })
+                        , "*");
+                }
+            }
+             //}
+        }
+
+        if (typeof msgContent.width !== "undefined" && typeof msgContent.height !== "undefined") {
+            document.getElementById(msgContent.pos).style.width = msgContent.width;
+            document.getElementById(msgContent.pos).style.height = msgContent.height;
+            document.getElementById(msgContent.pos).style.top = ((globalStates.width - msgContent.height) / 2);
+            document.getElementById(msgContent.pos).style.left = ((globalStates.height - msgContent.width) / 2);
+
+            document.getElementById("iframe" + msgContent.pos).style.width = msgContent.width;
+            document.getElementById("iframe" + msgContent.pos).style.height = msgContent.height;
+            document.getElementById("iframe" + msgContent.pos).style.top = ((globalStates.width - msgContent.height) / 2);
+            document.getElementById("iframe" + msgContent.pos).style.left = ((globalStates.height - msgContent.width) / 2);
+        }
+
+
+
         if (typeof msgContent.sendMatrix !== "undefined") {
             if (msgContent.sendMatrix === true) {
                 objectExp[msgContent.pos].sendMatrix = true;
@@ -234,6 +256,6 @@ var postMessage = function (e) {
         }*/
 
 
-    console.log("postMessage");
+   // console.log("postMessage");
 
 };
