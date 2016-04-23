@@ -66,7 +66,9 @@ var timeForContentLoaded = 240; // temporary set to 1000x with the UI Recording 
  ******************************************** global variables  *******************************************************
  **********************************************************************************************************************/
 
+
 var globalStates = {
+    overlay : false,
     width: window.screen.width,
     height: window.screen.height,
     guiButtonState: true,
@@ -159,4 +161,6 @@ var consoleText = "";
 var testInterlink = {};
 
 var overlayDiv;
+var overlayImg;
+var overlayImage = [];
 

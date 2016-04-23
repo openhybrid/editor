@@ -250,23 +250,23 @@
 position: fixed;
     width: 100%;
     height: 100%;
-    right: 18px;
-    top: 18px;
+   /* right: 18px;
+    top: 18px;*/
 
    /* this is a hack for adding the interface in front of the transformed web interface */
 -webkit-transform: translateZ(1px);
 ">
     <div class='Interfaces'
-         style="position: fixed; width: 60px;height: 139px;right: 0px; top: 0px;  -webkit-transform-style: preserve-3d;  visibility: visible;">
-        <img class='Interfaces' id="guiButtonImage" src="png/intOneSelect.png" width="60" height="139" alt=""></div>
-    <div class='Interfaces'
-         style="position: fixed; width: 60px;height: 60px;right: 0px; top: 149px;  -webkit-transform-style: preserve-3d; visibility: visible;">
+         style="position: fixed; width: 60px;height: 125px;right: 0px; top: 0px;  -webkit-transform-style: preserve-3d;  visibility: visible;">
+        <img class='Interfaces' id="guiButtonImage" src="png/intOneSelect.png" width="60" height="125" alt=""></div>
+    <div class='Interfaces' id="feezeButtonDiv"
+         style="position: fixed; width: 60px;height: 60px;right: 0px; top: 130px;  -webkit-transform-style: preserve-3d; visibility: visible;">
         <img class='Interfaces' id="feezeButton" src="png/freeze.png" width="60" height="60" alt=""/></div>
     <div class='Interfaces' id="guiButtonImage1"
-         style="position: fixed; width: 69px;height: 60px;right: 0px; top:0px;  -webkit-transform-style: preserve-3d; visibility: visible;">
+         style="position: fixed; width: 60px;height: 60px;right: 0px; top:0px;  -webkit-transform-style: preserve-3d; visibility: visible;">
     </div>
     <div class='Interfaces' id="guiButtonImage2"
-         style="position: fixed; width: 69px;height: 60px;right: 0px; top:70px;  -webkit-transform-style: preserve-3d; visibility: visible;">
+         style="position: fixed; width: 60px;height: 60px;right: 0px; top:62px;  -webkit-transform-style: preserve-3d; visibility: visible;">
     </div>
     <div class='Interfaces' id="reloadButtonDiv"
          style="position: fixed; width: 60px;height: 60px;right: 0px; bottom: 36px;  -webkit-transform-style: preserve-3d; visibility: visible;">
@@ -276,19 +276,19 @@ position: fixed;
         <img class='Interfaces' id="logButton" src="png/log.png" width="60" height="60" alt=""/></div>
 
     <div class='Interfaces'  id="preferencesButtonDiv"
-         style="position: fixed; width: 60px;height: 60px;right: 0px; bottom: 106px;  -webkit-transform-style: preserve-3d; visibility: visible;">
+         style="position: fixed; width: 60px;height: 60px;right: 0px; top: 195px;  -webkit-transform-style: preserve-3d; visibility: visible;">
         <img class='Interfaces'  id="preferencesButton" src="png/pref.png" width="60"
              height="60" alt=""/></div>
 
 
     <div class='Interfaces'  id="resetButtonDiv"
-         style="position: fixed; width: 60px;height: 60px;right: 140px; top: 0px;  -webkit-transform-style: preserve-3d; visibility: hidden;">
+         style="position: fixed; width: 60px;height: 60px;right: 130px; top: 0px;  -webkit-transform-style: preserve-3d; visibility: hidden;">
         <img class='Interfaces'  id="resetButton" src="png/reset.png" width="60"
              height="60" alt=""/></div>
 
 
     <div class='Interfaces'  id="unconstButtonDiv"
-         style="position: fixed; width: 60px;height: 60px;right: 70px; top: 0px;  -webkit-transform-style: preserve-3d; visibility: hidden;">
+         style="position: fixed; width: 60px;height: 60px;right: 65px; top: 0px;  -webkit-transform-style: preserve-3d; visibility: hidden;">
         <img class='Interfaces'  id="unconstButton" src="png/unconst.png" width="60"
              height="60" alt=""/></div>
     <!-- ontouchmove='eventTest()'-->
@@ -299,7 +299,7 @@ position: fixed;
 
 <div class='Interfaces' id="overlay" style="
   -webkit-transform-style: preserve-3d;
-   visibility: hidden;
+   display: none;
    pointer-events: none;
 position: fixed;
     width: 120px;
@@ -310,7 +310,7 @@ position: fixed;
    /* this is a hack for adding the interface in front of the transformed web interface */
 -webkit-transform: translateZ(2px);
 ">
-    <img src="png/overlay.png" height="120px" width="120px">
+    <img src="png/overlay.png" id="overlayImg" height="120px" width="120px">
 
     </div>
 

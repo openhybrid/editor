@@ -64,13 +64,16 @@
 
 window.onload = function () {
     uiButtons = document.getElementById("GUI");
+    overlayDiv = document.getElementById('overlay');
+    overlayImg = document.getElementById('overlayImg');
+
     GUI();
 
     if (globalStates.platform !== 'iPad' && globalStates.platform !== 'iPhone' && globalStates.platform !== 'iPod') {
         globalStates.platform = false;
     }
 
-    overlayDiv = document.getElementById('overlay');
+
 
     if (globalStates.platform === 'iPhone') {
         document.getElementById("logButtonDiv").style.visibility = "hidden";

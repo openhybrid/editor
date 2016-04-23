@@ -71,7 +71,7 @@
  * @return
  **/
 
-var addHeartbeatObject = function (beat) {
+function addHeartbeatObject(beat) {
     /*
      if (globalStates.platform) {
      window.location.href = "of://gotbeat_" + beat.id;
@@ -94,7 +94,7 @@ var addHeartbeatObject = function (beat) {
             });
         }
     }
-};
+}
 
 /**
  * @desc
@@ -103,7 +103,7 @@ var addHeartbeatObject = function (beat) {
  * @return
  **/
 
-var setStates = function (developerState, extendedTrackingState, clearSkyState, externalState) {
+function setStates(developerState, extendedTrackingState, clearSkyState, externalState) {
 
 
     globalStates.extendedTrackingState = extendedTrackingState;
@@ -156,7 +156,7 @@ var setStates = function (developerState, extendedTrackingState, clearSkyState, 
 
         });
     }
-};
+}
 
 
 /**
@@ -166,7 +166,7 @@ var setStates = function (developerState, extendedTrackingState, clearSkyState, 
  * @return
  **/
 
-var action = function (action) {
+function action(action) {
     var thisAction = JSON.parse(action);
 
     if (thisAction.reloadLink) {
@@ -193,7 +193,7 @@ var action = function (action) {
 
     console.log("found action: " + action);
 
-};
+}
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -205,7 +205,7 @@ var action = function (action) {
  * @return
  **/
 
-var getData = function (url, thisKey, callback) {
+function getData(url, thisKey, callback) {
     var req = new XMLHttpRequest();
     try {
         req.open('GET', url, true);
@@ -227,7 +227,7 @@ var getData = function (url, thisKey, callback) {
     catch (e) {
         console.log("could not connect to" + url);
     }
-};
+}
 
 
 /**********************************************************************************************************************
@@ -241,7 +241,7 @@ var getData = function (url, thisKey, callback) {
  * @return
  **/
 
-var setProjectionMatrix = function (matrix) {
+function setProjectionMatrix(matrix) {
     // globalStates.projectionMatrix = matrix;
 
 
@@ -268,7 +268,7 @@ var setProjectionMatrix = function (matrix) {
 
 
     //   onceTransform();
-};
+}
 
 
 /**********************************************************************************************************************
@@ -283,13 +283,13 @@ var setProjectionMatrix = function (matrix) {
  * @return
  **/
 
-var updateReDraw =  function () {
+function updateReDraw() {
     disp = uiButtons.style.display;
     uiButtons.style.display = 'none';
     uiButtons.style.display = disp;
-};
+}
 
-var update = function (objects) {
+function update(objects) {
     disp = uiButtons.style.display;
     uiButtons.style.display = 'none';
 
@@ -396,7 +396,7 @@ var update = function (objects) {
     uiButtons.style.display = disp;
 
 
-};
+}
 
 /**********************************************************************************************************************
  ******************************************** 3D Transforms & Utilities ***********************************************
@@ -409,7 +409,7 @@ var update = function (objects) {
  * @return
  **/
 
-var drawTransformed = function (thisObject, thisKey, thisTransform2, generalKey) {
+function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
     if (globalStates.notLoading !== thisKey && thisObject.loaded === true) {
         if (!thisObject.visible) {
             document.getElementById("thisObject" + thisKey).style.display = 'initial';
@@ -521,7 +521,7 @@ var drawTransformed = function (thisObject, thisKey, thisTransform2, generalKey)
       //  console.log("drawTransformed");
     }
 
-};
+}
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -533,7 +533,7 @@ var drawTransformed = function (thisObject, thisKey, thisTransform2, generalKey)
  * @return
  **/
 
-var hideTransformed = function (thisObject, thisKey, generalKey) {
+function hideTransformed(thisObject, thisKey, generalKey) {
     if (thisObject.visible === true) {
 
         document.getElementById("thisObject" + thisKey).style.display = 'none';
@@ -566,7 +566,7 @@ var hideTransformed = function (thisObject, thisKey, generalKey) {
      thisObject.visibleEditing = false;
      document.getElementById(thisKey).style.visibility = 'hidden';
      }*/
-};
+}
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -578,7 +578,7 @@ var hideTransformed = function (thisObject, thisKey, generalKey) {
  * @return
  **/
 
-var addElementInPreferences = function () {
+function addElementInPreferences() {
 
     var htmlContent = "";
 
@@ -667,7 +667,7 @@ var addElementInPreferences = function () {
     document.getElementById("content2").innerHTML = htmlContent;
 
     console.log("addElementInPreferences");
-};
+}
 /*
  <div class='Interfaces'
  style="position: relative; float: left; height: 30px; width: 25%; -webkit-transform-style: preserve-3d;  visibility: visible;
@@ -681,7 +681,7 @@ var addElementInPreferences = function () {
  * @return
  **/
 
-var addElement = function (thisObject, thisKey, thisUrl, generalObject) {
+function addElement(thisObject, thisKey, thisUrl, generalObject) {
     if (globalStates.notLoading !== true && globalStates.notLoading !== thisKey && thisObject.loaded !== true) {
 
         if (typeof generalObject === 'undefined') {
@@ -752,7 +752,7 @@ var addElement = function (thisObject, thisKey, thisUrl, generalObject) {
         }
         console.log("addElementInPreferences");
     }
-};
+}
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -764,7 +764,7 @@ var addElement = function (thisObject, thisKey, thisUrl, generalObject) {
  * @return
  **/
 
-var killObjects = function (thisObject, thisKey) {
+function killObjects(thisObject, thisKey) {
 
     if (thisObject.visibleCounter > 0) {
         thisObject.visibleCounter--;
@@ -784,7 +784,7 @@ var killObjects = function (thisObject, thisKey) {
         }
         console.log("killObjects");
     }
-};
+}
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -796,7 +796,7 @@ var killObjects = function (thisObject, thisKey) {
  * @return
  **/
 
-var on_load = function (generalObject, thisKey) {
+function on_load(generalObject, thisKey) {
     globalStates.notLoading = false;
     // window.location.href = "of://event_test_"+thisKey;
 
@@ -809,7 +809,7 @@ var on_load = function (generalObject, thisKey) {
     document.getElementById("iframe" + thisKey).contentWindow.postMessage(
         iFrameMessage_, '*');
     console.log("on_load");
-};
+}
 
 function fire(thisKey) {
     // globalStates.notLoading = false;

@@ -53,7 +53,7 @@
  * @return
  **/
 
-var touchDown = function (evt) {
+function touchDown(evt) {
     if (!globalStates.editingMode) {
         if (!globalStates.guiButtonState) {
             if (!globalProgram.ObjectA) {
@@ -67,7 +67,7 @@ var touchDown = function (evt) {
         globalStates.editingModeHaveObject = true;
     }
     console.log("touchDown");
-};
+}
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -79,14 +79,14 @@ var touchDown = function (evt) {
  * @return
  **/
 
-var falseTouchUp = function () {
+function falseTouchUp() {
     if (!globalStates.guiButtonState) {
         globalProgram.ObjectA = false;
         globalProgram.locationInA = false;
     }
     globalCanvas.hasContent = true;
     console.log("falseTouchUp");
-};
+}
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -98,7 +98,7 @@ var falseTouchUp = function () {
  * @return
  **/
 
-var trueTouchUp = function () {
+function trueTouchUp() {
     if (!globalStates.guiButtonState) {
         if (globalProgram.ObjectA) {
 
@@ -170,7 +170,7 @@ var trueTouchUp = function () {
     globalCanvas.hasContent = true;
 
     console.log("trueTouchUp");
-};
+}
 
 
 
@@ -184,7 +184,7 @@ var trueTouchUp = function () {
  * @return
  **/
 
-var canvasPointerDown = function (evt) {
+function canvasPointerDown(evt) {
     if (!globalStates.guiButtonState && !globalStates.editingMode) {
         if (!globalProgram.ObjectA) {
             globalStates.drawDotLine = true;
@@ -195,7 +195,7 @@ var canvasPointerDown = function (evt) {
     }
 
     console.log("canvasPointerDown");
-};
+}
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -207,7 +207,7 @@ var canvasPointerDown = function (evt) {
  * @return
  **/
 
-var getPossition = function (evt) {
+function getPossition(evt) {
 
     globalStates.pointerPosition = [evt.clientX, evt.clientY];
 
@@ -216,7 +216,7 @@ var getPossition = function (evt) {
 
     console.log("getPossition");
 
-};
+}
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -228,7 +228,9 @@ var getPossition = function (evt) {
  * @return
  **/
 
-var documentPointerUp = function (evt) {
+function documentPointerUp(evt) {
+
+    globalStates.overlay = false;
 
     if (!globalStates.guiButtonState) {
         falseTouchUp();
@@ -239,7 +241,7 @@ var documentPointerUp = function (evt) {
     }
     globalCanvas.hasContent = true;
 
-    overlayDiv.style.visibility = "hidden";
+    overlayDiv.style.display = "none";
 
     console.log("documentPointerUp");
 };
@@ -252,16 +254,22 @@ var documentPointerUp = function (evt) {
  * @return
  **/
 
-var documentPointerDown = function (evt) {
+function documentPointerDown(evt) {
 
     globalStates.pointerPosition = [evt.clientX, evt.clientY];
 
-    overlayDiv.style.visibility = "visible";
+    if(globalStates.overlay){
+        overlayImg.src = overlayImage[0].src;
+    } else {
+        overlayImg.src = overlayImage[1].src;
+    }
+
+    overlayDiv.style.display = "inline";
     overlayDiv.style.left =  evt.clientX-60;
     overlayDiv.style.top =  evt.clientY-60;
 
     console.log("documentPointerDown");
-};
+}
 
 
 
@@ -272,7 +280,7 @@ var documentPointerDown = function (evt) {
  * @return
  **/
 
-var MultiTouchStart = function (evt) {
+function MultiTouchStart(evt) {
     evt.preventDefault();
 // generate action for all links to be reloaded after upload
 
@@ -284,7 +292,7 @@ var MultiTouchStart = function (evt) {
     globalMatrix.matrixtouchOn = this.location;
     globalMatrix.copyStillFromMatrixSwitch = true;
     console.log("MultiTouchStart");
-};
+}
 
 /**
  * @desc
@@ -293,7 +301,7 @@ var MultiTouchStart = function (evt) {
  * @return
  **/
 
-var MultiTouchMove = function (evt) {
+function MultiTouchMove(evt) {
     evt.preventDefault();
 // generate action for all links to be reloaded after upload
 
@@ -360,7 +368,7 @@ var MultiTouchMove = function (evt) {
         scaleEvent(evt.touches[1]);
     }
     console.log("MultiTouchMove");
-};
+}
 
 /**
  * @desc
@@ -369,7 +377,7 @@ var MultiTouchMove = function (evt) {
  * @return
  **/
 
-var MultiTouchEnd = function (evt) {
+function MultiTouchEnd(evt) {
     evt.preventDefault();
 // generate action for all links to be reloaded after upload
     if (globalStates.editingModeHaveObject) {
@@ -405,7 +413,7 @@ if(typeof content.x === "number" && typeof content.y === "number" && typeof cont
     globalMatrix.matrixtouchOn = "";
     }
     console.log("MultiTouchEnd");
-};
+}
 
 /**
  * @desc
@@ -414,7 +422,9 @@ if(typeof content.x === "number" && typeof content.y === "number" && typeof cont
  * @return
  **/
 
-var MultiTouchCanvasStart = function (evt) {
+function MultiTouchCanvasStart(evt) {
+
+    globalStates.overlay = true;
 
     evt.preventDefault();
 // generate action for all links to be reloaded after upload
@@ -434,7 +444,7 @@ var MultiTouchCanvasStart = function (evt) {
         globalStates.editingScaledistanceOld = tempThisObject.scale;
     }
     console.log("MultiTouchCanvasStart");
-};
+}
 
 /**
  * @desc
@@ -443,7 +453,7 @@ var MultiTouchCanvasStart = function (evt) {
  * @return
  **/
 
-var MultiTouchCanvasMove = function (evt) {
+function MultiTouchCanvasMove(evt) {
     evt.preventDefault();
 // generate action for all links to be reloaded after upload
     if (globalStates.editingModeHaveObject && globalStates.editingMode && evt.targetTouches.length === 1) {
@@ -455,7 +465,7 @@ var MultiTouchCanvasMove = function (evt) {
 
     }
     console.log("MultiTouchCanvasMove");
-};
+}
 
 
 /**
@@ -465,7 +475,7 @@ var MultiTouchCanvasMove = function (evt) {
  * @return
  **/
 
-var scaleEvent = function (touch) {
+function scaleEvent(touch) {
     var thisRadius = Math.sqrt(Math.pow((globalStates.editingModeObjectX - touch.pageX), 2) + Math.pow((globalStates.editingModeObjectY - touch.pageY), 2));
     var thisScale = (thisRadius - globalStates.editingScaledistance) / 300 + globalStates.editingScaledistanceOld;
 
@@ -494,7 +504,7 @@ var scaleEvent = function (touch) {
 
     }
     console.log("scaleEvent");
-};
+}
 
 /**
  * @desc
@@ -503,7 +513,7 @@ var scaleEvent = function (touch) {
  * @return
  **/
 
-var postData = function (url, body) {
+function postData(url, body) {
 
     var request = new XMLHttpRequest();
     var params = JSON.stringify(body);
@@ -516,7 +526,7 @@ var postData = function (url, body) {
     // request.setRequestHeader("Connection", "close");
     request.send(params);
     console.log("postData");
-};
+}
 
 
 /**
@@ -526,7 +536,7 @@ var postData = function (url, body) {
  * @return
  **/
 
-var deleteData = function (url) {
+function deleteData(url) {
 
     var request = new XMLHttpRequest();
     request.open('DELETE', url, true);
@@ -538,7 +548,7 @@ var deleteData = function (url) {
     // request.setRequestHeader("Connection", "close");
     request.send();
     console.log("deleteData");
-};
+}
 
 /**
  * @desc
@@ -547,14 +557,14 @@ var deleteData = function (url) {
  * @return
  **/
 
-var uploadNewLink = function (ip, thisObjectKey, thisKey, content) {
+function uploadNewLink(ip, thisObjectKey, thisKey, content) {
 // generate action for all links to be reloaded after upload
     console.log("sending Link");
     postData('http://' + ip + ':' + httpPort + '/object/' + thisObjectKey + "/link/" + thisKey, content);
     // postData('http://' +ip+ ':' + httpPort+"/", content);
     console.log("uploadNewLink");
 
-};
+}
 
 /**
  * @desc
@@ -563,12 +573,12 @@ var uploadNewLink = function (ip, thisObjectKey, thisKey, content) {
  * @return
  **/
 
-var deleteLinkFromObject = function (ip, thisObjectKey, thisKey) {
+function deleteLinkFromObject(ip, thisObjectKey, thisKey) {
 // generate action for all links to be reloaded after upload
     console.log("I am deleting a link: " + ip);
     deleteData('http://' + ip + ':' + httpPort + '/object/' + thisObjectKey + "/link/" + thisKey);
     console.log("deleteLinkFromObject");
-};
+}
 
 /**
  * @desc
@@ -577,7 +587,7 @@ var deleteLinkFromObject = function (ip, thisObjectKey, thisKey) {
  * @return
  **/
 
-var addEventHandlers = function () {
+function addEventHandlers() {
 
     globalCanvas.canvas.addEventListener("touchstart", MultiTouchCanvasStart, false);
     ec++;
@@ -624,7 +634,7 @@ var addEventHandlers = function () {
     }
 
     console.log("addEventHandlers");
-};
+}
 
 /**
  * @desc
@@ -633,7 +643,7 @@ var addEventHandlers = function () {
  * @return
  **/
 
-var removeEventHandlers = function () {
+function removeEventHandlers() {
 
     globalCanvas.canvas.removeEventListener("touchstart", MultiTouchCanvasStart, false);
     ec--;
@@ -675,4 +685,4 @@ var removeEventHandlers = function () {
     }
 
     console.log("removeEventHandlers");
-};
+}

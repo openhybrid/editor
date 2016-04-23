@@ -109,7 +109,7 @@ var copyMatrix = function (matrix) {
  **/
 
 var invertMatrix = function (a) {
-    b =[];
+   var b =[];
     var c = a[0][0], d = a[0][1], e = a[0][2], g = a[0][3], f = a[1][0], h = a[1][1], i = a[1][2], j = a[1][3], k = a[2][0], l = a[2][1], o = a[2][2], m = a[2][3], n = a[3][0], p = a[3][1], r = a[3][2], s = a[3][3], A = c * h - d * f, B = c * i - e * f, t = c * j - g * f, u = d * i - e * h, v = d * j - g * h, w = e * j - g * i, x = k * p - l * n, y = k * r - o * n, z = k * s - m * n, C = l * r - o * p, D = l * s - m * p, E = o * s - m * r, q = 1 / (A * E - B * D + t * C + u * z - v * y + w * x);
     b[0] = [];
     b[0].push((h * E - i * D + j * C) * q);
@@ -159,7 +159,7 @@ var toAxisAngle = function (matrix) {
  * @return {Array} representing the 2d vector
  **/
 var vMN = function (x, y) {
-    return ([x[0] * y, x[1] * y]);
+    return [(x[0] * y), (x[1] * y)];
 };
 
 /**********************************************************************************************************************
@@ -173,7 +173,7 @@ var vMN = function (x, y) {
  **/
 
 var vA = function (x, y) {
-    return ([x[0] + y[0], x[1] + y[1]]);
+    return [x[0] + y[0], x[1] + y[1]];
 };
 
 
@@ -188,7 +188,7 @@ var vA = function (x, y) {
  **/
 
 var vD = function (x, y) {
-    return ([x[0] - y[0], x[1] - y[1]]);
+    return [x[0] - y[0], x[1] - y[1]];
 };
 
 
@@ -203,8 +203,8 @@ var vD = function (x, y) {
  **/
 
 var vR = function (vector, rotation) {
-    return ([Math.cos(rotation) * vector[0] - Math.sin(rotation) * vector[1],
-        Math.sin(rotation) * vector[0] + Math.cos(rotation) * vector[1]]);
+    return [Math.cos(rotation) * vector[0] - Math.sin(rotation) * vector[1],
+        Math.sin(rotation) * vector[0] + Math.cos(rotation) * vector[1]];
 };
 
 /**********************************************************************************************************************

@@ -66,6 +66,7 @@ var unconstButtonImage = [];
 var editingButtonImage = [];
 var loadNewUiImage = [];
 
+
 /**********************************************************************************************************************
  **********************************************************************************************************************/
 
@@ -76,7 +77,7 @@ var loadNewUiImage = [];
  * @return
  **/
 
-var GUI = function () {
+function GUI() {
 
     preload(freezeButtonImage,
         'png/freeze.png', 'png/freezeOver.png', 'png/freezeSelect.png','png/freezeEmpty.png'
@@ -106,7 +107,9 @@ var GUI = function () {
         'png/load.png', 'png/loadOver.png'
     );
 
-
+    preload(overlayImage,
+        'png/overlay.png', 'png/overlayTouch.png',  'png/overlayActive.png'
+    );
 
 
     document.getElementById("guiButtonImage1").addEventListener("touchstart", function () {
@@ -260,7 +263,8 @@ var GUI = function () {
 
 
 
-  var sendResetContent =  function (object, location) {
+
+    function sendResetContent(object, location) {
 // generate action for all links to be reloaded after upload
 
             var tempThisObject = {};
@@ -283,7 +287,7 @@ var GUI = function () {
                 postData('http://' + objectExp[object].ip + ':' + httpPort + '/object/' + object + "/size/" + location, content);
             }
 
-    };
+    }
 
 
     document.getElementById("unconstButton").addEventListener("touchstart", function () {
@@ -334,7 +338,8 @@ var GUI = function () {
 
     document.getElementById("preferencesButton").addEventListener("touchend", function () {
         if (globalStates.preferencesButtonState === true) {
-            preferencesHide()
+            preferencesHide();
+            overlayDiv.style.visibility = "visible";
 
             if(globalStates.editingMode) {
                 document.getElementById('resetButton').style.visibility = "visible";
@@ -367,6 +372,9 @@ var GUI = function () {
 
 
             preferencesVisible();
+
+            overlayDiv.style.visibility = "hidden";
+
             consoleHide();
 
 
@@ -436,7 +444,7 @@ var GUI = function () {
     });
     console.log("GUI");
     ec++;
-};
+}
 
 
 /**
@@ -446,14 +454,14 @@ var GUI = function () {
  * @return
  **/
 
-var consoleHide = function () {
+function consoleHide() {
     if(!globalStates.UIOffMode)    document.getElementById('logButton').src = logButtonImage[0].src;
     globalStates.logButtonState = false;
     document.getElementById("consolelog").style.visibility = "hidden";
     document.getElementById("consolelog").innerText = "";
 
     console.log("consoleHide");
-};
+}
 
 /**
  * @desc
@@ -462,13 +470,13 @@ var consoleHide = function () {
  * @return
  **/
 
-var preferencesHide = function () {
+function preferencesHide() {
     if(!globalStates.UIOffMode)    document.getElementById('preferencesButton').src = preferencesButtonImage[0].src;
     globalStates.preferencesButtonState = false;
     document.getElementById("preferences").style.visibility = "hidden" ; //= "hidden";
     document.getElementById("preferences").style.dispaly = "none" ; //= "hidden";
     console.log("preferencesHide");
-};
+}
 
 
 /**
@@ -478,13 +486,13 @@ var preferencesHide = function () {
  * @return
  **/
 
-var preferencesVisible = function () {
+function preferencesVisible() {
     if(!globalStates.UIOffMode)    document.getElementById('preferencesButton').src = preferencesButtonImage[2].src;
     globalStates.preferencesButtonState = true;
     document.getElementById("preferences").style.visibility = "visible" ; //
     document.getElementById("preferences").style.display = "inline" ; //= "hidden";
     console.log("preferencesVisible");
-};
+}
 
 
 /**********************************************************************************************************************
@@ -497,14 +505,14 @@ var preferencesVisible = function () {
  * @return
  **/
 
-var preload = function (array) {
+function preload(array) {
     for (var i = 0; i < preload.arguments.length - 1; i++) {
         array[i] = new Image();
         array[i].src = preload.arguments[i + 1];
     }
 
     console.log("preload");
-};
+}
 
 
 
