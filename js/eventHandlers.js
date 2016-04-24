@@ -230,7 +230,7 @@ function getPossition(evt) {
 
 function documentPointerUp(evt) {
 
-    globalStates.overlay = false;
+    globalStates.overlay = 0;
 
     if (!globalStates.guiButtonState) {
         falseTouchUp();
@@ -258,11 +258,7 @@ function documentPointerDown(evt) {
 
     globalStates.pointerPosition = [evt.clientX, evt.clientY];
 
-    if(globalStates.overlay){
-        overlayImg.src = overlayImage[0].src;
-    } else {
-        overlayImg.src = overlayImage[1].src;
-    }
+    overlayImg.src = overlayImage[globalStates.overlay].src;
 
     overlayDiv.style.display = "inline";
     overlayDiv.style.left =  evt.clientX-60;
@@ -424,7 +420,7 @@ if(typeof content.x === "number" && typeof content.y === "number" && typeof cont
 
 function MultiTouchCanvasStart(evt) {
 
-    globalStates.overlay = true;
+    globalStates.overlay = 1;
 
     evt.preventDefault();
 // generate action for all links to be reloaded after upload

@@ -74,7 +74,6 @@ window.onload = function () {
     }
 
 
-
     if (globalStates.platform === 'iPhone') {
         document.getElementById("logButtonDiv").style.visibility = "hidden";
         document.getElementById("reloadButtonDiv").style.visibility = "hidden";
@@ -97,7 +96,7 @@ window.onload = function () {
         editingInterface.style.right = "22%";
         editingInterface.style.bottom = "14%";
 
-         editingInterface = document.getElementById("content11");
+        editingInterface = document.getElementById("content11");
         editingInterface.style.fontSize = "12px";
         editingInterface.style.width = "40%";
 
@@ -115,18 +114,17 @@ window.onload = function () {
         editingInterface.style.width = "60%";
 
 
-
         editingInterface = document.getElementById("content15");
         editingInterface.style.fontSize = "12px";
         editingInterface.style.width = "40%";
-        editingInterface.innerHTML ='<b>External Interface</b><br>';
+        editingInterface.innerHTML = '<b>External Interface</b><br>';
 
         editingInterface = document.getElementById("content16");
         editingInterface.style.fontSize = "12px";
         editingInterface.style.width = "60%";
 
         editingInterface = document.getElementById("content18");
-        editingInterface.style.visibility ='hidden';
+        editingInterface.style.visibility = 'hidden';
 
 
         editingInterface = document.getElementById("content1");
@@ -135,18 +133,16 @@ window.onload = function () {
         editingInterface.style.right = "65%";
         editingInterface.style.bottom = "14%";
 
-    }else
-    {
+    } else {
         editingInterface = document.getElementById("content15");
         editingInterface.style.paddingTop = "13px";
 
 
-
         editingInterface = document.getElementById("content20");
-        editingInterface.innerHTML = '<input id="newURLText"'+
+        editingInterface.innerHTML = '<input id="newURLText"' +
 
-        "style='text-align: left; font-family: Helvetica Neue, Helvetica, Arial; font-size: large;   -webkit-user-select: text;'"+
-        'type="text" name="newURL"  size="27" placeholder="http://..."'+ "oninput='newURLTextLoad()'><br>";
+            "style='text-align: left; font-family: Helvetica Neue, Helvetica, Arial; font-size: large;   -webkit-user-select: text;'" +
+            'type="text" name="newURL"  size="27" placeholder="http://..."' + "oninput='newURLTextLoad()'><br>";
     }
 
     globalCanvas.canvas = document.getElementById('canvas');
@@ -169,17 +165,14 @@ window.onload = function () {
     ec++;
     document.addEventListener("pointerdown", documentPointerDown, false);
     //document.addEventListener("pointerdown", getPossition, false);
-
     ec++;
     document.addEventListener("pointerup", documentPointerUp, false);
     ec++;
     window.addEventListener("message", postMessage, false);
     ec++;
-
-
-
-    overlayDiv.addEventListener('touchstart', function(e){e.preventDefault();});
-
+    overlayDiv.addEventListener('touchstart', function (e) {
+        e.preventDefault();
+    });
 
 
     console.log("onload");
@@ -194,79 +187,85 @@ window.onload = function () {
  **/
 
 var postMessage = function (e) {
-  //  console.log("received: "+ e.data);
+
+    //  console.log("received: "+ e.data);
     var msgContent = JSON.parse(e.data);
 
-    if (typeof objectExp[msgContent.pos] !== "undefined") {
+    var tempThisObject;
 
-// forward postMessages to all iFrames
-        if (typeof msgContent.ohGlobalMessage !== "undefined") {
-            var iframes = document.getElementsByTagName('iframe');
-            for(var i=0; i<iframes.length; i++) {
-
-                if (iframes[i].id !== "iframe" + msgContent.pos && iframes[i].style.visibility !== "hidden") {
-
-                    iframes[i].contentWindow.postMessage(
-                        JSON.stringify(
-                            {
-                                "ohGlobalMessage": msgContent.ohGlobalMessage
-                            })
-                        , "*");
+    if (typeof msgContent.pos !== "undefined" && typeof msgContent.obj !== "undefined") {
+        if (typeof objectExp[msgContent.obj] !== "undefined") {
+            if (msgContent.pos === msgContent.obj) {
+                tempThisObject = objectExp[msgContent.pos];
+            } else {
+                if (typeof objectExp[msgContent.obj].objectValues[msgContent.pos] !== "undefined") {
+                    tempThisObject = objectExp[msgContent.obj].objectValues[msgContent.pos];
                 }
             }
-             //}
-        }
-
-        if (typeof msgContent.width !== "undefined" && typeof msgContent.height !== "undefined") {
-            document.getElementById(msgContent.pos).style.width = msgContent.width;
-            document.getElementById(msgContent.pos).style.height = msgContent.height;
-            document.getElementById(msgContent.pos).style.top = ((globalStates.width - msgContent.height) / 2);
-            document.getElementById(msgContent.pos).style.left = ((globalStates.height - msgContent.width) / 2);
-
-            document.getElementById("iframe" + msgContent.pos).style.width = msgContent.width;
-            document.getElementById("iframe" + msgContent.pos).style.height = msgContent.height;
-            document.getElementById("iframe" + msgContent.pos).style.top = ((globalStates.width - msgContent.height) / 2);
-            document.getElementById("iframe" + msgContent.pos).style.left = ((globalStates.height - msgContent.width) / 2);
-        }
-
-
-
-        if (typeof msgContent.sendMatrix !== "undefined") {
-            if (msgContent.sendMatrix === true) {
-                objectExp[msgContent.pos].sendMatrix = true;
-
-                document.getElementById("iframe" + msgContent.pos).contentWindow.postMessage(
-                    '{"projectionMatrix":' + JSON.stringify(globalStates.realProjectionMatrix) + "}", '*');
-            }
-        }
-
-
-        if (typeof msgContent.fullScreen !== "undefined") {
-            console.log("this is the content of fullscreen: " + objectExp[msgContent.pos].fullScreen);
-            if (msgContent.fullScreen === true) {
-                objectExp[msgContent.pos].fullScreen = true;
-
-                document.getElementById("thisObject" + msgContent.pos).style.webkitTransform =
-                    'matrix3d(1, 0, 0, 0,'+
-                             '0, 1, 0, 0,'+
-                             '0, 0, 1, 0,'+
-                             '0, 0, 0, 1)';
-
-            } else if (msgContent.fullScreen === false) {
-                objectExp[msgContent.pos].fullScreen = false;
-            }
-
         }
     }
 
-       /* if (typeof msgContent.sendAcl !== "undefined") {
-            if(msgContent.sendAcl === true) {
-                objectExp[msgContent.obj].sendAcl = true;
-                window.location.href = "of://sendAccelerationData";
+
+    if (typeof tempThisObject !== "undefined") {
+
+            if (typeof msgContent.width !== "undefined" && typeof msgContent.height !== "undefined") {
+
+                document.getElementById(msgContent.pos).style.width = msgContent.width;
+                document.getElementById(msgContent.pos).style.height = msgContent.height;
+                document.getElementById(msgContent.pos).style.top = ((globalStates.width - msgContent.height) / 2);
+                document.getElementById(msgContent.pos).style.left = ((globalStates.height - msgContent.width) / 2);
+
+                document.getElementById("iframe" + msgContent.pos).style.width = msgContent.width;
+                document.getElementById("iframe" + msgContent.pos).style.height = msgContent.height;
+                document.getElementById("iframe" + msgContent.pos).style.top = ((globalStates.width - msgContent.height) / 2);
+                document.getElementById("iframe" + msgContent.pos).style.left = ((globalStates.height - msgContent.width) / 2);
+            } else if (typeof msgContent.sendMatrix !== "undefined") {
+                if (msgContent.sendMatrix === true) {
+                    tempThisObject.sendMatrix = true;
+
+                    document.getElementById("iframe" + msgContent.pos).contentWindow.postMessage(
+                        '{"projectionMatrix":' + JSON.stringify(globalStates.realProjectionMatrix) + "}", '*');
+                }
+                // forward postMessages to all iFrames
+            } else if (typeof msgContent.ohGlobalMessage !== "undefined") {
+                var iframes = document.getElementsByTagName('iframe');
+                for (var i = 0; i < iframes.length; i++) {
+
+                    if (iframes[i].id !== "iframe" + msgContent.pos && iframes[i].style.visibility !== "hidden") {
+
+                        iframes[i].contentWindow.postMessage(
+                            JSON.stringify(
+                                {
+                                    "ohGlobalMessage": msgContent.ohGlobalMessage
+                                })
+                            , "*");
+                    }
+                }
+            } else if (typeof msgContent.fullScreen !== "undefined") {
+                if (msgContent.fullScreen === true) {
+                    tempThisObject.fullScreen = true;
+
+                    document.getElementById("thisObject" + msgContent.pos).style.webkitTransform =
+                        'matrix3d(1, 0, 0, 0,' +
+                        '0, 1, 0, 0,' +
+                        '0, 0, 1, 0,' +
+                        '0, 0, 0, 1)';
+
+                } else if (msgContent.fullScreen === false) {
+                    tempThisObject.fullScreen = false;
+                }
+
             }
-        }*/
+    }
+
+    /* if (typeof msgContent.sendAcl !== "undefined") {
+     if(msgContent.sendAcl === true) {
+     objectExp[msgContent.obj].sendAcl = true;
+     window.location.href = "of://sendAccelerationData";
+     }
+     }*/
 
 
-   // console.log("postMessage");
+    // console.log("postMessage");
 
 };

@@ -290,8 +290,8 @@ function updateReDraw() {
 }
 
 function update(objects) {
-    disp = uiButtons.style.display;
-    uiButtons.style.display = 'none';
+    //disp = uiButtons.style.display;
+    //uiButtons.style.display = 'none';
 
     if (globalStates.feezeButtonState == false) {
         globalObjects = objects;
@@ -347,6 +347,8 @@ function update(objects) {
                 if (!globalStates.guiButtonState) {
                     drawTransformed(tempValue, subKey, tempMatrix, key);
                     addElement(tempValue, subKey, "http://" + generalObject.ip + ":" + httpPort + "/obj/dataPointInterfaces/" + tempValue.plugin + "/", key);
+
+             //  console.log("http://" + generalObject.ip + ":" + httpPort + "/obj/dataPointInterfaces/" + tempValue.plugin + "/");
                 } else {
                     hideTransformed(tempValue, subKey, key);
                 }
@@ -393,7 +395,7 @@ function update(objects) {
   //  countEventHandlers()
 
 
-    uiButtons.style.display = disp;
+   // uiButtons.style.display = disp;
 
 
 }
@@ -485,14 +487,11 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
                 else
                     thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
 
-
-
              document.getElementById("thisObject" + thisKey).style.webkitTransform = 'matrix3d(' +
                  thisTransform[0][0] + ',' + thisTransform[0][1] + ',' + thisTransform[0][2] + ',' + thisTransform[0][3] + ',' +
                  thisTransform[1][0] + ',' + thisTransform[1][1] + ',' + thisTransform[1][2] + ',' + thisTransform[1][3] + ',' +
                  thisTransform[2][0] + ',' + thisTransform[2][1] + ',' + thisTransform[2][2] + ',' + thisTransform[2][3] + ',' +
                  thisTransform[3][0] + ',' + thisTransform[3][1] + ',' + thisTransform[3][2] + ',' + thisTransform[3][3] + ')';
-
 
                 // this is for later
                 // The matrix has been changed from Vuforia 3 to 4 and 5. Instead of  thisTransform[3][2] it is now thisTransform[3][3]
@@ -535,7 +534,6 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
 
 function hideTransformed(thisObject, thisKey, generalKey) {
     if (thisObject.visible === true) {
-
         document.getElementById("thisObject" + thisKey).style.display = 'none';
 
         var thisIframe =  document.getElementById("iframe" + thisKey);
@@ -553,10 +551,6 @@ function hideTransformed(thisObject, thisKey, generalKey) {
         thisObject.visibleEditing = false;
         document.getElementById(thisKey).style.visibility = 'hidden';
         //document.getElementById(thisKey).style.display = 'none';
-
-
-
-
         console.log("hideTransformed");
     }
 
@@ -702,7 +696,6 @@ function addElement(thisObject, thisKey, thisUrl, generalObject) {
         addDoc.className = "main";
         document.getElementById("GUI").appendChild(addDoc);
 
-
         var tempAddContent =
             "<iframe id='iframe" + thisKey + "' onload='on_load(\"" +
             generalObject + "\",\"" + thisKey + "\")' frameBorder='0' " +
@@ -770,6 +763,7 @@ function killObjects(thisObject, thisKey) {
         thisObject.visibleCounter--;
     } else if (thisObject.loaded) {
         thisObject.loaded = false;
+
         var tempElementDiv = document.getElementById("thisObject" + thisKey);
         tempElementDiv.parentNode.removeChild(tempElementDiv);
 
@@ -806,6 +800,7 @@ function on_load(generalObject, thisKey) {
         pos: thisKey,
         objectValues: objectExp[generalObject].objectValues
     });
+    
     document.getElementById("iframe" + thisKey).contentWindow.postMessage(
         iFrameMessage_, '*');
     console.log("on_load");

@@ -68,7 +68,7 @@ var timeForContentLoaded = 240; // temporary set to 1000x with the UI Recording 
 
 
 var globalStates = {
-    overlay : false,
+    overlay : 0,
     width: window.screen.width,
     height: window.screen.height,
     guiButtonState: true,
