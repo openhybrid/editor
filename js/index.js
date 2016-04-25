@@ -481,6 +481,30 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
                         var thisTransform3 = multiplyMatrix(thisObject.matrix, thisTransform2);
                         thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform3);
                         //  console.log("I get here");
+
+                        // draw marker-plane intersection here
+                        if(globalMatrix.matrixtouchOn === thisKey && globalStates.editingMode) {
+                            var newMatrix = copyMatrix(multiplyMatrix(globalMatrix.begin, invertMatrix(globalMatrix.temp)));
+                            var theObject = document.getElementById(thisKey);
+                            // console.log("update", newMatrix, thisObject, thisKey, theObject);
+                            // console.log("existing matrices", thisObject.matrix, thisTransform2, thisTransform3, finalMatrixTransform2, thisTransform);
+
+                            var oscale = thisObject.scale;
+                            var odx = thisObject.x;
+                            var ody = thisObject.y;
+                            console.log(odx, ody, oscale);
+
+                            var adjustedWithScale = [
+                                [newMatrix[0][0] * oscale, newMatrix[0][1], newMatrix[0][2], newMatrix[0][3]],
+                                [newMatrix[1][0], newMatrix[1][1] * oscale, newMatrix[1][2], newMatrix[1][3]],
+                                [newMatrix[2][0], newMatrix[2][1], newMatrix[2][2], newMatrix[2][3]],
+                                [newMatrix[3][0] + odx, newMatrix[3][1] + ody, newMatrix[3][2], newMatrix[3][3]]
+                            ];
+
+                            estimateIntersection(theObject, adjustedWithScale);
+                        }  
+
+
                     } else
                         thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
                 }
@@ -709,6 +733,8 @@ function addElement(thisObject, thisKey, thisUrl, generalObject) {
             "top:" + ((globalStates.width - thisObject.frameSizeX) / 2) + "px; left:" + ((globalStates.height - thisObject.frameSizeY) / 2) + "px; visibility: hidden;' class='mainEditing'></div>" +
             "";
 
+        tempAddContent += "<canvas id='canvas" + thisKey + "'style='width:5px; height:5px; visibility:visible;' class='mainCanvas'></canvas>";
+
         tempAddContent += "<div id='text" + thisKey + "' frameBorder='0' style='width:5px; height:5px;" +
             "top:" + ((globalStates.width) / 2 + thisObject.frameSizeX / 2) + "px; left:" + ((globalStates.height - thisObject.frameSizeY) / 2) + "px; visibility: hidden;' class='mainProgram'><font color='white'>" + thisObject.name + "</font></div>" +
             "";
@@ -812,3 +838,240 @@ function fire(thisKey) {
 
 }
 
+
+/**********************************************************************************************************************
+ **********************************************************************************************************************/
+
+ var cssTransformToMatrix = function(cssTransformString) {
+    return mat4.clone(cssTransformString.replace(/^.*\((.*)\)$/g, "$1").split(/, +/).map(Number));
+}
+
+var getTransformMatrixForDiv = function(div) {
+    console.log(div);
+    console.log(div.style);
+    console.log(div.style.transform);
+    return cssTransformToMatrix(div.style.transform);
+}
+
+var getCornersClockwise = function(thisCanvas) {
+return [[0, 0, 0],
+        [thisCanvas.width, 0, 0],
+        [thisCanvas.width, thisCanvas.height, 0],
+        [0, thisCanvas.height, 0]];
+}
+
+var areCornersEqual = function(corner1, corner2) {
+    return (corner1[0] === corner2[0] && corner1[1] === corner2[1]);
+}
+
+var areCornerPairsIdentical = function(c1a, c1b, c2a, c2b) {
+    return (areCornersEqual(c1a, c2a) && areCornersEqual(c1b, c2b));
+}
+
+var areCornerPairsSymmetric = function(c1a, c1b, c2a, c2b) {
+    return (areCornersEqual(c1a, c2b) && areCornersEqual(c1b, c2a));
+}
+
+var areCornersAdjacent = function(corner1, corner2) {
+    return (corner1[0] === corner2[0] || corner1[1] === corner2[1]); 
+}
+
+var areCornersOppositeZ = function(corner1, corner2) {
+    var z1 = corner1[2];
+    var z2 = corner2[2];
+    var oppositeSign = ((z1 * z2) < 0);
+    return oppositeSign;
+}
+
+// makes sure we don't add symmetric pairs to list
+var addCornerPairToOppositeCornerPairs = function(cornerPair, oppositeCornerPairs) {
+    var corner1 = cornerPair[0];
+    var corner2 = cornerPair[1];
+    var safeToAdd = true;
+    if (oppositeCornerPairs.length > 0) {
+        oppositeCornerPairs.forEach(function(pairList) {
+            var existingCorner1 = pairList[0];
+            var existingCorner2 = pairList[1];
+            if (areCornerPairsSymmetric(existingCorner1, existingCorner2, corner1, corner2)) {
+                safeToAdd = false;
+                return;
+            }
+            if (areCornerPairsIdentical(existingCorner1, existingCorner2, corner1, corner2)) {
+                safeToAdd = false;
+                return;
+            }
+        });
+    }
+    if (safeToAdd) {
+        oppositeCornerPairs.push([corner1, corner2]);
+    }
+}
+
+var getCenterOfPoints = function(points) {
+    if (points.length < 1) { return [0,0]; }
+    var sumX = 0;
+    var sumY = 0;
+    points.forEach(function(point) {
+        sumX += point[0];
+        sumY += point[1];
+    });
+    var avgX = sumX / points.length;
+    var avgY = sumY / points.length;
+    return [avgX, avgY];
+}
+
+var sortPointsClockwise = function(points) {
+    var centerPoint = getCenterOfPoints(points);
+    var centerX = centerPoint[0];
+    var centerY = centerPoint[1];
+
+    var comparePoints = function(a,b) {
+        var atanA = Math.atan2(a[1] - centerY, a[0] - centerX);
+        var atanB = Math.atan2(b[1] - centerY, b[0] - centerX);
+        if (atanA < atanB) return -1;
+        else if (atanB > atanA) return 1;
+        return 0;
+    }
+
+    return points.sort(comparePoints);
+}
+
+var estimateIntersection = function (theObject, matrix) {
+
+    var thisCanvas = document.getElementById("canvas"+theObject.id);
+    var theDiv = document.getElementById("thisObject"+theObject.id);
+
+    var mCanvas = mat4.clone(mat1x16From4x4(matrix));
+    ////////////////////////////////////////
+
+    var corners = getCornersClockwise(thisCanvas);
+    // console.log(corners);
+    var out = vec4.create();
+    corners.forEach(function(corner, index) {
+        var x = corner[0] - thisCanvas.width/2;
+        var y = corner[1] - thisCanvas.height/2;
+        var input = vec4.clone([x,y,0,1]); // assumes z-position of corner is always 0
+        vec4.transformMat4(out, input, mCanvas);
+        // var z = getTransformedZ(matrix,x,y)
+        corner[2] = out[2]; // sets z position of corner to its eventual transformed value
+    });
+
+    var oppositeCornerPairs = [];
+    corners.forEach(function(corner1) {
+        corners.forEach(function(corner2) {
+            // only check adjacent pairs of corners
+            // ignore same corner
+            if (areCornersEqual(corner1, corner2)) { return; }
+
+            // x or y should be the same
+            if (areCornersAdjacent(corner1, corner2)) {  
+                if (areCornersOppositeZ(corner1, corner2)) {
+                    addCornerPairToOppositeCornerPairs([corner1, corner2], oppositeCornerPairs);
+                }
+            }
+        });
+    });
+
+    // for each opposite corner pair, binary search for the x,y location that will correspond with 0 z-pos
+    // .... or can it be calculated directly....? it's just a linear equation!!!
+    var interceptPoints = [];
+    oppositeCornerPairs.forEach(function(cornerPair) {
+        var c1 = cornerPair[0];
+        var c2 = cornerPair[1];
+        var x1 = c1[0];
+        var y1 = c1[1];
+        var z1 = c1[2];
+        var x2 = c2[0];
+        var y2 = c2[1];
+        var z2 = c2[2];
+
+        if (Math.abs(x2 - x1) > Math.abs(y2 - y1)) {
+            // console.log("dx");
+            var slope = ((z2 - z1)/(x2 - x1));
+            var x_intercept = x1 - (z1 / slope);
+            interceptPoints.push([x_intercept, y1]);
+        } else {
+            // console.log("dy");
+            var slope = ((z2 - z1)/(y2 - y1));
+            var y_intercept = y1 - (z1 / slope);
+            interceptPoints.push([x1, y_intercept]);
+        }
+    });
+
+    ////////////////////////////////////////
+
+    // get corners, add in correct order so they get drawn clockwise
+
+    corners.forEach(function(corner) {
+        if (corner[2] < 0) {
+            interceptPoints.push(corner);
+        }
+    });
+
+    var sortedPoints = sortPointsClockwise(interceptPoints);
+
+    // draws blue and purple diagonal lines to mask the image
+    var ctx=thisCanvas.getContext("2d");
+    ctx.clearRect(0, 0, thisCanvas.width, thisCanvas.height);
+
+    var diagonalLineWidth = 22;
+    ctx.lineWidth = diagonalLineWidth;
+    ctx.strokeStyle = '#01FFFC';
+    for (var i=-thisCanvas.height; i<thisCanvas.width; i+=2.5*diagonalLineWidth) {
+        ctx.beginPath();
+        ctx.moveTo(i, -diagonalLineWidth/2);
+        ctx.lineTo(i + thisCanvas.height+diagonalLineWidth/2, thisCanvas.height+diagonalLineWidth/2);
+        ctx.stroke();
+    }
+
+    // Save the state, so we can undo the clipping
+    ctx.save();
+ 
+    // Create a circle
+    ctx.beginPath();
+
+    if (sortedPoints.length > 2) {
+        ctx.beginPath();
+        ctx.moveTo(sortedPoints[0][0], sortedPoints[0][1]);
+        sortedPoints.forEach(function(point) {
+            ctx.lineTo(point[0], point[1]);
+        });
+        ctx.closePath();
+        // ctx.fill();
+    }     
+    // Clip to the current path
+    ctx.clip();
+
+    // draw whatever needs to get masked here!
+
+    var diagonalLineWidth = 22;
+    ctx.lineWidth = diagonalLineWidth;
+    ctx.strokeStyle = '#FF01FC';
+    for (var i=-thisCanvas.height; i<thisCanvas.width; i+=2.5*diagonalLineWidth) {
+        ctx.beginPath();
+        ctx.moveTo(i, -diagonalLineWidth/2);
+        ctx.lineTo(i + thisCanvas.height+diagonalLineWidth/2, thisCanvas.height+diagonalLineWidth/2);
+        ctx.stroke();
+    }
+ 
+    // Undo the clipping
+    ctx.restore();
+
+}
+
+var showEditingStripes = function(thisKey, shouldShow) {
+    var thisCanvas = document.getElementById("canvas"+thisKey);
+    var ctx=thisCanvas.getContext("2d");
+    ctx.clearRect(0, 0, thisCanvas.width, thisCanvas.height);
+    if (shouldShow) {
+        var diagonalLineWidth = 22;
+        ctx.lineWidth = diagonalLineWidth;
+        ctx.strokeStyle = '#01FFFC';
+        for (var i=-thisCanvas.height; i<thisCanvas.width; i+=2.5*diagonalLineWidth) {
+            ctx.beginPath();
+            ctx.moveTo(i, -diagonalLineWidth/2);
+            ctx.lineTo(i + thisCanvas.height+diagonalLineWidth/2, thisCanvas.height+diagonalLineWidth/2);
+            ctx.stroke();
+        }
+    }
+}
