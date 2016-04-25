@@ -79,7 +79,7 @@ function deleteLines(x21, y21, x22, y22) {
             }
             if (checkLineCross(bA.screenX, bA.screenY, bB.screenX, bB.screenY, x21, y21, x22, y22, globalCanvas.canvas.width, globalCanvas.canvas.height)) {
                 delete thisObject.objectLinks[subKeysome];
-                console.log("iam executing link deletion");
+                cout("iam executing link deletion");
                 deleteLinkFromObject(thisObject.ip,keysome, subKeysome);
             }
         }
@@ -132,8 +132,8 @@ function drawAllLines(thisObject, context) {
             bA.screenZ = thisM / (bA.screenZ);
             bB.screenZ = thisM / (bB.screenZ);
 
-           // console.log(oB.ObjectVisible);
-           // console.log(oA.ObjectVisible);
+           // cout(oB.ObjectVisible);
+           // cout(oA.ObjectVisible);
 
 
         if (bA.screenZ > 3) {
@@ -170,7 +170,7 @@ function drawAllLines(thisObject, context) {
             }
 
 
-            //   console.log( bB.screenZ);
+            //   cout( bB.screenZ);
         bA.screenZ = 1;
             bB.screenZ = 1;
 

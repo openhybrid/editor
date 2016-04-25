@@ -55,7 +55,7 @@
  **/
 
 function objectLog(thisKey) {
-    console.log("objectLog");
+    cout("objectLog");
     var consoleText_ = "";
 
     consoleText_ += "Object Name: <b>" + thisKey.slice(0, -12);
@@ -92,7 +92,7 @@ function objectLog(thisKey) {
  **/
 
 function generalLog(tempConsoleText) {
-    console.log("generalLog");
+    cout("generalLog");
     var thisLoop = new Date;
     var fps = 1000 / (thisLoop - globalStates.lastLoop);
     globalStates.lastLoop = thisLoop;

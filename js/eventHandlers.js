@@ -66,7 +66,7 @@ function touchDown(evt) {
         globalStates.editingModeLocation = this.location;
         globalStates.editingModeHaveObject = true;
     }
-    console.log("touchDown");
+    cout("touchDown");
 }
 
 /**********************************************************************************************************************
@@ -85,7 +85,7 @@ function falseTouchUp() {
         globalProgram.locationInA = false;
     }
     globalCanvas.hasContent = true;
-    console.log("falseTouchUp");
+    cout("falseTouchUp");
 }
 
 /**********************************************************************************************************************
@@ -98,51 +98,24 @@ function falseTouchUp() {
  * @return
  **/
 
+function testForLoop(){
+
+
+
+}
+
+
 function trueTouchUp() {
     if (!globalStates.guiButtonState) {
         if (globalProgram.ObjectA) {
 
-            var okForNewLink = true;
             var thisTempObject = objectExp[globalProgram.ObjectA];
             var thisTempObjectLinks = thisTempObject.objectLinks;
 
             globalProgram.ObjectB = this.ObjectId;
             globalProgram.locationInB = this.location;
 
-            // check if connection is with it self
-            if (globalProgram.ObjectA === this.ObjectId && globalProgram.locationInA === this.location) {
-                okForNewLink = false;
-            }
-
-            // todo check that objects are making these checks as well for not producing overlapeses.
-            // check if this connection already exists?
-            for (var thisSubKey in thisTempObjectLinks) {
-                if (thisTempObjectLinks[thisSubKey].ObjectA === globalProgram.ObjectA &&
-                    thisTempObjectLinks[thisSubKey].ObjectB === globalProgram.ObjectB &&
-                    thisTempObjectLinks[thisSubKey].locationInA === globalProgram.locationInA &&
-                    thisTempObjectLinks[thisSubKey].locationInB === globalProgram.locationInB) {
-                    okForNewLink = false;
-                }
-
-            }
-
-            // check that there is no endless loops through it self or any other connections
-
-            searchL(globalProgram.locationInB,globalProgram.ObjectB,globalProgram.locationInA,globalProgram.ObjectA);
-
-            function searchL(locationInB,ObjectB, locationInA,ObjectA){
-                for(var key in objectExp[ObjectB].objectLinks){
-                    var Bn = objectExp[ObjectB].objectLinks[key];
-                    if(locationInB === Bn.locationInA){
-                        if(locationInA === Bn.locationInB && ObjectA === Bn.ObjectB) {
-                            okForNewLink = false;
-                        }else {
-                            searchL(Bn.locationInB, Bn.ObjectB,locationInA,ObjectA);
-                        }
-                    }
-                }
-            }
-
+          var okForNewLink = checkForNetworkLoop( globalProgram.ObjectA, globalProgram.locationInA,  globalProgram.ObjectB, globalProgram.locationInB);
 
             //  window.location.href = "of://event_" + objectExp[globalProgram.ObjectA].visible;
 
@@ -169,7 +142,7 @@ function trueTouchUp() {
     }
     globalCanvas.hasContent = true;
 
-    console.log("trueTouchUp");
+    cout("trueTouchUp");
 }
 
 
@@ -194,7 +167,7 @@ function canvasPointerDown(evt) {
         }
     }
 
-    console.log("canvasPointerDown");
+    cout("canvasPointerDown");
 }
 
 /**********************************************************************************************************************
@@ -214,7 +187,7 @@ function getPossition(evt) {
     overlayDiv.style.left =  evt.clientX-60;
     overlayDiv.style.top =   evt.clientY-60;
 
-    console.log("getPossition");
+    cout("getPossition");
 
 }
 
@@ -243,7 +216,7 @@ function documentPointerUp(evt) {
 
     overlayDiv.style.display = "none";
 
-    console.log("documentPointerUp");
+    cout("documentPointerUp");
 };
 
 
@@ -258,13 +231,13 @@ function documentPointerDown(evt) {
 
     globalStates.pointerPosition = [evt.clientX, evt.clientY];
 
-    overlayImg.src = overlayImage[globalStates.overlay].src;
+   // overlayImg.src = overlayImage[globalStates.overlay].src;
 
     overlayDiv.style.display = "inline";
     overlayDiv.style.left =  evt.clientX-60;
     overlayDiv.style.top =  evt.clientY-60;
 
-    console.log("documentPointerDown");
+    cout("documentPointerDown");
 }
 
 
@@ -287,7 +260,7 @@ function MultiTouchStart(evt) {
     }
     globalMatrix.matrixtouchOn = this.location;
     globalMatrix.copyStillFromMatrixSwitch = true;
-    console.log("MultiTouchStart");
+    cout("MultiTouchStart");
 }
 
 /**
@@ -301,7 +274,7 @@ function MultiTouchMove(evt) {
     evt.preventDefault();
 // generate action for all links to be reloaded after upload
 
-    // console.log(globalStates.editingModeHaveObject + " " + globalStates.editingMode + " " + globalStates.editingModeHaveObject + " " + globalStates.editingMode);
+    // cout(globalStates.editingModeHaveObject + " " + globalStates.editingMode + " " + globalStates.editingModeHaveObject + " " + globalStates.editingMode);
 
     if (globalStates.editingModeHaveObject && globalStates.editingMode && evt.targetTouches.length === 1) {
 
@@ -363,7 +336,7 @@ function MultiTouchMove(evt) {
     if (globalStates.editingModeHaveObject && globalStates.editingMode && evt.targetTouches.length === 2) {
         scaleEvent(evt.touches[1]);
     }
-    console.log("MultiTouchMove");
+    cout("MultiTouchMove");
 }
 
 /**
@@ -378,7 +351,7 @@ function MultiTouchEnd(evt) {
 // generate action for all links to be reloaded after upload
     if (globalStates.editingModeHaveObject) {
 
-        console.log("start");
+        cout("start");
         // this is where it should be send to the object..
 
         var tempThisObject = {};
@@ -408,7 +381,7 @@ if(typeof content.x === "number" && typeof content.y === "number" && typeof cont
     globalCanvas.hasContent = true;
     globalMatrix.matrixtouchOn = "";
     }
-    console.log("MultiTouchEnd");
+    cout("MultiTouchEnd");
 }
 
 /**
@@ -439,7 +412,7 @@ function MultiTouchCanvasStart(evt) {
         }
         globalStates.editingScaledistanceOld = tempThisObject.scale;
     }
-    console.log("MultiTouchCanvasStart");
+    cout("MultiTouchCanvasStart");
 }
 
 /**
@@ -460,7 +433,7 @@ function MultiTouchCanvasMove(evt) {
         scaleEvent(touch)
 
     }
-    console.log("MultiTouchCanvasMove");
+    cout("MultiTouchCanvasMove");
 }
 
 
@@ -475,7 +448,7 @@ function scaleEvent(touch) {
     var thisRadius = Math.sqrt(Math.pow((globalStates.editingModeObjectX - touch.pageX), 2) + Math.pow((globalStates.editingModeObjectY - touch.pageY), 2));
     var thisScale = (thisRadius - globalStates.editingScaledistance) / 300 + globalStates.editingScaledistanceOld;
 
-    // console.log(thisScale);
+    // cout(thisScale);
 
     var tempThisObject = {};
     if (globalStates.editingModeObject != globalStates.editingModeLocation) {
@@ -499,7 +472,7 @@ function scaleEvent(touch) {
         drawGreen(globalCanvas.context, [globalStates.editingModeObjectX, globalStates.editingModeObjectY], [touch.pageX, touch.pageY], thisRadius);
 
     }
-    console.log("scaleEvent");
+    cout("scaleEvent");
 }
 
 /**
@@ -515,13 +488,13 @@ function postData(url, body) {
     var params = JSON.stringify(body);
     request.open('POST', url, true);
     request.onreadystatechange = function () {
-        if (request.readyState == 4) console.log("It worked!");
+        if (request.readyState == 4) cout("It worked!");
     };
     request.setRequestHeader("Content-type", "application/json");
     //request.setRequestHeader("Content-length", params.length);
     // request.setRequestHeader("Connection", "close");
     request.send(params);
-    console.log("postData");
+    cout("postData");
 }
 
 
@@ -537,13 +510,13 @@ function deleteData(url) {
     var request = new XMLHttpRequest();
     request.open('DELETE', url, true);
     request.onreadystatechange = function () {
-        if (request.readyState == 4) console.log("It deleted!");
+        if (request.readyState == 4) cout("It deleted!");
     };
     request.setRequestHeader("Content-type", "application/json");
     //request.setRequestHeader("Content-length", params.length);
     // request.setRequestHeader("Connection", "close");
     request.send();
-    console.log("deleteData");
+    cout("deleteData");
 }
 
 /**
@@ -555,10 +528,10 @@ function deleteData(url) {
 
 function uploadNewLink(ip, thisObjectKey, thisKey, content) {
 // generate action for all links to be reloaded after upload
-    console.log("sending Link");
+    cout("sending Link");
     postData('http://' + ip + ':' + httpPort + '/object/' + thisObjectKey + "/link/" + thisKey, content);
     // postData('http://' +ip+ ':' + httpPort+"/", content);
-    console.log("uploadNewLink");
+    cout("uploadNewLink");
 
 }
 
@@ -571,9 +544,9 @@ function uploadNewLink(ip, thisObjectKey, thisKey, content) {
 
 function deleteLinkFromObject(ip, thisObjectKey, thisKey) {
 // generate action for all links to be reloaded after upload
-    console.log("I am deleting a link: " + ip);
+    cout("I am deleting a link: " + ip);
     deleteData('http://' + ip + ':' + httpPort + '/object/' + thisObjectKey + "/link/" + thisKey);
-    console.log("deleteLinkFromObject");
+    cout("deleteLinkFromObject");
 }
 
 /**
@@ -629,7 +602,7 @@ function addEventHandlers() {
     }
     }
 
-    console.log("addEventHandlers");
+    cout("addEventHandlers");
 }
 
 /**
@@ -680,5 +653,5 @@ function removeEventHandlers() {
     }
     }
 
-    console.log("removeEventHandlers");
+    cout("removeEventHandlers");
 }

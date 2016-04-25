@@ -88,7 +88,7 @@ function addHeartbeatObject(beat) {
                 objectExp[thisKey].fullScreen = false;
                 objectExp[thisKey].sendMatrix = false;
 
-                console.log(objectExp[thisKey]);
+                cout(objectExp[thisKey]);
                     addElementInPreferences();
 
             });
@@ -172,8 +172,8 @@ function action(action) {
     if (thisAction.reloadLink) {
         getData('http://' + thisAction.reloadLink.ip + ':' + httpPort + '/object/' + thisAction.reloadLink.id, thisAction.reloadLink.id, function (req, thisKey) {
             objectExp[thisKey].objectLinks = req.objectLinks;
-            // console.log(objectExp[thisKey]);
-            console.log("got links");
+            // cout(objectExp[thisKey]);
+            cout("got links");
         });
 
     }
@@ -185,13 +185,13 @@ function action(action) {
             objectExp[thisKey].scale = req.scale;
             objectExp[thisKey].objectValues = req.objectValues;
 
-            // console.log(objectExp[thisKey]);
-            console.log("got links");
+            // cout(objectExp[thisKey]);
+            cout("got links");
         });
     }
 
 
-    console.log("found action: " + action);
+    cout("found action: " + action);
 
 }
 
@@ -217,7 +217,7 @@ function getData(url, thisKey, callback) {
                     callback(JSON.parse(req.responseText), thisKey)
                 } else {
                     // Handle error case
-                    console.log("could not load content");
+                    cout("could not load content");
                 }
             }
         };
@@ -225,7 +225,7 @@ function getData(url, thisKey, callback) {
 
     }
     catch (e) {
-        console.log("could not connect to" + url);
+        cout("could not connect to" + url);
     }
 }
 
@@ -348,7 +348,7 @@ function update(objects) {
                     drawTransformed(tempValue, subKey, tempMatrix, key);
                     addElement(tempValue, subKey, "http://" + generalObject.ip + ":" + httpPort + "/obj/dataPointInterfaces/" + tempValue.plugin + "/", key);
 
-             //  console.log("http://" + generalObject.ip + ":" + httpPort + "/obj/dataPointInterfaces/" + tempValue.plugin + "/");
+             //  cout("http://" + generalObject.ip + ":" + httpPort + "/obj/dataPointInterfaces/" + tempValue.plugin + "/");
                 } else {
                     hideTransformed(tempValue, subKey, key);
                 }
@@ -383,14 +383,14 @@ function update(objects) {
 
         }
         drawInteractionLines();
-      //  console.log("drawlines");
+      //  cout("drawlines");
     }
 
     if (globalStates.logButtonState) {
         generalLog(consoleText);
     }
  //   window.location.href = "of://newframe";
-   // console.log("update");
+   // cout("update");
 
   //  countEventHandlers()
 
@@ -443,8 +443,8 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
             }
         }
 
-
-        if (thisObject.fullScreen === false) {
+        // this needs a better solution
+        if (thisObject.fullScreen !== true) {
                 if (globalMatrix.matrixtouchOn === thisKey && globalStates.editingMode) {
                     //if(globalStates.unconstrainedPositioning===true)
                     globalMatrix.temp = copyMatrix(thisTransform2);
@@ -480,7 +480,7 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
                     if (thisObject.matrix.length > 0) {
                         var thisTransform3 = multiplyMatrix(thisObject.matrix, thisTransform2);
                         thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform3);
-                        //  console.log("I get here");
+                        //  cout("I get here");
                     } else
                         thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
                 }
@@ -517,7 +517,7 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
                 }
             }
         }*/
-      //  console.log("drawTransformed");
+      //  cout("drawTransformed");
     }
 
 }
@@ -551,12 +551,12 @@ function hideTransformed(thisObject, thisKey, generalKey) {
         thisObject.visibleEditing = false;
         document.getElementById(thisKey).style.visibility = 'hidden';
         //document.getElementById(thisKey).style.display = 'none';
-        console.log("hideTransformed");
+        cout("hideTransformed");
     }
 
     /*
      if (thisObject.visibleEditing === true) {
-     //  console.log(thisKey);
+     //  cout(thisKey);
      thisObject.visibleEditing = false;
      document.getElementById(thisKey).style.visibility = 'hidden';
      }*/
@@ -660,7 +660,7 @@ function addElementInPreferences() {
 
     document.getElementById("content2").innerHTML = htmlContent;
 
-    console.log("addElementInPreferences");
+    cout("addElementInPreferences");
 }
 /*
  <div class='Interfaces'
@@ -721,6 +721,49 @@ function addElement(thisObject, thisKey, thisUrl, generalObject) {
         ec++;
         theObject.addEventListener("pointerup", trueTouchUp, false);
         ec++;
+        theObject.addEventListener("pointerenter", function(e){
+
+
+            var contentForFeedback;
+
+            if(globalProgram.locationInA=== this.id || globalProgram.locationInA === false){
+                contentForFeedback = 3;
+            }else{
+
+                if(checkForNetworkLoop( globalProgram.ObjectA, globalProgram.locationInA,  this.ObjectId, this.location))
+                    contentForFeedback = 2; // overlayImg.src = overlayImage[2].src;
+                else
+                    contentForFeedback = 0; // overlayImg.src = overlayImage[0].src;
+            }
+
+            document.getElementById("iframe" + this.location).contentWindow.postMessage(
+                    JSON.stringify(
+                        {
+                            "uiActionFeedback": contentForFeedback
+                        })
+                    , "*");
+
+            document.getElementById('overlayImg').src = overlayImage[contentForFeedback].src;
+
+        }, false);
+        ec++;
+        theObject.addEventListener("pointerleave", function(){
+            document.getElementById('overlayImg').src = overlayImage[1].src;
+
+            cout("leave");
+
+            document.getElementById("iframe" + this.location).contentWindow.postMessage(
+                JSON.stringify(
+                    {
+                        "uiActionFeedback": 1
+                    })
+                , "*");
+
+
+        }, false);
+
+        ec++;
+
         if (globalStates.editingMode) {
             if (objectExp[generalObject].developer) {
                 theObject.addEventListener("touchstart", MultiTouchStart, false);
@@ -743,7 +786,7 @@ function addElement(thisObject, thisKey, thisUrl, generalObject) {
             theObject.style.visibility = "hidden";
             //theObject.style.display = "none";
         }
-        console.log("addElementInPreferences");
+        cout("addElementInPreferences");
     }
 }
 
@@ -772,11 +815,11 @@ function killObjects(thisObject, thisKey) {
                 tempElementDiv = document.getElementById("thisObject" + subKey);
                 tempElementDiv.parentNode.removeChild(tempElementDiv);
             } catch (err) {
-                console.log("could not find any");
+                cout("could not find any");
             }
             thisObject.objectValues[subKey].loaded = false;
         }
-        console.log("killObjects");
+        cout("killObjects");
     }
 }
 
@@ -794,7 +837,7 @@ function on_load(generalObject, thisKey) {
     globalStates.notLoading = false;
     // window.location.href = "of://event_test_"+thisKey;
 
-    // console.log("posting Msg");
+    // cout("posting Msg");
     var iFrameMessage_ = JSON.stringify({
         obj: generalObject,
         pos: thisKey,
@@ -803,7 +846,7 @@ function on_load(generalObject, thisKey) {
     
     document.getElementById("iframe" + thisKey).contentWindow.postMessage(
         iFrameMessage_, '*');
-    console.log("on_load");
+    cout("on_load");
 }
 
 function fire(thisKey) {

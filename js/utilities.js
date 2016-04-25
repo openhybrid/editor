@@ -57,7 +57,7 @@
 
 var newURLTextLoad = function (){
     globalStates.newURLText = encodeURIComponent(document.getElementById('newURLText').value);
-    console.log("newURLTextLoad");
+    cout("newURLTextLoad");
 };
 
 
@@ -225,7 +225,7 @@ var checkLineCross = function (x11, y11, x12, y12, x21, y21, x22, y22, w, h) {
         return false; //false if intersection of lines is output of canvas
     }
     var interY = calculateY(l1, interX);
-    // console.log("interX, interY",interX, interY);
+    // cout("interX, interY",interX, interY);
 
     if (!interY || !interX) {
         return false;
@@ -233,7 +233,7 @@ var checkLineCross = function (x11, y11, x12, y12, x21, y21, x22, y22, w, h) {
     if (interY > h || interY < 0) {
         return false; //false if intersection of lines is output of canvas
     }
-    //  console.log("point on line --- checking on segment now");
+    //  cout("point on line --- checking on segment now");
     return (checkBetween(x11, x12, interX) && checkBetween(y11, y12, interY)
     && checkBetween(x21, x22, interX) && checkBetween(y21, y22, interY));
 };
@@ -330,7 +330,7 @@ var calculateY = function (seg1, x) {
 
 var checkBetween = function (e1, e2, p) {
     const marg2 = 2;
-    // console.log("e1,e2,p :",e1,e2,p);
+    // cout("e1,e2,p :",e1,e2,p);
     if (e1 - marg2 <= p && p <= e2 + marg2) {
         return true;
     }
@@ -371,6 +371,70 @@ var randomIntInc = function (min, max) {
 var countEventHandlers = function (){
 
 
-   console.log("amount of event listenrs: " +ec);
+   cout("amount of event listenrs: " +ec);
 
 };
+
+
+/**********************************************************************************************************************
+ **********************************************************************************************************************/
+
+/**
+ * @desc
+ * @param
+ * @param
+ * @return
+ **/
+
+function checkForNetworkLoop(globalObjectA, globalLocationInA, globalObjectB, globalLocationInB){
+
+    var signalIsOk = true;
+    var thisTempObject = objectExp[globalObjectA];
+    var thisTempObjectLinks = thisTempObject.objectLinks;
+
+    // check if connection is with it self
+    if (globalObjectA === globalObjectB && globalLocationInA === globalLocationInB) {
+        signalIsOk = false;
+    }
+
+    // todo check that objects are making these checks as well for not producing overlapeses.
+    // check if this connection already exists?
+    if(signalIsOk) {
+        for (var thisSubKey in thisTempObjectLinks) {
+            if (thisTempObjectLinks[thisSubKey].ObjectA === globalObjectA &&
+                thisTempObjectLinks[thisSubKey].ObjectB === globalObjectB &&
+                thisTempObjectLinks[thisSubKey].locationInA === globalLocationInA &&
+                thisTempObjectLinks[thisSubKey].locationInB === globalLocationInB) {
+                signalIsOk = false;
+            }
+
+        }
+    }
+    // check that there is no endless loops through it self or any other connections
+    if(signalIsOk) {
+        searchL(globalLocationInB, globalObjectB, globalLocationInA, globalObjectA);
+
+        function searchL(locationInB, ObjectB, locationInA, ObjectA) {
+            for (var key in objectExp[ObjectB].objectLinks) {
+                cout(ObjectB);
+                var Bn = objectExp[ObjectB].objectLinks[key];
+                if (locationInB === Bn.locationInA) {
+                    if (locationInA === Bn.locationInB && ObjectA === Bn.ObjectB) {
+                        signalIsOk = false;
+                        break;
+                    } else {
+                        searchL(Bn.locationInB, Bn.ObjectB, locationInA, ObjectA);
+                    }
+                }
+            }
+        }
+    }
+
+    return signalIsOk;
+}
+
+function cout(e){
+    if(globalStates.debug){
+        console.log(e);
+    }
+}

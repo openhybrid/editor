@@ -108,7 +108,7 @@ function GUI() {
     );
 
     preload(overlayImage,
-        'png/overlay.png', 'png/overlayTouch.png',  'png/overlayActive.png'
+        'png/overlayNegative.png', 'png/overlayNormal.png',  'png/overlayPositive.png', 'png/overlayAction.png', 'png/empty.png'
     );
 
 
@@ -442,7 +442,7 @@ function GUI() {
         }
 
     });
-    console.log("GUI");
+    cout("GUI");
     ec++;
 }
 
@@ -460,7 +460,7 @@ function consoleHide() {
     document.getElementById("consolelog").style.visibility = "hidden";
     document.getElementById("consolelog").innerText = "";
 
-    console.log("consoleHide");
+    cout("consoleHide");
 }
 
 /**
@@ -475,7 +475,7 @@ function preferencesHide() {
     globalStates.preferencesButtonState = false;
     document.getElementById("preferences").style.visibility = "hidden" ; //= "hidden";
     document.getElementById("preferences").style.dispaly = "none" ; //= "hidden";
-    console.log("preferencesHide");
+    cout("preferencesHide");
 }
 
 
@@ -491,7 +491,7 @@ function preferencesVisible() {
     globalStates.preferencesButtonState = true;
     document.getElementById("preferences").style.visibility = "visible" ; //
     document.getElementById("preferences").style.display = "inline" ; //= "hidden";
-    console.log("preferencesVisible");
+    cout("preferencesVisible");
 }
 
 
@@ -511,7 +511,7 @@ function preload(array) {
         array[i].src = preload.arguments[i + 1];
     }
 
-    console.log("preload");
+    cout("preload");
 }
 
 

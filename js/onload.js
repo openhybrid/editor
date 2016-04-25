@@ -175,7 +175,7 @@ window.onload = function () {
     });
 
 
-    console.log("onload");
+    cout("onload");
 
 };
 
@@ -188,10 +188,10 @@ window.onload = function () {
 
 var postMessage = function (e) {
 
-    //  console.log("received: "+ e.data);
+    //  cout("received: "+ e.data);
     var msgContent = JSON.parse(e.data);
 
-    var tempThisObject;
+    var tempThisObject = false;
 
     if (typeof msgContent.pos !== "undefined" && typeof msgContent.obj !== "undefined") {
         if (typeof objectExp[msgContent.obj] !== "undefined") {
@@ -206,7 +206,7 @@ var postMessage = function (e) {
     }
 
 
-    if (typeof tempThisObject !== "undefined") {
+    if (tempThisObject !== false) {
 
             if (typeof msgContent.width !== "undefined" && typeof msgContent.height !== "undefined") {
 
@@ -266,6 +266,6 @@ var postMessage = function (e) {
      }*/
 
 
-    // console.log("postMessage");
+    // cout("postMessage");
 
 };
