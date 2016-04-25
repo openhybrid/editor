@@ -375,6 +375,125 @@ function update(objects) {
 
 }
 
+/*
+TEMPORARY CODE FOR MARKER PLANE INTERSECTION
+*/
+
+function drawMarkerIntersection(objectID, matrix) {
+
+    var theObject = document.getElementById(objectID);
+    var newMatrix = copyMatrix(multiplyMatrix(globalMatrix.begin, invertMatrix(matrix)));
+
+    console.log("drawMarkerIntersection (new): ", theObject, newMatrix);
+    // return;
+
+    console.log("canvas"+theObject.id);
+    var canv = document.getElementById("canvas"+theObject.id); //theObject.querySelector(".mainCanvas");
+    // console.log(theObject, thisCanvas);
+    var ctx = canv.getContext("2d");
+    ctx.clearRect(0, 0, canv.width, canv.height);
+    // ctx.fillStyle = 'red';
+
+    var mCanvas = mat4.clone(mat1x16From4x4(matrix));
+
+    var spacing = Math.min(canv.width/30, canv.height/30);
+    var edges = getEdgesClockwise(canvas, spacing);
+    var firstEdge = null;
+    var lastEdge = null;
+    var wasLastFilled = false;
+    var filledCorners = [];
+
+    // console.log("length: ", edges.length);
+
+    edges.forEach(function(edge, index) {
+        var x = edge[0] - canv.width/2;
+        var y = edge[1] - canv.height/2;
+        var isCorner = edge[2];
+        var input = vec4.clone([x,y,0,1]);
+        var out = vec4.create();
+        vec4.transformMat4(out, input, mCanvas);
+        // var z = getTransformedZ(matrix,x,y)
+        var z = out[2];
+        if (z < 0) {
+            if (isCorner) {
+                filledCorners.push([edge, index]);
+                // console.log("input", input);
+                // console.log("mCanvas", mCanvas);
+                // console.log("out", out);
+                // console.log("z'", getTransformedZ(matrix,x,y));
+            }
+            if (!wasLastFilled) {
+                firstEdge = [edge, index];
+                console.log(firstEdge);
+            }
+            wasLastFilled = true;
+        } else {
+            if (wasLastFilled) {
+                lastEdge = [edge, index];
+                console.log(lastEdge);
+            }
+            wasLastFilled = false;
+        }
+    });
+
+    if (firstEdge != null) {
+       filledCorners.push(firstEdge); 
+    }
+    if (lastEdge != null) {
+        filledCorners.push(lastEdge);
+    }
+
+    if (filledCorners.length > 0) {
+
+        console.log(filledCorners);
+
+        filledCorners.sort(function(a,b) {
+            return a[1] - b[1];
+        });
+
+        console.log(filledCorners);
+
+        ctx.beginPath();
+        ctx.moveTo(filledCorners[0][0][0], filledCorners[0][0][1]);
+        filledCorners.forEach(function(edge, index) {
+            // if (index > 2) return;
+            ctx.lineTo(edge[0][0], edge[0][1]);
+        });
+        ctx.closePath();
+        ctx.fill();
+
+    }
+
+}
+
+var mat1x16From4x4 = function(matrix) {
+    return [matrix[0][0], matrix[0][1], matrix[0][2], matrix[0][3],
+            matrix[1][0], matrix[1][1], matrix[1][2], matrix[1][3],
+            matrix[2][0], matrix[2][1], matrix[2][2], matrix[2][3],
+            matrix[3][0], matrix[3][1], matrix[3][2], matrix[3][3]];
+}
+
+var getEdgesClockwise = function (canvas, spacing) {
+    var edges = [];
+    for (var x = 0; x < canvas.width; x += spacing) {
+        var isCorner = (x == 0);
+        edges.push([x, 0, isCorner]);
+    }
+    for (var y = 0; y < canvas.height; y += spacing) {
+        var isCorner = (y == 0);
+        edges.push([canvas.width, y, isCorner]);
+    }
+    for (var x = canvas.width; x >= 0; x -= spacing) {
+        var isCorner = (x == canvas.width);
+        edges.push([x, canvas.height, isCorner]);
+    }
+    for (var y = canvas.height; y >= 0; y -= spacing) {
+        var isCorner = (y == canvas.height);
+        edges.push([0, y, isCorner]);
+    }
+    return edges;
+}
+
 /**********************************************************************************************************************
  ******************************************** 3D Transforms & Utilities ***********************************************
  **********************************************************************************************************************/
@@ -397,6 +516,7 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
 
             if (generalKey !== thisKey) {
                 document.getElementById(thisKey).style.visibility = 'visible';
+                // showEditingStripes(thisKey, true);
                 document.getElementById("text" + thisKey).style.visibility = 'visible';
             }
 
@@ -408,8 +528,10 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
                     thisObject.visibleEditing = true;
                     console.log(thisKey + " is the lines");
                     document.getElementById(thisKey).style.visibility = 'visible';
+                    showEditingStripes(thisKey, true);
 
                     document.getElementById(thisKey).className = "mainProgram";
+
                 }
             }
         }
@@ -447,7 +569,29 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
             thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform3);
 
             if(globalMatrix.matrixtouchOn === thisKey && globalStates.editingMode) {
-                console.log("drawMarkerIntersection", thisKey, thisTransform);
+                // console.log("drawMarkerIntersection", thisKey, thisTransform, thisObject);
+                // drawMarkerIntersection(thisKey, thisTransform); // TODO: uncomment to draw correctly!
+
+                var newMatrix = copyMatrix(multiplyMatrix(globalMatrix.begin, invertMatrix(globalMatrix.temp)));
+                var theObject = document.getElementById(thisKey);
+                // console.log("update", newMatrix, thisObject, thisKey, theObject);
+                // console.log("existing matrices", thisObject.matrix, thisTransform2, thisTransform3, finalMatrixTransform2, thisTransform);
+
+                var oscale = thisObject.scale;
+                var odx = thisObject.x;
+                var ody = thisObject.y;
+                console.log(odx, ody, oscale);
+
+                var adjustedWithScale = [
+                    [newMatrix[0][0] * oscale, newMatrix[0][1], newMatrix[0][2], newMatrix[0][3]],
+                    [newMatrix[1][0], newMatrix[1][1] * oscale, newMatrix[1][2], newMatrix[1][3]],
+                    [newMatrix[2][0], newMatrix[2][1], newMatrix[2][2], newMatrix[2][3]],
+                    [newMatrix[3][0] + odx, newMatrix[3][1] + ody, newMatrix[3][2], newMatrix[3][3]]
+                ];
+
+                // console.log("adjusted matrix", adjustedWithScale);
+
+                estimateIntersection(theObject, adjustedWithScale);
             }   
         }
         else
@@ -514,6 +658,7 @@ function hideTransformed(thisObject, thisKey, generalKey) {
         thisObject.visible = false;
         thisObject.visibleEditing = false;
         document.getElementById(thisKey).style.visibility = 'hidden';
+        showEditingStripes(thisKey, false);
         //document.getElementById(thisKey).style.display = 'none';
 
     }
@@ -717,7 +862,8 @@ function addElement(thisObject, thisKey, thisUrl, generalObject) {
 
         var iframe = document.getElementById("iframe"+thisKey);
 
-        var thisCanvas = document.getElementById("canvas"+thisKey); //theObject.querySelector("#canvas");
+        // var canvas = document.getElementById("canvas"+thisKey); //theObject.querySelector("#canvas");
+
         // // var thisCanvas = document.createElement("canvas");
         // // thisCanvas.id = "canvastarget"+thisKey;
         // // thisCanvas.className = "mainCanvas";
@@ -797,3 +943,279 @@ function fire(thisKey) {
 
 }
 
+
+
+/*****
+******
+******
+*****/
+
+var cssTransformToMatrix = function(cssTransformString) {
+    return mat4.clone(cssTransformString.replace(/^.*\((.*)\)$/g, "$1").split(/, +/).map(Number));
+}
+
+var getTransformMatrixForDiv = function(div) {
+    console.log(div);
+    console.log(div.style);
+    console.log(div.style.transform);
+    return cssTransformToMatrix(div.style.transform);
+}
+
+var getCornersClockwise = function(thisCanvas) {
+return [[0, 0, 0],
+        [thisCanvas.width, 0, 0],
+        [thisCanvas.width, thisCanvas.height, 0],
+        [0, thisCanvas.height, 0]];
+}
+
+var areCornersEqual = function(corner1, corner2) {
+    return (corner1[0] === corner2[0] && corner1[1] === corner2[1]);
+}
+
+var areCornerPairsIdentical = function(c1a, c1b, c2a, c2b) {
+    return (areCornersEqual(c1a, c2a) && areCornersEqual(c1b, c2b));
+}
+
+var areCornerPairsSymmetric = function(c1a, c1b, c2a, c2b) {
+    return (areCornersEqual(c1a, c2b) && areCornersEqual(c1b, c2a));
+}
+
+var areCornersAdjacent = function(corner1, corner2) {
+    return (corner1[0] === corner2[0] || corner1[1] === corner2[1]); 
+}
+
+var areCornersOppositeZ = function(corner1, corner2) {
+    var z1 = corner1[2];
+    var z2 = corner2[2];
+    var oppositeSign = ((z1 * z2) < 0);
+    return oppositeSign;
+}
+
+// makes sure we don't add symmetric pairs to list
+var addCornerPairToOppositeCornerPairs = function(cornerPair, oppositeCornerPairs) {
+    var corner1 = cornerPair[0];
+    var corner2 = cornerPair[1];
+    var safeToAdd = true;
+    if (oppositeCornerPairs.length > 0) {
+        oppositeCornerPairs.forEach(function(pairList) {
+            var existingCorner1 = pairList[0];
+            var existingCorner2 = pairList[1];
+            if (areCornerPairsSymmetric(existingCorner1, existingCorner2, corner1, corner2)) {
+                // console.log("symmetric", existingCorner1, existingCorner2, corner1, corner2);
+                safeToAdd = false;
+                return;
+            }
+            if (areCornerPairsIdentical(existingCorner1, existingCorner2, corner1, corner2)) {
+                // console.log("identical", existingCorner1, existingCorner2, corner1, corner2);
+                safeToAdd = false;
+                return;
+            }
+        });
+    }
+    if (safeToAdd) {
+        oppositeCornerPairs.push([corner1, corner2]);
+    }
+}
+
+var getCenterOfPoints = function(points) {
+    if (points.length < 1) { return [0,0]; }
+    var sumX = 0;
+    var sumY = 0;
+    points.forEach(function(point) {
+        sumX += point[0];
+        sumY += point[1];
+    });
+    var avgX = sumX / points.length;
+    var avgY = sumY / points.length;
+    return [avgX, avgY];
+}
+
+var sortPointsClockwise = function(points) {
+    var centerPoint = getCenterOfPoints(points);
+    var centerX = centerPoint[0];
+    var centerY = centerPoint[1];
+
+    var comparePoints = function(a,b) {
+        var atanA = Math.atan2(a[1] - centerY, a[0] - centerX);
+        var atanB = Math.atan2(b[1] - centerY, b[0] - centerX);
+        if (atanA < atanB) return -1;
+        else if (atanB > atanA) return 1;
+        return 0;
+    }
+
+    return points.sort(comparePoints);
+}
+
+var estimateIntersection = function (theObject, matrix) {
+
+    var thisCanvas = document.getElementById("canvas"+theObject.id);
+    var theDiv = document.getElementById("thisObject"+theObject.id);
+
+    // var newMatrix = copyMatrix(multiplyMatrix(globalMatrix.begin, invertMatrix(globalMatrix.temp)));
+
+    var mCanvas = mat4.clone(mat1x16From4x4(matrix));
+    // var mCanvas = getTransformMatrixForDiv(theDiv);
+
+    // console.log("mCanvas: ", mCanvas);
+    // console.log("newMatrix: ", newMatrix);
+
+    // console.log("estimate");
+    ////////////////////////////////////////
+
+    var corners = getCornersClockwise(thisCanvas);
+    // console.log(corners);
+    var out = vec4.create();
+    corners.forEach(function(corner, index) {
+        var x = corner[0] - thisCanvas.width/2;
+        var y = corner[1] - thisCanvas.height/2;
+        var input = vec4.clone([x,y,0,1]); // assumes z-position of corner is always 0
+        // console.log(out, input, mCanvas);
+        vec4.transformMat4(out, input, mCanvas);
+        // var z = getTransformedZ(matrix,x,y)
+        corner[2] = out[2]; // sets z position of corner to its eventual transformed value
+    });
+
+    // console.log("corners", corners);
+
+    var oppositeCornerPairs = [];
+    corners.forEach(function(corner1) {
+        corners.forEach(function(corner2) {
+            // only check adjacent pairs of corners
+            // ignore same corner
+            if (areCornersEqual(corner1, corner2)) { return; }
+
+            // x or y should be the same
+            if (areCornersAdjacent(corner1, corner2)) {  
+                if (areCornersOppositeZ(corner1, corner2)) {
+                    addCornerPairToOppositeCornerPairs([corner1, corner2], oppositeCornerPairs);
+                }
+            }
+        });
+    });
+
+    // console.log("oppositeCornerPairs", oppositeCornerPairs);
+
+    // for each opposite corner pair, binary search for the x,y location that will correspond with 0 z-pos
+    // .... or can it be calculated directly....? it's just a linear equation!!!
+    var interceptPoints = [];
+    oppositeCornerPairs.forEach(function(cornerPair) {
+        var c1 = cornerPair[0];
+        var c2 = cornerPair[1];
+        var x1 = c1[0];
+        var y1 = c1[1];
+        var z1 = c1[2];
+        var x2 = c2[0];
+        var y2 = c2[1];
+        var z2 = c2[2];
+
+        if (Math.abs(x2 - x1) > Math.abs(y2 - y1)) {
+            // console.log("dx");
+            var slope = ((z2 - z1)/(x2 - x1));
+            var x_intercept = x1 - (z1 / slope);
+            interceptPoints.push([x_intercept, y1]);
+        } else {
+            // console.log("dy");
+            var slope = ((z2 - z1)/(y2 - y1));
+            var y_intercept = y1 - (z1 / slope);
+            interceptPoints.push([x1, y_intercept]);
+        }
+    });
+
+    // console.log("interceptPoints", interceptPoints);
+
+    ////////////////////////////////////////
+
+    // get corners, add in correct order so they get drawn clockwise
+
+    corners.forEach(function(corner) {
+        if (corner[2] < 0) {
+            interceptPoints.push(corner);
+        }
+    });
+
+    // console.log("interceptPoints+corners", interceptPoints);
+
+    var sortedPoints = sortPointsClockwise(interceptPoints);
+    // console.log("sortedPoints", sortedPoints);
+
+    ////////////////////////////////////////
+
+    // fills it in darker
+    // var ctx=canvas.getContext("2d");
+    // ctx.clearRect(0, 0, canvas.width, canvas.height);
+    //
+    // if (sortedPoints.length > 2) {
+    //     ctx.beginPath();
+    //     ctx.moveTo(sortedPoints[0][0], sortedPoints[0][1]);
+    //     sortedPoints.forEach(function(point) {
+    //         ctx.lineTo(point[0], point[1]);
+    //     });
+    //     ctx.closePath();
+    //     ctx.fill();
+    // }
+
+    // draws blue and purple diagonal lines to mask the image
+    var ctx=thisCanvas.getContext("2d");
+    ctx.clearRect(0, 0, thisCanvas.width, thisCanvas.height);
+
+    var diagonalLineWidth = 22;
+    ctx.lineWidth = diagonalLineWidth;
+    ctx.strokeStyle = '#01FFFC';
+    for (var i=-thisCanvas.height; i<thisCanvas.width; i+=2.5*diagonalLineWidth) {
+        ctx.beginPath();
+        ctx.moveTo(i, -diagonalLineWidth/2);
+        ctx.lineTo(i + thisCanvas.height+diagonalLineWidth/2, thisCanvas.height+diagonalLineWidth/2);
+        ctx.stroke();
+    }
+
+    // Save the state, so we can undo the clipping
+    ctx.save();
+ 
+    // Create a circle
+    ctx.beginPath();
+
+    if (sortedPoints.length > 2) {
+        ctx.beginPath();
+        ctx.moveTo(sortedPoints[0][0], sortedPoints[0][1]);
+        sortedPoints.forEach(function(point) {
+            ctx.lineTo(point[0], point[1]);
+        });
+        ctx.closePath();
+        // ctx.fill();
+    }     
+    // Clip to the current path
+    ctx.clip();
+
+    // draw whatever needs to get masked here!
+
+    var diagonalLineWidth = 22;
+    ctx.lineWidth = diagonalLineWidth;
+    ctx.strokeStyle = '#FF01FC';
+    for (var i=-thisCanvas.height; i<thisCanvas.width; i+=2.5*diagonalLineWidth) {
+        ctx.beginPath();
+        ctx.moveTo(i, -diagonalLineWidth/2);
+        ctx.lineTo(i + thisCanvas.height+diagonalLineWidth/2, thisCanvas.height+diagonalLineWidth/2);
+        ctx.stroke();
+    }
+ 
+    // Undo the clipping
+    ctx.restore();
+
+}
+
+var showEditingStripes = function(thisKey, shouldShow) {
+    var thisCanvas = document.getElementById("canvas"+thisKey);
+    var ctx=thisCanvas.getContext("2d");
+    ctx.clearRect(0, 0, thisCanvas.width, thisCanvas.height);
+    if (shouldShow) {
+        var diagonalLineWidth = 22;
+        ctx.lineWidth = diagonalLineWidth;
+        ctx.strokeStyle = '#01FFFC';
+        for (var i=-thisCanvas.height; i<thisCanvas.width; i+=2.5*diagonalLineWidth) {
+            ctx.beginPath();
+            ctx.moveTo(i, -diagonalLineWidth/2);
+            ctx.lineTo(i + thisCanvas.height+diagonalLineWidth/2, thisCanvas.height+diagonalLineWidth/2);
+            ctx.stroke();
+        }
+    }
+}

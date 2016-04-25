@@ -388,10 +388,95 @@ var countEventHandlers = function (){
  * @return the resulting z-coordinate (float)
  * @author Ben Reynolds
  **/
-
 var getTransformedZ = function (matrix, x, y) {
     // console.log(x, y);
     // console.log(matrix);
     return matrix[2][0] * x + matrix[2][1] * y + matrix[2][3];
 };
+
+var getCornersClockwise = function(thisCanvas) {
+    return [[0, 0, 0],
+        [thisCanvas.width, 0, 0],
+        [thisCanvas.width, thisCanvas.height, 0],
+        [0, thisCanvas.height, 0]];
+}
+
+var areCornersEqual = function(corner1, corner2) {
+    return (corner1[0] === corner2[0] && corner1[1] === corner2[1]);
+}
+
+var areCornerPairsIdentical = function(c1a, c1b, c2a, c2b) {
+    return (areCornersEqual(c1a, c2a) && areCornersEqual(c1b, c2b));
+}
+
+var areCornerPairsSymmetric = function(c1a, c1b, c2a, c2b) {
+    return (areCornersEqual(c1a, c2b) && areCornersEqual(c1b, c2a));
+}
+
+var areCornersAdjacent = function(corner1, corner2) {
+    return (corner1[0] === corner2[0] || corner1[1] === corner2[1]); 
+}
+
+var areCornersOppositeZ = function(corner1, corner2) {
+    var z1 = corner1[2];
+    var z2 = corner2[2];
+    var oppositeSign = ((z1 * z2) < 0);
+    return oppositeSign;
+}
+
+// makes sure we don't add symmetric pairs to list
+var addCornerPairToOppositeCornerPairs = function(cornerPair, oppositeCornerPairs) {
+    var corner1 = cornerPair[0];
+    var corner2 = cornerPair[1];
+    var safeToAdd = true;
+    if (oppositeCornerPairs.length > 0) {
+        oppositeCornerPairs.forEach(function(pairList) {
+            var existingCorner1 = pairList[0];
+            var existingCorner2 = pairList[1];
+            if (areCornerPairsSymmetric(existingCorner1, existingCorner2, corner1, corner2)) {
+                // console.log("symmetric", existingCorner1, existingCorner2, corner1, corner2);
+                safeToAdd = false;
+                return;
+            }
+            if (areCornerPairsIdentical(existingCorner1, existingCorner2, corner1, corner2)) {
+                // console.log("identical", existingCorner1, existingCorner2, corner1, corner2);
+                safeToAdd = false;
+                return;
+            }
+        });
+    }
+    if (safeToAdd) {
+        oppositeCornerPairs.push([corner1, corner2]);
+    }
+}
+
+var getCenterOfPoints = function(points) {
+    if (points.length < 1) { return [0,0]; }
+    var sumX = 0;
+    var sumY = 0;
+    points.forEach(function(point) {
+        sumX += point[0];
+        sumY += point[1];
+    });
+    var avgX = sumX / points.length;
+    var avgY = sumY / points.length;
+    return [avgX, avgY];
+}
+
+var sortPointsClockwise = function(points) {
+    var centerPoint = getCenterOfPoints(points);
+    var centerX = centerPoint[0];
+    var centerY = centerPoint[1];
+
+    var comparePoints = function(a,b) {
+        var atanA = Math.atan2(a[1] - centerY, a[0] - centerX);
+        var atanB = Math.atan2(b[1] - centerY, b[0] - centerX);
+        if (atanA < atanB) return -1;
+        else if (atanB > atanA) return 1;
+        return 0;
+    }
+
+    return points.sort(comparePoints);
+}
+
 

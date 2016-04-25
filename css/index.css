@@ -91,7 +91,7 @@ body {
     padding: 0;
     border-width: 0px;
     /*background-color: rgba(0, 0, 0, 0.2);*/
-    background:repeating-linear-gradient(-45deg, transparent, transparent 22px, rgba(1, 255, 252, 0.5) 22px, rgba(1, 255, 252, 0.5) 44px);
+    /*background:repeating-linear-gradient(-45deg, transparent, transparent 22px, rgba(1, 255, 252, 0.5) 22px, rgba(1, 255, 252, 0.5) 44px);*/
     -webkit-filter: contrast(200%);
     /*border: 10px dashed green;*/
     z-index: 2;
@@ -105,7 +105,7 @@ body {
     margin: 0;
     padding: 0;
     border-width: 0px;
-    background-color: rgba(0, 0, 0, 0.5);
+    /*background-color: rgba(0, 0, 0, 0.5);*/
     opacity: 0.5;
     /*background:repeating-linear-gradient(-45deg, transparent, transparent 22px, rgba(1, 255, 1, 0.5) 22px, rgba(1, 255, 1, 0.5) 44px);*/
     -webkit-filter: contrast(200%);
