@@ -341,6 +341,12 @@ var checkBetween = function (e1, e2, p) {
     return false;
 };
 
+function map(x, in_min, in_max, out_min,out_max) {
+    if (x > in_max) x = in_max;
+    if (x < in_min) x = in_min;
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
 // created by Valentin
 var uuidTime = function (){
     var dateUuidTime =new Date();

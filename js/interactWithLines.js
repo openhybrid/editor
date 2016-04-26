@@ -104,6 +104,9 @@ function drawAllLines(thisObject, context) {
         var l = thisObject.objectLinks[subKey];
         var oA = thisObject;
 
+        if(typeof l.ballAnimationCount === "undefined")
+            l.ballAnimationCount = 0;
+
         if (!objectExp.hasOwnProperty(l.ObjectB)) {
             continue;
         }
@@ -175,7 +178,7 @@ function drawAllLines(thisObject, context) {
             bB.screenZ = 1;
 
 
-        drawLine(context, [bA.screenX, bA.screenY], [bB.screenX, bB.screenY], bA.screenZ, bB.screenZ);
+        drawLine(context, [bA.screenX, bA.screenY], [bB.screenX, bB.screenY], globalStates.ballSize, globalStates.ballSize, l);
     }
     globalCanvas.hasContent = true;
 }
@@ -221,7 +224,7 @@ function drawInteractionLines() {
 
         tempStart.screenZ =1;
 
-        drawLine(globalCanvas.context, [tempStart.screenX, tempStart.screenY], [globalStates.pointerPosition[0], globalStates.pointerPosition[1]], tempStart.screenZ, 1);
+        drawLine(globalCanvas.context, [tempStart.screenX, tempStart.screenY], [globalStates.pointerPosition[0], globalStates.pointerPosition[1]], globalStates.ballSize, globalStates.ballSize, globalStates);
     }
 
     if (globalStates.drawDotLine) {
@@ -241,112 +244,36 @@ function drawInteractionLines() {
  * @param lineEndPoint is an array of two numbers indicating the end for a line
  * @param lineStartWeight is a number indicating the weight of a line at start
  * @param lineEndWeight is a number indicating the weight of a line at end
+ * @param linkObject that contains ballAnimationCount
  * @return
  **/
 
-function drawLine(context, lineStartPoint, lineEndPoint, lineStartWeight, lineEndWeight) {
 
-    // calculating all needed values for drawing the line
-    var linePointWeight2 = (lineStartWeight * 3 / 4) + (lineEndWeight / 4);
-    var linePointWeight3 = (lineStartWeight * 2 / 4) + (lineEndWeight * 2 / 4);
-    var linePointWeight4 = (lineStartWeight / 4) + (lineEndWeight * 3 / 4);
+function drawLine(context, lineStartPoint, lineEndPoint, lineStartWeight, lineEndWeight, linkObject) {
 
-    var lineNormAlizer = 10; // find a formula for better representation
-    var lineVector = vD(lineEndPoint, lineStartPoint);
-    var lineVectorLength = Math.sqrt((lineVector[0] * lineVector[0]) + (lineVector[1] * lineVector[1]));
-    var lineVectorNorm = [lineVector[0] / lineVectorLength, lineVector[1] / lineVectorLength];
+    var angle = Math.atan2((lineStartPoint[1] - lineEndPoint[1]),(lineStartPoint[0] - lineEndPoint[0]));
+    var distanceCount = 0;
+    var length1 = lineEndPoint[0]-lineStartPoint[0];
+    var length2 = lineEndPoint[1]-lineStartPoint[1];
+    var lineVectorLength = Math.sqrt(length1*length1 + length2*length2);
 
-    var lineArrowVector = vMN(lineVectorNorm, 20);
-    var usedVector = vMN(lineVectorNorm, -18);
-    var lineArrowVectorN = vMN(vR(lineArrowVector, -90), 34 / 80);
-    var lineArrowVectorP = vMN(vR(lineArrowVector, 90), 34 / 80);
-    var lineEndBall = vA(lineStartPoint, lineVector);
-    var lineEnd = vA(vA(lineStartPoint, lineVector), vMN(lineVectorNorm, lineNormAlizer));
-    var lineEnd_ = vA(vA(lineStartPoint, lineVector), vMN(lineVectorNorm, lineNormAlizer - 10));
-    var lineEnd4 = vA(vA(lineStartPoint, vMN(lineVector, (1 / 4))), vMN(lineVectorNorm, lineNormAlizer));
-    var lineEnd3 = vA(vA(lineStartPoint, vMN(lineVector, (2 / 4))), vMN(lineVectorNorm, lineNormAlizer));
-    var lineEnd2 = vA(vA(lineStartPoint, vMN(lineVector, (3 / 4))), vMN(lineVectorNorm, lineNormAlizer));
+    if(linkObject.ballAnimationCount >= globalStates.ballDistance)  linkObject.ballAnimationCount = 0;
 
-    // Drawing the line for when the touch point is more then 20 pixels awalineY from the touchdown
-    if (lineVectorLength > 20) {
-        context.beginPath();
-        context.arc(lineEndBall[0], lineEndBall[1], 7.5 * lineEndWeight, 0, Math.PI * 2);
-        context.fillStyle = "#f9f90a";
-        context.fill();
-        context.closePath();
+    while(distanceCount+linkObject.ballAnimationCount< lineVectorLength){
+        var keepColor = lineVectorLength/6;
+        var color = map(distanceCount+linkObject.ballAnimationCount, 0+keepColor, lineVectorLength-keepColor, 180, 59);
+        var ballSize = map(distanceCount+linkObject.ballAnimationCount, 0, lineVectorLength, lineStartWeight, lineEndWeight);
 
         context.beginPath();
-        context.moveTo(vA(lineEnd, vMN(lineArrowVectorP, lineEndWeight))[0], vA(lineEnd, vMN(lineArrowVectorP, lineEndWeight))[1]);
-        context.lineTo(lineEnd[0], lineEnd[1]);
-        context.lineTo(vA(lineEnd, vMN(lineArrowVectorN, lineEndWeight))[0], vA(lineEnd, vMN(lineArrowVectorN, lineEndWeight))[1]);
-        context.lineTo(vA(lineEnd2, vA(usedVector, vMN(lineArrowVectorN, linePointWeight4)))[0], vA(lineEnd2, vA(usedVector, vMN(lineArrowVectorN, linePointWeight4)))[1]);
-        context.lineTo(vA(lineEnd2, usedVector)[0], vA(lineEnd2, usedVector)[1]);
-        context.lineTo(vA(lineEnd2, vA(usedVector, vMN(lineArrowVectorP, linePointWeight4)))[0], vA(lineEnd2, vA(usedVector, vMN(lineArrowVectorP, linePointWeight4)))[1]);
-        context.fillStyle = "#f9f90a";
+        context.arc(lineStartPoint[0] - Math.cos(angle) * (distanceCount+linkObject.ballAnimationCount), lineStartPoint[1] - Math.sin(angle) * (distanceCount+linkObject.ballAnimationCount), ballSize, 0, Math.PI * 2);
+        context.fillStyle=  "hsl(" + color + ", 100%, 50%)";
         context.fill();
-        context.closePath();
-
-        context.beginPath();
-        context.moveTo(vA(lineEnd2, vA(usedVector, vMN(lineArrowVectorP, linePointWeight4)))[0], vA(lineEnd2, vA(usedVector, vMN(lineArrowVectorP, linePointWeight4)))[1]);
-        context.lineTo(lineEnd2[0], lineEnd2[1]);
-        context.lineTo(vA(lineEnd2, vA(usedVector, vMN(lineArrowVectorN, linePointWeight4)))[0], vA(lineEnd2, vA(usedVector, vMN(lineArrowVectorN, linePointWeight4)))[1]);
-        context.lineTo(vA(lineEnd3, vA(usedVector, vMN(lineArrowVectorN, linePointWeight3)))[0], vA(lineEnd3, vA(usedVector, vMN(lineArrowVectorN, linePointWeight3)))[1]);
-        context.lineTo(vA(lineEnd3, usedVector)[0], vA(lineEnd3, usedVector)[1]);
-        context.lineTo(vA(lineEnd3, vA(usedVector, vMN(lineArrowVectorP, linePointWeight3)))[0], vA(lineEnd3, vA(usedVector, vMN(lineArrowVectorP, linePointWeight3)))[1]);
-        context.fillStyle = "#a3fb5e";
-        context.fill();
-        context.closePath();
-
-        context.beginPath();
-        context.moveTo(vA(lineEnd3, vA(usedVector, vMN(lineArrowVectorP, linePointWeight3)))[0], vA(lineEnd3, vA(usedVector, vMN(lineArrowVectorP, linePointWeight3)))[1]);
-        context.lineTo(lineEnd3[0], lineEnd3[1]);
-        context.lineTo(vA(lineEnd3, vA(usedVector, vMN(lineArrowVectorN, linePointWeight3)))[0], vA(lineEnd3, vA(usedVector, vMN(lineArrowVectorN, linePointWeight3)))[1]);
-        context.lineTo(vA(lineEnd4, vA(usedVector, vMN(lineArrowVectorN, linePointWeight2)))[0], vA(lineEnd4, vA(usedVector, vMN(lineArrowVectorN, linePointWeight2)))[1]);
-        context.lineTo(vA(lineEnd4, usedVector)[0], vA(lineEnd4, usedVector)[1]);
-        context.lineTo(vA(lineEnd4, vA(usedVector, vMN(lineArrowVectorP, linePointWeight2)))[0], vA(lineEnd4, vA(usedVector, vMN(lineArrowVectorP, linePointWeight2)))[1]);
-        context.fillStyle = "#53fdad";
-        context.fill();
-        context.closePath();
-
-        context.beginPath();
-        context.moveTo(vA(lineEnd4, vA(usedVector, vMN(lineArrowVectorP, linePointWeight2)))[0], vA(lineEnd4, vA(usedVector, vMN(lineArrowVectorP, linePointWeight2)))[1]);
-        context.lineTo(lineEnd4[0], lineEnd4[1]);
-        context.lineTo(vA(lineEnd4, vA(usedVector, vMN(lineArrowVectorN, linePointWeight2)))[0], vA(lineEnd4, vA(usedVector, vMN(lineArrowVectorN, linePointWeight2)))[1]);
-        context.lineTo(vA(lineStartPoint, vMN(lineArrowVectorN, lineStartWeight))[0], vA(lineStartPoint, vMN(lineArrowVectorN, lineStartWeight))[1]);
-        context.lineTo(lineStartPoint[0], lineStartPoint[1]);
-        context.lineTo(vA(lineStartPoint, vMN(lineArrowVectorP, lineStartWeight))[0], vA(lineStartPoint, vMN(lineArrowVectorP, lineStartWeight))[1]);
-        context.fillStyle = "#01fffd";
-        context.fill();
-        context.closePath();
-
+       // distanceCount += ballSize*(globalStates.ballDistance/10);
+        distanceCount += globalStates.ballDistance;
     }
-    // Drawing the line for when the touch point is less then 20 pixels awalineY from the touchdown
-    else {
-        context.beginPath();
-        context.moveTo(vA(lineEnd_, vMN(lineArrowVectorP, lineEndWeight))[0], vA(lineEnd_, vMN(lineArrowVectorP, lineEndWeight))[1]);
-        context.lineTo(lineEnd_[0], lineEnd_[1]);
-        context.lineTo(vA(lineEnd_, vMN(lineArrowVectorN, lineEndWeight))[0], vA(lineEnd_, vMN(lineArrowVectorN, lineEndWeight))[1]);
-        context.lineTo(vA(lineStartPoint, vMN(lineArrowVectorN, lineStartWeight))[0], vA(lineStartPoint, vMN(lineArrowVectorN, lineStartWeight))[1]);
-        context.lineTo(lineStartPoint[0], lineStartPoint[1]);
-        context.lineTo(vA(lineStartPoint, vMN(lineArrowVectorP, lineStartWeight))[0], vA(lineStartPoint, vMN(lineArrowVectorP, lineStartWeight))[1]);
-        context.fillStyle = "#00fdff";
-        context.fill();
-        context.closePath();
-
-        context.beginPath();
-        context.arc(lineEndBall[0], lineEndBall[1], 7.5 * lineEndWeight, 0, Math.PI * 2);
-        context.fillStyle = "#f9f90a";
-        context.fill();
-        context.closePath();
-
-    }
-    // Drawing the start point in anlineY case
-    context.beginPath();
-    context.arc(lineStartPoint[0], lineStartPoint[1], 8 * lineStartWeight, 0, Math.PI * 2);
-    context.fillStyle = "#00fdff";
-    context.fill();
-    context.closePath();
+    linkObject.ballAnimationCount+=3;
 }
+
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -363,7 +290,7 @@ function drawDotLine(context, lineStartPoint, lineEndPoint, b1, b2) {
     context.lineTo(lineEndPoint[0], lineEndPoint[1]);
     context.setLineDash([7]);
     context.lineWidth = 2;
-    context.strokeStyle = "#00fdff";
+    context.strokeStyle = "#ff019f";//"#00fdff";
     context.stroke();
     context.closePath();
 }
