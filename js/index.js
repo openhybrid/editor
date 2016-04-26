@@ -257,7 +257,7 @@ function setProjectionMatrix(matrix) {
         [globalStates.height, 0, 0, 0],
         [0, -globalStates.width, 0, 0],
         [0, 0, 1, 0],
-        [0, 0, 0, 1]
+        [-3, -1, 0, 1]
     ];
 
     globalStates.realProjectionMatrix = matrix;
