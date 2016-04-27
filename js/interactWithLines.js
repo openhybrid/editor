@@ -104,7 +104,7 @@ function drawAllLines(thisObject, context) {
         var l = thisObject.objectLinks[subKey];
         var oA = thisObject;
 
-        if(typeof l.ballAnimationCount === "undefined")
+        if(isNaN(l.ballAnimationCount))
             l.ballAnimationCount = 0;
 
         if (!objectExp.hasOwnProperty(l.ObjectB)) {
@@ -123,42 +123,6 @@ function drawAllLines(thisObject, context) {
         if (bA === undefined || bB === undefined || oA === undefined || oB === undefined) {
             continue; //should not be undefined
         }
-            // the line actuall screen possition gets changed so that when cutting the line of an out of image object
-            // the line still gets cut
-
-            var thisM = globalStates.height / 500 * 1000;
-
-            // bA.screenZ =  thisM/(Math.sqrt(bA.screenZ));
-            // bB.screenZ = thisM/(Math.sqrt(bB.screenZ));
-
-
-            bA.screenZ = thisM / (bA.screenZ);
-            bB.screenZ = thisM / (bB.screenZ);
-
-           // cout(oB.ObjectVisible);
-           // cout(oA.ObjectVisible);
-
-
-        if (bA.screenZ > 3) {
-
-            bA.screenZ = 3;
-        }
-
-        if (bA.screenZ < 0) {
-
-            bA.screenZ = 0;
-        }
-
-        if (bB.screenZ > 3) {
-
-            bB.screenZ = 3;
-        }
-
-        if (bA.screenZ < 0) {
-
-            bA.screenZ = 0;
-        }
-
 
         if (!oB.ObjectVisible) {
                 bB.screenX = bA.screenX;
@@ -172,13 +136,15 @@ function drawAllLines(thisObject, context) {
                 bA.screenZ = bB.screenZ;
             }
 
+        // linearize a non linear zBuffer
+        var bAScreenZ = (((10001 - (20000 / bA.screenZ)) / 9999)+ 1) /2;
+        var bBScreenZ = (((10001 - (20000 / bB.screenZ)) / 9999)+ 1) /2;
 
-            //   cout( bB.screenZ);
-        bA.screenZ = 1;
-            bB.screenZ = 1;
+        // map the linearized zBuffer to the final ball size
+         bAScreenZ =  map(bAScreenZ,0.9971 , 1, 25, 1);
+         bBScreenZ =  map(bBScreenZ,0.9971 , 1, 25, 1);
 
-
-        drawLine(context, [bA.screenX, bA.screenY], [bB.screenX, bB.screenY], globalStates.ballSize, globalStates.ballSize, l);
+        drawLine(context, [bA.screenX, bA.screenY], [bB.screenX, bB.screenY], bAScreenZ, bBScreenZ, l);
     }
     globalCanvas.hasContent = true;
 }
@@ -203,28 +169,18 @@ function drawInteractionLines() {
 
 
         // this is for making sure that the line is drawn out of the screen... Don't know why this got lost somewhere down the road.
+        // linearize a non linear zBuffer
+        tempStart.screenZ = (((10001 - (20000 /  tempStart.screenZ)) / 9999)+ 1) /2;
+        // map the linearized zBuffer to the final ball size
+        tempStart.screenZ = map( tempStart.screenZ,0.9971 , 1, 25, 1);
 
         if (!oA.ObjectVisible) {
             tempStart.screenX = globalStates.pointerPosition[0];
             tempStart.screenY = -10;
-            tempStart.screenZ = 1;
+            tempStart.screenZ = 6;
         }
 
-
-        var thisM = globalStates.height / 500 * 1000;
-
-        tempStart.screenZ = thisM / (tempStart.screenZ);
-
-        if (tempStart.screenZ > 3) {
-            tempStart.screenZ = 3;
-        }
-        if (tempStart.screenZ < 0) {
-            tempStart.screenZ = 0;
-        }
-
-        tempStart.screenZ =1;
-
-        drawLine(globalCanvas.context, [tempStart.screenX, tempStart.screenY], [globalStates.pointerPosition[0], globalStates.pointerPosition[1]], globalStates.ballSize, globalStates.ballSize, globalStates);
+        drawLine(globalCanvas.context, [tempStart.screenX, tempStart.screenY], [globalStates.pointerPosition[0], globalStates.pointerPosition[1]], tempStart.screenZ, tempStart.screenZ, globalStates);
     }
 
     if (globalStates.drawDotLine) {
@@ -253,25 +209,28 @@ function drawLine(context, lineStartPoint, lineEndPoint, lineStartWeight, lineEn
 
     var angle = Math.atan2((lineStartPoint[1] - lineEndPoint[1]),(lineStartPoint[0] - lineEndPoint[0]));
     var distanceCount = 0;
+    var thisCount = 0;
     var length1 = lineEndPoint[0]-lineStartPoint[0];
     var length2 = lineEndPoint[1]-lineStartPoint[1];
     var lineVectorLength = Math.sqrt(length1*length1 + length2*length2);
+    var keepColor = lineVectorLength/6;
+    var color;
+    var ballSize;
 
-    if(linkObject.ballAnimationCount >= globalStates.ballDistance)  linkObject.ballAnimationCount = 0;
+    if(linkObject.ballAnimationCount >= (lineStartWeight+lineStartWeight+2))  linkObject.ballAnimationCount = 0;
 
     while(distanceCount+linkObject.ballAnimationCount< lineVectorLength){
-        var keepColor = lineVectorLength/6;
-        var color = map(distanceCount+linkObject.ballAnimationCount, 0+keepColor, lineVectorLength-keepColor, 180, 59);
-        var ballSize = map(distanceCount+linkObject.ballAnimationCount, 0, lineVectorLength, lineStartWeight, lineEndWeight);
-
+        thisCount = distanceCount+linkObject.ballAnimationCount;
+        color = map(thisCount, keepColor, lineVectorLength-keepColor, 180, 59);
+        ballSize = map(thisCount, 0, lineVectorLength, lineStartWeight, lineEndWeight);
         context.beginPath();
-        context.arc(lineStartPoint[0] - Math.cos(angle) * (distanceCount+linkObject.ballAnimationCount), lineStartPoint[1] - Math.sin(angle) * (distanceCount+linkObject.ballAnimationCount), ballSize, 0, Math.PI * 2);
+        context.arc(lineStartPoint[0] - Math.cos(angle) * thisCount, lineStartPoint[1] - Math.sin(angle) * thisCount, ballSize, 0, 6.2832);
         context.fillStyle=  "hsl(" + color + ", 100%, 50%)";
         context.fill();
-       // distanceCount += ballSize*(globalStates.ballDistance/10);
-        distanceCount += globalStates.ballDistance;
+        distanceCount +=ballSize*2.3;
+
     }
-    linkObject.ballAnimationCount+=3;
+    linkObject.ballAnimationCount+=(((lineStartWeight+lineEndWeight)/2)/4);
 }
 
 
