@@ -98,13 +98,6 @@ function falseTouchUp() {
  * @return
  **/
 
-function testForLoop(){
-
-
-
-}
-
-
 function trueTouchUp() {
     if (!globalStates.guiButtonState) {
         if (globalProgram.ObjectA) {
@@ -624,7 +617,8 @@ function removeEventHandlers() {
         if (document.getElementById(thisKey)) {
             var thisObject3 = document.getElementById(thisKey);
             thisObject3.style.visibility = "hidden";
-            thisObject3.className = "mainEdimainting";
+            // this is a typo but maybe relevant?
+            thisObject3.className = "mainEditing";
 
             thisObject3.removeEventListener("touchstart", MultiTouchStart, false);
             thisObject3.removeEventListener("touchmove", MultiTouchMove, false);

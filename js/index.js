@@ -438,6 +438,7 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
                 if (!thisObject.visibleEditing && thisObject.developer) {
                     thisObject.visibleEditing = true;
                     document.getElementById(thisKey).style.visibility = 'visible';
+                    showEditingStripes(thisKey, true);
                     document.getElementById(thisKey).className = "mainProgram";
                 }
             }
@@ -481,6 +482,32 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
                         var thisTransform3 = multiplyMatrix(thisObject.matrix, thisTransform2);
                         thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform3);
                         //  cout("I get here");
+
+                        if(globalStates.editingMode) {
+                            // console.log("drawMarkerIntersection", thisKey, thisTransform, thisObject);
+                            // drawMarkerIntersection(thisKey, thisTransform); // TODO: uncomment to draw correctly!
+                            var newMatrix = copyMatrix(multiplyMatrix(globalMatrix.begin, invertMatrix(globalMatrix.temp)));
+                            var theObject = document.getElementById(thisKey);
+                            // console.log("update", newMatrix, thisObject, thisKey, theObject);
+                            // console.log("existing matrices", thisObject.matrix, thisTransform2, thisTransform3, finalMatrixTransform2, thisTransform);
+
+                var oscale = thisObject.scale;
+                var odx = thisObject.x;
+                var ody = thisObject.y;
+                console.log(odx, ody, oscale);
+
+                var adjustedWithScale = [
+                    [newMatrix[0][0] * oscale, newMatrix[0][1], newMatrix[0][2], newMatrix[0][3]],
+                    [newMatrix[1][0], newMatrix[1][1] * oscale, newMatrix[1][2], newMatrix[1][3]],
+                    [newMatrix[2][0], newMatrix[2][1], newMatrix[2][2], newMatrix[2][3]],
+                    [newMatrix[3][0] + odx, newMatrix[3][1] + ody, newMatrix[3][2], newMatrix[3][3]]
+                ];
+
+                            console.log("i get here");
+                            estimateIntersection(thisKey, adjustedWithScale);
+
+                        }
+
                     } else
                         thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
                 }
@@ -550,6 +577,7 @@ function hideTransformed(thisObject, thisKey, generalKey) {
         thisObject.visible = false;
         thisObject.visibleEditing = false;
         document.getElementById(thisKey).style.visibility = 'hidden';
+        showEditingStripes(thisKey, false);
         //document.getElementById(thisKey).style.display = 'none';
         cout("hideTransformed");
     }
@@ -705,6 +733,8 @@ function addElement(thisObject, thisKey, thisUrl, generalObject) {
             "src='" + thisUrl + "' class='main' sandbox='allow-forms allow-pointer-lock allow-same-origin allow-scripts'>" +
             "</iframe>";
 
+        tempAddContent += "<canvas id='canvas" + thisKey + "'style='width:5px; height:5px; visibility:visible;' class='mainCanvas'></canvas>";
+
         tempAddContent += "<div id='" + thisKey + "' frameBorder='0' style='width:" + thisObject.frameSizeX + "px; height:" + thisObject.frameSizeY + "px;" +
             "top:" + ((globalStates.width - thisObject.frameSizeX) / 2) + "px; left:" + ((globalStates.height - thisObject.frameSizeY) / 2) + "px; visibility: hidden;' class='mainEditing'></div>" +
             "";
@@ -854,4 +884,3 @@ function fire(thisKey) {
     window.location.href = "of://event_" + this.location;
 
 }
-
