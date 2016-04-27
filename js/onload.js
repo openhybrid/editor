@@ -219,13 +219,7 @@ var postMessage = function (e) {
                 document.getElementById("iframe" + msgContent.pos).style.height = msgContent.height;
                 document.getElementById("iframe" + msgContent.pos).style.top = ((globalStates.width - msgContent.height) / 2);
                 document.getElementById("iframe" + msgContent.pos).style.left = ((globalStates.height - msgContent.width) / 2);
-
-                document.getElementById("canvas" + msgContent.pos).style.width = msgContent.width;
-                document.getElementById("canvas" + msgContent.pos).style.height = msgContent.height;
-                document.getElementById("canvas" + msgContent.pos).style.top = ((globalStates.width - msgContent.height) / 2);
-                document.getElementById("canvas" + msgContent.pos).style.left = ((globalStates.height - msgContent.width) / 2);
-
-
+                
             } else if (typeof msgContent.sendMatrix !== "undefined") {
                 if (msgContent.sendMatrix === true) {
                     tempThisObject.sendMatrix = true;

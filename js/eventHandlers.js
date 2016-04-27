@@ -285,7 +285,7 @@ function MultiTouchMove(evt) {
         }
 
 
-        var tempMatrix = copyMatrix(globalMatrix.begin);
+        var tempMatrix = copyMatrix(tempThisObject.begin);
         globalStates.angX = toAxisAngle(tempMatrix)[0];
         globalStates.angY = toAxisAngle(tempMatrix)[1];
 
@@ -326,9 +326,11 @@ function MultiTouchMove(evt) {
         }
     }
 
+
     if (globalStates.editingModeHaveObject && globalStates.editingMode && evt.targetTouches.length === 2) {
         scaleEvent(evt.touches[1]);
     }
+    
     cout("MultiTouchMove");
 }
 
@@ -354,16 +356,16 @@ function MultiTouchEnd(evt) {
             tempThisObject = objectExp[globalStates.editingModeObject];
         }
 
-
-
         var content = {};
         content.x = tempThisObject.x;
         content.y = tempThisObject.y;
         content.scale = tempThisObject.scale;
 
+
         if(globalStates.unconstrainedPositioning===true) {
-            tempThisObject.matrix = copyMatrix(multiplyMatrix(globalMatrix.begin, invertMatrix(globalMatrix.temp)));
+            tempThisObject.matrix = copyMatrix(multiplyMatrix(tempThisObject.begin, invertMatrix(tempThisObject.temp)));
             content.matrix = tempThisObject.matrix;
+
         }
 
 if(typeof content.x === "number" && typeof content.y === "number" && typeof content.scale === "number") {
@@ -565,9 +567,13 @@ function addEventHandlers() {
             var thisObject3 = document.getElementById(thisKey);
             //  if (globalStates.guiButtonState) {
             thisObject3.style.visibility = "visible";
+
+            var thisObject4 = document.getElementById("canvas"+thisKey);
+            thisObject4.style.display= "inline";
+
             // }
 
-            thisObject3.className = "mainProgram";
+           // thisObject3.className = "mainProgram";
 
             thisObject3.addEventListener("touchstart", MultiTouchStart, false);
             ec++;
@@ -581,7 +587,12 @@ function addEventHandlers() {
         for (var thisSubKey in generalObject2.objectValues) {
             if (document.getElementById(thisSubKey)) {
                 var thisObject2 = document.getElementById(thisSubKey);
-                thisObject2.className = "mainProgram";
+
+                //thisObject2.className = "mainProgram";
+
+                var thisObject5 = document.getElementById("canvas"+thisSubKey);
+                thisObject5.style.display= "inline";
+
                 //if(thisObject.developer) {
                 thisObject2.addEventListener("touchstart", MultiTouchStart, false);
                 ec++;
@@ -618,7 +629,9 @@ function removeEventHandlers() {
             var thisObject3 = document.getElementById(thisKey);
             thisObject3.style.visibility = "hidden";
             // this is a typo but maybe relevant?
-            thisObject3.className = "mainEditing";
+          //  thisObject3.className = "mainEditing";
+
+            document.getElementById("canvas"+thisKey).style.display= "none";
 
             thisObject3.removeEventListener("touchstart", MultiTouchStart, false);
             thisObject3.removeEventListener("touchmove", MultiTouchMove, false);
@@ -632,7 +645,9 @@ function removeEventHandlers() {
         for (var thisSubKey in generalObject2.objectValues) {
             if (document.getElementById(thisSubKey)) {
                 var thisObject2 = document.getElementById(thisSubKey);
-                thisObject2.className = "mainEditing";
+                //thisObject2.className = "mainEditing";
+                document.getElementById("canvas"+thisSubKey).style.display= "none";
+
                 //    if(thisObject.developer) {
                 thisObject2.removeEventListener("touchstart", MultiTouchStart, false);
                 thisObject2.removeEventListener("touchmove", MultiTouchMove, false);

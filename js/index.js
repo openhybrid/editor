@@ -429,37 +429,46 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
             if (generalKey !== thisKey) {
                 document.getElementById(thisKey).style.visibility = 'visible';
                 document.getElementById("text" + thisKey).style.visibility = 'visible';
+                document.getElementById("canvas" + thisKey).style.display = 'inline';
+
             }
 
 
-        }
-        if (generalKey === thisKey) {
-            if (globalStates.editingMode) {
-                if (!thisObject.visibleEditing && thisObject.developer) {
-                    thisObject.visibleEditing = true;
-                    document.getElementById(thisKey).style.visibility = 'visible';
-                    showEditingStripes(thisKey, true);
-                    document.getElementById(thisKey).className = "mainProgram";
+            if (generalKey === thisKey) {
+                if (globalStates.editingMode) {
+                    if (!thisObject.visibleEditing && thisObject.developer) {
+                        thisObject.visibleEditing = true;
+                        document.getElementById(thisKey).style.visibility = 'visible';
+                        // showEditingStripes(thisKey, true);
+                        document.getElementById("canvas" + thisKey).style.display = 'inline';
+
+                        document.getElementById(thisKey).className = "mainProgram";
+                    }
                 }
             }
+
         }
+
 
         // this needs a better solution
         if (thisObject.fullScreen !== true) {
                 if (globalMatrix.matrixtouchOn === thisKey && globalStates.editingMode) {
                     //if(globalStates.unconstrainedPositioning===true)
-                    globalMatrix.temp = copyMatrix(thisTransform2);
+                    thisObject.temp = copyMatrix(thisTransform2);
 
 
                     if (globalMatrix.copyStillFromMatrixSwitch) {
-                        globalMatrix.visual = copyMatrix(globalMatrix.temp);
+                        globalMatrix.visual = copyMatrix(thisTransform2);
                         if (typeof thisObject.matrix === "object")
                             if (thisObject.matrix.length > 0)
-                                globalMatrix.begin = copyMatrix(multiplyMatrix(thisObject.matrix, globalMatrix.temp));
+                                thisObject.begin = copyMatrix(multiplyMatrix(thisObject.matrix, thisObject.temp));
                             else
-                                globalMatrix.begin = copyMatrix(globalMatrix.temp);
+                                thisObject.begin = copyMatrix(thisObject.temp);
                         else
-                            globalMatrix.begin = copyMatrix(globalMatrix.temp);
+                            thisObject.begin = copyMatrix(thisObject.temp);
+
+                        if (globalStates.unconstrainedPositioning === true)
+                        thisObject.matrix = copyMatrix(multiplyMatrix(thisObject.begin, invertMatrix(thisObject.temp)));
 
                         globalMatrix.copyStillFromMatrixSwitch = false;
                     }
@@ -484,35 +493,45 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
                         //  cout("I get here");
 
                         if(globalStates.editingMode) {
-                            // console.log("drawMarkerIntersection", thisKey, thisTransform, thisObject);
-                            // drawMarkerIntersection(thisKey, thisTransform); // TODO: uncomment to draw correctly!
-                            var newMatrix = copyMatrix(multiplyMatrix(globalMatrix.begin, invertMatrix(globalMatrix.temp)));
-                            var theObject = document.getElementById(thisKey);
-                            // console.log("update", newMatrix, thisObject, thisKey, theObject);
-                            // console.log("existing matrices", thisObject.matrix, thisTransform2, thisTransform3, finalMatrixTransform2, thisTransform);
+                            if (globalStates.unconstrainedPositioning === false)
+                                thisObject.begin = copyMatrix(multiplyMatrix(thisObject.matrix, thisObject.temp));
 
-                var oscale = thisObject.scale;
-                var odx = thisObject.x;
-                var ody = thisObject.y;
-                console.log(odx, ody, oscale);
 
-                var adjustedWithScale = [
-                    [newMatrix[0][0] * oscale, newMatrix[0][1], newMatrix[0][2], newMatrix[0][3]],
-                    [newMatrix[1][0], newMatrix[1][1] * oscale, newMatrix[1][2], newMatrix[1][3]],
-                    [newMatrix[2][0], newMatrix[2][1], newMatrix[2][2], newMatrix[2][3]],
-                    [newMatrix[3][0] + odx, newMatrix[3][1] + ody, newMatrix[3][2], newMatrix[3][3]]
-                ];
-
-                            console.log("i get here");
-                            estimateIntersection(thisKey, adjustedWithScale);
-
+                            estimateIntersection(thisKey, multiplyMatrix(finalMatrixTransform2,multiplyMatrix(thisObject.begin, invertMatrix(thisObject.temp))));
                         }
 
-                    } else
-                        thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
+                    } else {
+                        {
+                            thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
+                            if(globalStates.editingMode) {
+                                estimateIntersection(thisKey, [
+                                    [1, 0, 0, 0],
+                                    [0, 1, 0, 0],
+                                    [0, 0, 1, 0],
+                                    [0, 0, 0, 1]
+                                ]);
+                            }
+                        }
+
+                    }
                 }
-                else
+                else {
                     thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
+                    if(globalStates.editingMode) {
+                        estimateIntersection(thisKey, [
+                            [1, 0, 0, 0],
+                            [0, 1, 0, 0],
+                            [0, 0, 1, 0],
+                            [0, 0, 0, 1]
+                        ]);
+                    }
+                }
+
+
+
+
+
+
 
              document.getElementById("thisObject" + thisKey).style.webkitTransform = 'matrix3d(' +
                  thisTransform[0][0] + ',' + thisTransform[0][1] + ',' + thisTransform[0][2] + ',' + thisTransform[0][3] + ',' +
@@ -577,7 +596,8 @@ function hideTransformed(thisObject, thisKey, generalKey) {
         thisObject.visible = false;
         thisObject.visibleEditing = false;
         document.getElementById(thisKey).style.visibility = 'hidden';
-        showEditingStripes(thisKey, false);
+        document.getElementById("canvas"+thisKey).style.display = 'none';
+
         //document.getElementById(thisKey).style.display = 'none';
         cout("hideTransformed");
     }
@@ -713,6 +733,28 @@ function addElement(thisObject, thisKey, thisUrl, generalObject) {
         thisObject.loaded = true;
         thisObject.visibleEditing = false;
         globalStates.notLoading = thisKey;
+
+
+        if (typeof thisObject.begin !== "object") {
+                thisObject.begin = [
+                    [1, 0, 0, 0],
+                    [0, 1, 0, 0],
+                    [0, 0, 1, 0],
+                    [0, 0, 0, 1]
+                ];
+
+        }
+
+        if (typeof thisObject.temp !== "object") {
+            thisObject.temp = [
+                [1, 0, 0, 0],
+                [0, 1, 0, 0],
+                [0, 0, 1, 0],
+                [0, 0, 0, 1]
+            ];
+
+        }
+
         //  window.location.href = "of://objectloaded_" + globalStates.notLoading;
 
         var addDoc = document.createElement('div');
@@ -733,10 +775,11 @@ function addElement(thisObject, thisKey, thisUrl, generalObject) {
             "src='" + thisUrl + "' class='main' sandbox='allow-forms allow-pointer-lock allow-same-origin allow-scripts'>" +
             "</iframe>";
 
-        tempAddContent += "<canvas id='canvas" + thisKey + "'style='width:5px; height:5px; visibility:visible;' class='mainCanvas'></canvas>";
 
         tempAddContent += "<div id='" + thisKey + "' frameBorder='0' style='width:" + thisObject.frameSizeX + "px; height:" + thisObject.frameSizeY + "px;" +
-            "top:" + ((globalStates.width - thisObject.frameSizeX) / 2) + "px; left:" + ((globalStates.height - thisObject.frameSizeY) / 2) + "px; visibility: hidden;' class='mainEditing'></div>" +
+            "top:" + ((globalStates.width - thisObject.frameSizeX) / 2) + "px; left:" + ((globalStates.height - thisObject.frameSizeY) / 2) + "px; visibility: hidden;' class='mainEditing'>" +
+       "<canvas id='canvas" + thisKey + "'style='width:100%; height:100%;' class='mainCanvas'></canvas>"+
+        "</div>" +
             "";
 
         tempAddContent += "<div id='text" + thisKey + "' frameBorder='0' style='width:5px; height:5px;" +

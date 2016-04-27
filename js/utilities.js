@@ -471,61 +471,6 @@ function cout(e){
  * @author Ben Reynolds
  **/
 
-function getCornersClockwise(thisCanvas) {
-    return [[0, 0, 0],
-        [thisCanvas.width, 0, 0],
-        [thisCanvas.width, thisCanvas.height, 0],
-        [0, thisCanvas.height, 0]];
-}
-
-function areCornersEqual(corner1, corner2) {
-    return (corner1[0] === corner2[0] && corner1[1] === corner2[1]);
-}
-
-function areCornerPairsIdentical(c1a, c1b, c2a, c2b) {
-    return (areCornersEqual(c1a, c2a) && areCornersEqual(c1b, c2b));
-}
-
-function areCornerPairsSymmetric(c1a, c1b, c2a, c2b) {
-    return (areCornersEqual(c1a, c2b) && areCornersEqual(c1b, c2a));
-}
-
-function areCornersAdjacent(corner1, corner2) {
-    return (corner1[0] === corner2[0] || corner1[1] === corner2[1]);
-}
-
-function areCornersOppositeZ(corner1, corner2) {
-    var z1 = corner1[2];
-    var z2 = corner2[2];
-    var oppositeSign = ((z1 * z2) < 0);
-    return oppositeSign;
-}
-
-// makes sure we don't add symmetric pairs to list
-function addCornerPairToOppositeCornerPairs(cornerPair, oppositeCornerPairs) {
-    var corner1 = cornerPair[0];
-    var corner2 = cornerPair[1];
-    var safeToAdd = true;
-    if (oppositeCornerPairs.length > 0) {
-        oppositeCornerPairs.forEach(function(pairList) {
-            var existingCorner1 = pairList[0];
-            var existingCorner2 = pairList[1];
-            if (areCornerPairsSymmetric(existingCorner1, existingCorner2, corner1, corner2)) {
-                // console.log("symmetric", existingCorner1, existingCorner2, corner1, corner2);
-                safeToAdd = false;
-                return;
-            }
-            if (areCornerPairsIdentical(existingCorner1, existingCorner2, corner1, corner2)) {
-                // console.log("identical", existingCorner1, existingCorner2, corner1, corner2);
-                safeToAdd = false;
-                return;
-            }
-        });
-    }
-    if (safeToAdd) {
-        oppositeCornerPairs.push([corner1, corner2]);
-    }
-}
 
 function getCenterOfPoints(points) {
     if (points.length < 1) { return [0,0]; }
@@ -556,6 +501,7 @@ function sortPointsClockwise(points) {
     return points.sort(comparePoints);
 }
 
+
 function mat1x16From4x4(matrix) {
     return [matrix[0][0], matrix[0][1], matrix[0][2], matrix[0][3],
         matrix[1][0], matrix[1][1], matrix[1][2], matrix[1][3],
@@ -563,6 +509,64 @@ function mat1x16From4x4(matrix) {
         matrix[3][0], matrix[3][1], matrix[3][2], matrix[3][3]];
 }
 
+
+function getCornersClockwise(thisCanvas) {
+    return [[0, 0, 0],
+        [thisCanvas.width, 0, 0],
+        [thisCanvas.width, thisCanvas.height, 0],
+        [0, thisCanvas.height, 0]];
+}
+
+function areCornersEqual(corner1, corner2) {
+    return (corner1[0] === corner2[0] && corner1[1] === corner2[1]);
+}
+
+
+function areCornerPairsIdentical(c1a, c1b, c2a, c2b) {
+    return (areCornersEqual(c1a, c2a) && areCornersEqual(c1b, c2b));
+}
+
+function areCornerPairsSymmetric(c1a, c1b, c2a, c2b) {
+    return (areCornersEqual(c1a, c2b) && areCornersEqual(c1b, c2a));
+}
+
+function areCornersAdjacent(corner1, corner2) {
+    return (corner1[0] === corner2[0] || corner1[1] === corner2[1]);
+}
+
+function areCornersOppositeZ(corner1, corner2) {
+    var z1 = corner1[2];
+    var z2 = corner2[2];
+    var oppositeSign = ((z1 * z2) < 0);
+    return oppositeSign;
+}
+
+
+// makes sure we don't add symmetric pairs to list
+function addCornerPairToOppositeCornerPairs(cornerPair, oppositeCornerPairs) {
+    var corner1 = cornerPair[0];
+    var corner2 = cornerPair[1];
+    var safeToAdd = true;
+    if (oppositeCornerPairs.length > 0) {
+        oppositeCornerPairs.forEach(function(pairList) {
+            var existingCorner1 = pairList[0];
+            var existingCorner2 = pairList[1];
+            if (areCornerPairsSymmetric(existingCorner1, existingCorner2, corner1, corner2)) {
+                // console.log("symmetric", existingCorner1, existingCorner2, corner1, corner2);
+                safeToAdd = false;
+                return;
+            }
+            if (areCornerPairsIdentical(existingCorner1, existingCorner2, corner1, corner2)) {
+                // console.log("identical", existingCorner1, existingCorner2, corner1, corner2);
+                safeToAdd = false;
+                return;
+            }
+        });
+    }
+    if (safeToAdd) {
+        oppositeCornerPairs.push([corner1, corner2]);
+    }
+}
 
 function estimateIntersection(theObject, matrix) {
 
@@ -586,6 +590,7 @@ function estimateIntersection(theObject, matrix) {
         var y = corner[1] - thisCanvas.height/2;
         var input = [x,y,0,1]; // assumes z-position of corner is always 0
         // console.log(out, input, mCanvas);
+
         out=  multiplyMatrix4(input, mCanvas);
         // var z = getTransformedZ(matrix,x,y)
         corner[2] = out[2]; // sets z position of corner to its eventual transformed value
@@ -700,22 +705,4 @@ function estimateIntersection(theObject, matrix) {
 
     // Undo the clipping
     ctx.restore();
-
-}
-
-function showEditingStripes(thisKey, shouldShow) {
-    var thisCanvas = document.getElementById("canvas"+thisKey);
-    var ctx=thisCanvas.getContext("2d");
-    ctx.clearRect(0, 0, thisCanvas.width, thisCanvas.height);
-    if (shouldShow) {
-        var diagonalLineWidth = 22;
-        ctx.lineWidth = diagonalLineWidth;
-        ctx.strokeStyle = '#01FFFC';
-        for (var i=-thisCanvas.height; i<thisCanvas.width; i+=2.5*diagonalLineWidth) {
-            ctx.beginPath();
-            ctx.moveTo(i, -diagonalLineWidth/2);
-            ctx.lineTo(i + thisCanvas.height+diagonalLineWidth/2, thisCanvas.height+diagonalLineWidth/2);
-            ctx.stroke();
-        }
-    }
 }
