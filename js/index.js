@@ -105,7 +105,7 @@ function addHeartbeatObject(beat) {
 
 function setDeviceName(deviceName) {
     globalStates.device = deviceName;
-cout("we are dealing with a "+ globalStates.device );
+    console.log("we are dealing with a " + globalStates.device);
 }
 
 function setStates(developerState, extendedTrackingState, clearSkyState, externalState) {
@@ -260,14 +260,18 @@ function setProjectionMatrix(matrix) {
     var corY = 0;
     var deviceClass = globalStates.device.split(',')[0];
 
-    if(deviceClass === "iPhone6" || deviceClass === "iPhone5") {
+    if (deviceClass === "iPhone6" || deviceClass === "iPhone5") {
         corX = -3;
         corY = -1;
-    }
-
-    if(deviceClass === "iPhone7" || deviceClass === "iPhone8") {
+    } else if (deviceClass === "iPhone7" || deviceClass === "iPhone8") {
         corX = -0.3;
         corY = -1.5;
+    } else if (deviceClass === "iPad3" || deviceClass === "iPad2" || deviceClass === "iPad1") {
+        corX = -5;
+        corY = 17;
+    } else if (deviceClass === "iPad4") {
+        corX = -11;
+        corY = 6.5;
     }
 
     var viewportScaling = [
