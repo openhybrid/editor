@@ -103,6 +103,11 @@ function addHeartbeatObject(beat) {
  * @return
  **/
 
+function setDeviceName(deviceName) {
+    globalStates.device = deviceName;
+cout("we are dealing with a "+ globalStates.device );
+}
+
 function setStates(developerState, extendedTrackingState, clearSkyState, externalState) {
 
 
@@ -251,11 +256,25 @@ function setProjectionMatrix(matrix) {
         [0, 0, 0, 1]
     ];
 
+    var corX = 0;
+    var corY = 0;
+    var deviceClass = globalStates.device.split(',')[0];
+
+    if(deviceClass === "iPhone6" || deviceClass === "iPhone5") {
+        corX = -3;
+        corY = -1;
+    }
+
+    if(deviceClass === "iPhone7" || deviceClass === "iPhone8") {
+        corX = -0.3;
+        corY = -1.5;
+    }
+
     var viewportScaling = [
         [globalStates.height, 0, 0, 0],
         [0, -globalStates.width, 0, 0],
         [0, 0, 1, 0],
-        [-3, -1, 0, 1]
+        [corX, corY, 0, 1]
     ];
 
     globalStates.realProjectionMatrix = matrix;

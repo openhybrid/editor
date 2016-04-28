@@ -70,6 +70,7 @@ var timeForContentLoaded = 240; // temporary set to 1000x with the UI Recording 
 var globalStates = {
     debug : false,
     overlay : 0,
+    device: "",
     // drawWithLines
     ballDistance : 14,
     ballSize : 6,
