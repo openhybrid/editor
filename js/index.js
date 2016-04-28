@@ -89,7 +89,7 @@ function addHeartbeatObject(beat) {
                 objectExp[thisKey].sendMatrix = false;
 
                 cout(objectExp[thisKey]);
-                    addElementInPreferences();
+                addElementInPreferences();
 
             });
         }
@@ -114,7 +114,7 @@ function setStates(developerState, extendedTrackingState, clearSkyState, externa
 
     if (clearSkyState) {
         // globalStates.UIOffMode = true;
-      //  timeForContentLoaded = 240000;
+        //  timeForContentLoaded = 240000;
         // document.getElementById("turnOffUISwitch").checked = true;
     }
 
@@ -135,7 +135,7 @@ function setStates(developerState, extendedTrackingState, clearSkyState, externa
     }
 
 
-    if(globalStates.editingMode) {
+    if (globalStates.editingMode) {
         document.getElementById('resetButton').style.visibility = "visible";
         document.getElementById('unconstButton').style.visibility = "visible";
         document.getElementById('resetButtonDiv').style.display = "inline";
@@ -143,12 +143,10 @@ function setStates(developerState, extendedTrackingState, clearSkyState, externa
     }
 
 
-
-
     // Once all the states are send the alternative checkbox is loaded
     // Its a bad hack to place it here, but it works
 
-    if(typeof checkBoxElements === "undefined") {
+    if (typeof checkBoxElements === "undefined") {
         var checkBoxElements = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
 
         checkBoxElements.forEach(function (html) {
@@ -296,11 +294,11 @@ function update(objects) {
     if (globalStates.feezeButtonState == false) {
         globalObjects = objects;
     }
-   /* if (consoleText !== "") {
-        consoleText = "";
-        document.getElementById("consolelog").innerHTML = "";
-    }
-    conalt = "";*/
+    /* if (consoleText !== "") {
+     consoleText = "";
+     document.getElementById("consolelog").innerHTML = "";
+     }
+     conalt = "";*/
 
     if (globalCanvas.hasContent === true) {
         globalCanvas.context.clearRect(0, 0, globalCanvas.canvas.width, globalCanvas.canvas.height);
@@ -348,7 +346,7 @@ function update(objects) {
                     drawTransformed(tempValue, subKey, tempMatrix, key);
                     addElement(tempValue, subKey, "http://" + generalObject.ip + ":" + httpPort + "/obj/dataPointInterfaces/" + tempValue.plugin + "/", key);
 
-             //  cout("http://" + generalObject.ip + ":" + httpPort + "/obj/dataPointInterfaces/" + tempValue.plugin + "/");
+                    //  cout("http://" + generalObject.ip + ":" + httpPort + "/obj/dataPointInterfaces/" + tempValue.plugin + "/");
                 } else {
                     hideTransformed(tempValue, subKey, key);
                 }
@@ -383,19 +381,19 @@ function update(objects) {
 
         }
         drawInteractionLines();
-      //  cout("drawlines");
+        //  cout("drawlines");
     }
 
     if (globalStates.logButtonState) {
         generalLog(consoleText);
     }
- //   window.location.href = "of://newframe";
-   // cout("update");
+    //   window.location.href = "of://newframe";
+    // cout("update");
 
-  //  countEventHandlers()
+    //  countEventHandlers()
 
 
-   // uiButtons.style.display = disp;
+    // uiButtons.style.display = disp;
 
 
 }
@@ -414,9 +412,11 @@ function update(objects) {
 function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
     if (globalStates.notLoading !== thisKey && thisObject.loaded === true) {
         if (!thisObject.visible) {
-            document.getElementById("thisObject" + thisKey).style.display = 'initial';
+            thisObject.visible = true;
 
-            var thisIframe =  document.getElementById("iframe" + thisKey);
+            document.getElementById("thisObject" + thisKey).style.display = 'inline';
+
+            var thisIframe = document.getElementById("iframe" + thisKey);
             thisIframe.style.visibility = 'visible';
             thisIframe.contentWindow.postMessage(
                 JSON.stringify(
@@ -424,13 +424,15 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
                         "visibility": "visible"
                     }), '*');
 
-            thisObject.visible = true;
 
             if (generalKey !== thisKey) {
                 document.getElementById(thisKey).style.visibility = 'visible';
                 document.getElementById("text" + thisKey).style.visibility = 'visible';
-                document.getElementById("canvas" + thisKey).style.display = 'inline';
-
+                if (globalStates.editingMode) {
+                    document.getElementById("canvas" + thisKey).style.display = 'inline';
+                } else {
+                    document.getElementById("canvas" + thisKey).style.display = 'none';
+                }
             }
 
 
@@ -442,17 +444,29 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
                         // showEditingStripes(thisKey, true);
                         document.getElementById("canvas" + thisKey).style.display = 'inline';
 
-                        document.getElementById(thisKey).className = "mainProgram";
+                        //document.getElementById(thisKey).className = "mainProgram";
                     }
+                } else {
+                    document.getElementById("canvas" + thisKey).style.display = 'none';
                 }
             }
 
         }
 
-
         // this needs a better solution
         if (thisObject.fullScreen !== true) {
-                if (globalMatrix.matrixtouchOn === thisKey && globalStates.editingMode) {
+
+            var finalMatrixTransform2 = [
+                [thisObject.scale, 0, 0, 0],
+                [0, thisObject.scale, 0, 0],
+                [0, 0, 1, 0],
+                [thisObject.x, thisObject.y, 0, 1]
+            ];
+
+            var thisTransform = [];
+
+            if (globalStates.editingMode) {
+                if (globalMatrix.matrixtouchOn === thisKey) {
                     //if(globalStates.unconstrainedPositioning===true)
                     thisObject.temp = copyMatrix(thisTransform2);
 
@@ -468,7 +482,7 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
                             thisObject.begin = copyMatrix(thisObject.temp);
 
                         if (globalStates.unconstrainedPositioning === true)
-                        thisObject.matrix = copyMatrix(multiplyMatrix(thisObject.begin, invertMatrix(thisObject.temp)));
+                            thisObject.matrix = copyMatrix(multiplyMatrix(thisObject.begin, invertMatrix(thisObject.temp)));
 
                         globalMatrix.copyStillFromMatrixSwitch = false;
                     }
@@ -478,46 +492,14 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
 
                 }
 
-                var finalMatrixTransform2 = [
-                    [thisObject.scale, 0, 0, 0],
-                    [0, thisObject.scale, 0, 0],
-                    [0, 0, 1, 0],
-                    [thisObject.x, thisObject.y, 0, 1]
-                ];
 
-                var thisTransform = [];
                 if (typeof thisObject.matrix === "object") {
                     if (thisObject.matrix.length > 0) {
-                        var thisTransform3 = multiplyMatrix(thisObject.matrix, thisTransform2);
-                        thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform3);
-                        //  cout("I get here");
-
-                        if(globalStates.editingMode) {
-                            if (globalStates.unconstrainedPositioning === false)
-                                thisObject.begin = copyMatrix(multiplyMatrix(thisObject.matrix, thisObject.temp));
-
-
-                            estimateIntersection(thisKey, multiplyMatrix(finalMatrixTransform2,multiplyMatrix(thisObject.begin, invertMatrix(thisObject.temp))));
+                        if (globalStates.unconstrainedPositioning === false) {
+                            thisObject.begin = copyMatrix(multiplyMatrix(thisObject.matrix, thisObject.temp));
                         }
-
+                        estimateIntersection(thisKey, multiplyMatrix(finalMatrixTransform2, multiplyMatrix(thisObject.begin, invertMatrix(thisObject.temp))));
                     } else {
-                        {
-                            thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
-                            if(globalStates.editingMode) {
-                                estimateIntersection(thisKey, [
-                                    [1, 0, 0, 0],
-                                    [0, 1, 0, 0],
-                                    [0, 0, 1, 0],
-                                    [0, 0, 0, 1]
-                                ]);
-                            }
-                        }
-
-                    }
-                }
-                else {
-                    thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
-                    if(globalStates.editingMode) {
                         estimateIntersection(thisKey, [
                             [1, 0, 0, 0],
                             [0, 1, 0, 0],
@@ -525,45 +507,48 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
                             [0, 0, 0, 1]
                         ]);
                     }
+
+                } else {
+                    estimateIntersection(thisKey, [
+                        [1, 0, 0, 0],
+                        [0, 1, 0, 0],
+                        [0, 0, 1, 0],
+                        [0, 0, 0, 1]
+                    ]);
                 }
+            }
 
+            if (typeof thisObject.matrix === "object") {
+                if (thisObject.matrix.length > 0) {
+                    thisTransform = multiplyMatrix(finalMatrixTransform2, multiplyMatrix(thisObject.matrix, thisTransform2));
+                } else {
+                    thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
+                }
+            }
+            else {
+                thisTransform = multiplyMatrix(finalMatrixTransform2, thisTransform2);
+            }
 
+            document.getElementById("thisObject" + thisKey).style.webkitTransform = 'matrix3d(' +
+                thisTransform[0][0] + ',' + thisTransform[0][1] + ',' + thisTransform[0][2] + ',' + thisTransform[0][3] + ',' +
+                thisTransform[1][0] + ',' + thisTransform[1][1] + ',' + thisTransform[1][2] + ',' + thisTransform[1][3] + ',' +
+                thisTransform[2][0] + ',' + thisTransform[2][1] + ',' + thisTransform[2][2] + ',' + thisTransform[2][3] + ',' +
+                thisTransform[3][0] + ',' + thisTransform[3][1] + ',' + thisTransform[3][2] + ',' + thisTransform[3][3] + ')';
 
-
-
-
-
-             document.getElementById("thisObject" + thisKey).style.webkitTransform = 'matrix3d(' +
-                 thisTransform[0][0] + ',' + thisTransform[0][1] + ',' + thisTransform[0][2] + ',' + thisTransform[0][3] + ',' +
-                 thisTransform[1][0] + ',' + thisTransform[1][1] + ',' + thisTransform[1][2] + ',' + thisTransform[1][3] + ',' +
-                 thisTransform[2][0] + ',' + thisTransform[2][1] + ',' + thisTransform[2][2] + ',' + thisTransform[2][3] + ',' +
-                 thisTransform[3][0] + ',' + thisTransform[3][1] + ',' + thisTransform[3][2] + ',' + thisTransform[3][3] + ')';
-
-                // this is for later
-                // The matrix has been changed from Vuforia 3 to 4 and 5. Instead of  thisTransform[3][2] it is now thisTransform[3][3]
-                thisObject.screenX = thisTransform[3][0] / thisTransform[3][3] + (globalStates.height / 2);
-                thisObject.screenY = thisTransform[3][1] / thisTransform[3][3] + (globalStates.width / 2);
-                thisObject.screenZ = thisTransform[3][2];
+            // this is for later
+            // The matrix has been changed from Vuforia 3 to 4 and 5. Instead of  thisTransform[3][2] it is now thisTransform[3][3]
+            thisObject.screenX = thisTransform[3][0] / thisTransform[3][3] + (globalStates.height / 2);
+            thisObject.screenY = thisTransform[3][1] / thisTransform[3][3] + (globalStates.width / 2);
+            thisObject.screenZ = thisTransform[3][2];
 
         }
 
-            if (thisObject.sendMatrix === true) {
-                if (generalKey === thisKey) {
-                    document.getElementById("iframe" + thisKey).contentWindow.postMessage(
-                        '{"modelViewMatrix":' + JSON.stringify(globalObjects[thisKey]) + "}", '*');
-                }
+        if (thisObject.sendMatrix === true) {
+            if (generalKey === thisKey) {
+                document.getElementById("iframe" + thisKey).contentWindow.postMessage(
+                    '{"modelViewMatrix":' + JSON.stringify(globalObjects[thisKey]) + "}", '*');
             }
-        // acceleration data can be accessed via html directly
-       /* if (typeof globalObjects.acl !== "undefined") {
-            if (typeof thisObject.sendAcl !== "undefined") {
-                if (thisObject.sendAcl === true) {
-                    if (iFrameMsgContent !== "")  iFrameMsgContent += ","; else  iFrameMsgContent += "{";
-                    iFrameMsgContent += '"acl":';
-                    iFrameMsgContent += JSON.stringify(globalObjects.acl);
-                }
-            }
-        }*/
-      //  cout("drawTransformed");
+        }
     }
 
 }
@@ -582,7 +567,7 @@ function hideTransformed(thisObject, thisKey, generalKey) {
     if (thisObject.visible === true) {
         document.getElementById("thisObject" + thisKey).style.display = 'none';
 
-        var thisIframe =  document.getElementById("iframe" + thisKey);
+        var thisIframe = document.getElementById("iframe" + thisKey);
         thisIframe.style.visibility = 'hidden';
         thisIframe.contentWindow.postMessage(
             JSON.stringify(
@@ -596,7 +581,7 @@ function hideTransformed(thisObject, thisKey, generalKey) {
         thisObject.visible = false;
         thisObject.visibleEditing = false;
         document.getElementById(thisKey).style.visibility = 'hidden';
-        document.getElementById("canvas"+thisKey).style.display = 'none';
+        document.getElementById("canvas" + thisKey).style.display = 'none';
 
         //document.getElementById(thisKey).style.display = 'none';
         cout("hideTransformed");
@@ -736,12 +721,12 @@ function addElement(thisObject, thisKey, thisUrl, generalObject) {
 
 
         if (typeof thisObject.begin !== "object") {
-                thisObject.begin = [
-                    [1, 0, 0, 0],
-                    [0, 1, 0, 0],
-                    [0, 0, 1, 0],
-                    [0, 0, 0, 1]
-                ];
+            thisObject.begin = [
+                [1, 0, 0, 0],
+                [0, 1, 0, 0],
+                [0, 0, 1, 0],
+                [0, 0, 0, 1]
+            ];
 
         }
 
@@ -778,8 +763,8 @@ function addElement(thisObject, thisKey, thisUrl, generalObject) {
 
         tempAddContent += "<div id='" + thisKey + "' frameBorder='0' style='width:" + thisObject.frameSizeX + "px; height:" + thisObject.frameSizeY + "px;" +
             "top:" + ((globalStates.width - thisObject.frameSizeX) / 2) + "px; left:" + ((globalStates.height - thisObject.frameSizeY) / 2) + "px; visibility: hidden;' class='mainEditing'>" +
-       "<canvas id='canvas" + thisKey + "'style='width:100%; height:100%;' class='mainCanvas'></canvas>"+
-        "</div>" +
+            "<canvas id='canvas" + thisKey + "'style='width:100%; height:100%;' class='mainCanvas'></canvas>" +
+            "</div>" +
             "";
 
         tempAddContent += "<div id='text" + thisKey + "' frameBorder='0' style='width:5px; height:5px;" +
@@ -794,33 +779,33 @@ function addElement(thisObject, thisKey, thisUrl, generalObject) {
         ec++;
         theObject.addEventListener("pointerup", trueTouchUp, false);
         ec++;
-        theObject.addEventListener("pointerenter", function(e){
+        theObject.addEventListener("pointerenter", function (e) {
 
 
             var contentForFeedback;
 
-            if(globalProgram.locationInA=== this.id || globalProgram.locationInA === false){
+            if (globalProgram.locationInA === this.id || globalProgram.locationInA === false) {
                 contentForFeedback = 3;
-            }else{
+            } else {
 
-                if(checkForNetworkLoop( globalProgram.ObjectA, globalProgram.locationInA,  this.ObjectId, this.location))
+                if (checkForNetworkLoop(globalProgram.ObjectA, globalProgram.locationInA, this.ObjectId, this.location))
                     contentForFeedback = 2; // overlayImg.src = overlayImage[2].src;
                 else
                     contentForFeedback = 0; // overlayImg.src = overlayImage[0].src;
             }
 
             document.getElementById("iframe" + this.location).contentWindow.postMessage(
-                    JSON.stringify(
-                        {
-                            "uiActionFeedback": contentForFeedback
-                        })
-                    , "*");
+                JSON.stringify(
+                    {
+                        "uiActionFeedback": contentForFeedback
+                    })
+                , "*");
 
             document.getElementById('overlayImg').src = overlayImage[contentForFeedback].src;
 
         }, false);
         ec++;
-        theObject.addEventListener("pointerleave", function(){
+        theObject.addEventListener("pointerleave", function () {
             document.getElementById('overlayImg').src = overlayImage[1].src;
 
             cout("leave");
@@ -916,7 +901,7 @@ function on_load(generalObject, thisKey) {
         pos: thisKey,
         objectValues: objectExp[generalObject].objectValues
     });
-    
+
     document.getElementById("iframe" + thisKey).contentWindow.postMessage(
         iFrameMessage_, '*');
     cout("on_load");
