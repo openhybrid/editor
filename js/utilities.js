@@ -379,8 +379,6 @@ var randomIntInc = function (min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
-
-
 /**
  * @author Erik Karlsson, www.nonobtrusive.com
  **/
@@ -455,7 +453,11 @@ function cout(e){
     }
 }
 
-
+function timeSynchronizer(timeing) {
+    timeing.now = Date.now();
+    timeing.delta = (timeing.now - timeing.then)/198;
+    timeing.then = timeing.now;
+}
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -540,6 +542,8 @@ function areCornersOppositeZ(corner1, corner2) {
     var oppositeSign = ((z1 * z2) < 0);
     return oppositeSign;
 }
+
+
 
 
 // makes sure we don't add symmetric pairs to list

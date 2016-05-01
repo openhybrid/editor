@@ -80,7 +80,7 @@ function deleteLines(x21, y21, x22, y22) {
             if (checkLineCross(bA.screenX, bA.screenY, bB.screenX, bB.screenY, x21, y21, x22, y22, globalCanvas.canvas.width, globalCanvas.canvas.height)) {
                 delete thisObject.objectLinks[subKeysome];
                 cout("iam executing link deletion");
-                deleteLinkFromObject(thisObject.ip,keysome, subKeysome);
+                deleteLinkFromObject(thisObject.ip, keysome, subKeysome);
             }
         }
     }
@@ -104,7 +104,7 @@ function drawAllLines(thisObject, context) {
         var l = thisObject.objectLinks[subKey];
         var oA = thisObject;
 
-        if(isNaN(l.ballAnimationCount))
+        if (isNaN(l.ballAnimationCount))
             l.ballAnimationCount = 0;
 
         if (!objectExp.hasOwnProperty(l.ObjectB)) {
@@ -125,26 +125,26 @@ function drawAllLines(thisObject, context) {
         }
 
         if (!oB.ObjectVisible) {
-                bB.screenX = bA.screenX;
-                bB.screenY = -10;
-                bB.screenZ = bA.screenZ;
-            }
+            bB.screenX = bA.screenX;
+            bB.screenY = -10;
+            bB.screenZ = bA.screenZ;
+        }
 
-            if (!oA.ObjectVisible) {
-                bA.screenX = bB.screenX;
-                bA.screenY = -10;
-                bA.screenZ = bB.screenZ;
-            }
+        if (!oA.ObjectVisible) {
+            bA.screenX = bB.screenX;
+            bA.screenY = -10;
+            bA.screenZ = bB.screenZ;
+        }
 
         // linearize a non linear zBuffer
-        var bAScreenZ = (((10001 - (20000 / bA.screenZ)) / 9999)+ 1) /2;
-        var bBScreenZ = (((10001 - (20000 / bB.screenZ)) / 9999)+ 1) /2;
+        var bAScreenZ = (((10001 - (20000 / bA.screenZ)) / 9999) + 1) / 2;
+        var bBScreenZ = (((10001 - (20000 / bB.screenZ)) / 9999) + 1) / 2;
 
         // map the linearized zBuffer to the final ball size
-         bAScreenZ =  map(bAScreenZ,0.9971 , 1, 25, 1);
-         bBScreenZ =  map(bBScreenZ,0.9971 , 1, 25, 1);
+        bAScreenZ = map(bAScreenZ, 0.9971, 1, 25, 1);
+        bBScreenZ = map(bBScreenZ, 0.9971, 1, 25, 1);
 
-        drawLine(context, [bA.screenX, bA.screenY], [bB.screenX, bB.screenY], bAScreenZ, bBScreenZ, l);
+        drawLine(context, [bA.screenX, bA.screenY], [bB.screenX, bB.screenY], bAScreenZ, bBScreenZ, l, timeCorrection);
     }
     globalCanvas.hasContent = true;
 }
@@ -170,9 +170,9 @@ function drawInteractionLines() {
 
         // this is for making sure that the line is drawn out of the screen... Don't know why this got lost somewhere down the road.
         // linearize a non linear zBuffer
-        tempStart.screenZ = (((10001 - (20000 /  tempStart.screenZ)) / 9999)+ 1) /2;
+        tempStart.screenZ = (((10001 - (20000 / tempStart.screenZ)) / 9999) + 1) / 2;
         // map the linearized zBuffer to the final ball size
-        tempStart.screenZ = map( tempStart.screenZ,0.9971 , 1, 25, 1);
+        tempStart.screenZ = map(tempStart.screenZ, 0.9971, 1, 25, 1);
 
         if (!oA.ObjectVisible) {
             tempStart.screenX = globalStates.pointerPosition[0];
@@ -180,7 +180,7 @@ function drawInteractionLines() {
             tempStart.screenZ = 6;
         }
 
-        drawLine(globalCanvas.context, [tempStart.screenX, tempStart.screenY], [globalStates.pointerPosition[0], globalStates.pointerPosition[1]], tempStart.screenZ, tempStart.screenZ, globalStates);
+        drawLine(globalCanvas.context, [tempStart.screenX, tempStart.screenY], [globalStates.pointerPosition[0], globalStates.pointerPosition[1]], tempStart.screenZ, tempStart.screenZ, globalStates, timeCorrection);
     }
 
     if (globalStates.drawDotLine) {
@@ -201,38 +201,37 @@ function drawInteractionLines() {
  * @param lineStartWeight is a number indicating the weight of a line at start
  * @param lineEndWeight is a number indicating the weight of a line at end
  * @param linkObject that contains ballAnimationCount
+ * @param timeCorrector is a number that is regulating the animation speed according to the frameRate
  * @return
  **/
 
+function drawLine(context, lineStartPoint, lineEndPoint, lineStartWeight, lineEndWeight, linkObject, timeCorrector) {
 
-function drawLine(context, lineStartPoint, lineEndPoint, lineStartWeight, lineEndWeight, linkObject) {
+    var angle = Math.atan2((lineStartPoint[1] - lineEndPoint[1]), (lineStartPoint[0] - lineEndPoint[0]));
+    var possitionDelta = 0;
+    var length1 = lineEndPoint[0] - lineStartPoint[0];
+    var length2 = lineEndPoint[1] - lineStartPoint[1];
+    var lineVectorLength = Math.sqrt(length1 * length1 + length2 * length2);
+    var keepColor = lineVectorLength / 6;
+    var spacer = 2.3;
+    var mathPI = 2*Math.PI;
 
-    var angle = Math.atan2((lineStartPoint[1] - lineEndPoint[1]),(lineStartPoint[0] - lineEndPoint[0]));
-    var distanceCount = 0;
-    var thisCount = 0;
-    var length1 = lineEndPoint[0]-lineStartPoint[0];
-    var length2 = lineEndPoint[1]-lineStartPoint[1];
-    var lineVectorLength = Math.sqrt(length1*length1 + length2*length2);
-    var keepColor = lineVectorLength/6;
-    var color;
-    var ballSize;
+    if (linkObject.ballAnimationCount >= lineStartWeight * spacer)  linkObject.ballAnimationCount = 0;
 
-    if(linkObject.ballAnimationCount >= (lineStartWeight+lineStartWeight+2))  linkObject.ballAnimationCount = 0;
-
-    while(distanceCount+linkObject.ballAnimationCount< lineVectorLength){
-        thisCount = distanceCount+linkObject.ballAnimationCount;
-        color = map(thisCount, keepColor, lineVectorLength-keepColor, 180, 59);
-        ballSize = map(thisCount, 0, lineVectorLength, lineStartWeight, lineEndWeight);
+    while (possitionDelta + linkObject.ballAnimationCount < lineVectorLength) {
+        var ballPossition = possitionDelta + linkObject.ballAnimationCount;
+        var color = "hsl(" + map(ballPossition, keepColor, lineVectorLength - keepColor, 180, 59) + ", 100%, 50%)";
+        var ballSize = map(ballPossition, 0, lineVectorLength, lineStartWeight, lineEndWeight);
+        var x__ = lineStartPoint[0] - Math.cos(angle) * ballPossition;
+        var y__ = lineStartPoint[1] - Math.sin(angle) * ballPossition;
+        possitionDelta += ballSize * spacer;
         context.beginPath();
-        context.arc(lineStartPoint[0] - Math.cos(angle) * thisCount, lineStartPoint[1] - Math.sin(angle) * thisCount, ballSize, 0, 6.2832);
-        context.fillStyle=  "hsl(" + color + ", 100%, 50%)";
+        context.fillStyle = color;
+        context.arc(x__, y__, ballSize, 0, mathPI);
         context.fill();
-        distanceCount +=ballSize*2.3;
-
     }
-    linkObject.ballAnimationCount+=(((lineStartWeight+lineEndWeight)/2)/4);
+    linkObject.ballAnimationCount += (lineStartWeight * timeCorrector.delta);
 }
-
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/

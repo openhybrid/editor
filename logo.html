@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head back="#969696">
+    <meta name="viewport" content="initial-scale=0.5, maximum-scale=0.5, user-scalable=no" />
+    <meta charset="UTF-8">
+    <title>Reality Editor Animated Logo</title>
+    <script src="js/interactWithLines.js"></script>
+    <script src="js/utilities.js"></script>
+</head>
+<body bgcolor="#969696" style="width:892px; height:517px" >
+<div style="left:calc(50% - (1785px/4)); top:calc(50% - (1035px/4));position: absolute; background: aqua"><canvas id="reLogo" width="1785" height="1035"  style="border:0px; z-index: 20; background: #969696; transform-origin: left top;"></canvas>
+</div>
+
+<script>
+   var  linkObject1 = {};
+   linkObject1.ballAnimationCount = 0;
+   linkObject1.start = 0;
+
+   var  linkObject2 = {};
+   linkObject2.ballAnimationCount = 0;
+   linkObject2.start = 0;
+
+   var  linkObject3 = {};
+   linkObject3.ballAnimationCount = 0;
+   linkObject3.start = 0;
+
+   var  linkObject4 = {};
+   linkObject4.ballAnimationCount = 0;
+   linkObject4.start = 0;
+   var  linkObject5 = {};
+   linkObject5.ballAnimationCount = 0;
+   linkObject5.start = 0;
+   var  linkObject6 = {};
+   linkObject6.ballAnimationCount = 0;
+   linkObject6.start = 0;
+   var timeCorrection = { delta:0, now:0, then:0};
+   var someold = 0;
+    var c = document.getElementById("reLogo");
+    var ctx = c.getContext("2d");
+
+   ctx.scale(0.5,0.5);
+
+   function logo() {
+       timeSynchronizer(timeCorrection);
+           ctx.clearRect(0, 0, c.width, c.height);
+           drawLine(ctx, [936, 144], [1658, 131], 118 / 4.5, 114 / 4.5, linkObject1,timeCorrection);
+           drawLine(ctx, [936, 144], [111, 780], 118 / 4.5, 101 / 4.5, linkObject2,timeCorrection);
+           drawLine(ctx, [936, 144], [1440, 735], 118 / 4.5, 78 / 4.5, linkObject3,timeCorrection);
+           drawLine(ctx, [1658, 131], [993, 920], 114 / 4.5, 99 / 4.5, linkObject4,timeCorrection);
+           drawLine(ctx, [993, 920], [626, 722], 99 / 4.5, 32 / 4.5, linkObject5,timeCorrection);
+           drawLine(ctx, [993, 920], [1398, 920], 99 / 4.5, 32 / 4.5, linkObject6,timeCorrection);
+           drawCircle(ctx, [936, 144], 118);
+           drawCircle(ctx, [1658, 131], 114);
+           drawCircle(ctx, [111, 780], 101);
+           drawCircle(ctx, [1440, 735], 78);
+           drawCircle(ctx, [993, 920], 99);
+           drawCircle(ctx, [626, 722], 32);
+           drawCircle(ctx, [1398, 920], 32);
+
+           ctx.shadowColor = "#969696";
+           ctx.shadowOffsetX = 0;
+           ctx.shadowOffsetY = 0;
+           ctx.shadowBlur = 40;
+           ctx.fillStyle = '#ffffff';
+           ctx.font="normal normal 900 243px Futura";
+           ctx.fillText("Reality Editor",160,533);
+           ctx.fillStyle = '#ffffff';
+           ctx.font="normal normal 900 68px Futura";
+           ctx.fillText("openhybrid.org",178,622);
+           ctx.shadowBlur = 0;
+   }
+
+ function drawCircle(ctx, point, bSize){
+     ctx.beginPath();
+     ctx.arc(point[0],point[1], bSize, 0, 2 * Math.PI, false);
+     ctx.fillStyle = '#777777';
+     ctx.fill();
+     ctx.lineWidth = bSize/8.4286;
+     ctx.strokeStyle = '#00ffff';
+     ctx.stroke();
+ }
+
+   function step(){
+           logo();
+           window.requestAnimationFrame(step);
+
+   }
+   window.requestAnimationFrame(step);
+
+</script>
+
+
+</body>
+</html>

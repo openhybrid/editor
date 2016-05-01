@@ -305,12 +305,14 @@ function setProjectionMatrix(matrix) {
  **/
 
 function updateReDraw() {
+    timeCorrection(timeCorrection);
     disp = uiButtons.style.display;
     uiButtons.style.display = 'none';
     uiButtons.style.display = disp;
 }
 
 function update(objects) {
+    timeSynchronizer(timeCorrection);
     //disp = uiButtons.style.display;
     //uiButtons.style.display = 'none';
 
