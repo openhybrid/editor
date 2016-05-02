@@ -220,7 +220,8 @@ var postMessage = function (e) {
                 document.getElementById("iframe" + msgContent.pos).style.top = ((globalStates.width - msgContent.height) / 2);
                 document.getElementById("iframe" + msgContent.pos).style.left = ((globalStates.height - msgContent.width) / 2);
                 
-            } else if (typeof msgContent.sendMatrix !== "undefined") {
+            }
+        if (typeof msgContent.sendMatrix !== "undefined") {
                 if (msgContent.sendMatrix === true) {
                     tempThisObject.sendMatrix = true;
 
@@ -228,7 +229,8 @@ var postMessage = function (e) {
                         '{"projectionMatrix":' + JSON.stringify(globalStates.realProjectionMatrix) + "}", '*');
                 }
                 // forward postMessages to all iFrames
-            } else if (typeof msgContent.ohGlobalMessage !== "undefined") {
+            }
+        if (typeof msgContent.ohGlobalMessage !== "undefined") {
                 var iframes = document.getElementsByTagName('iframe');
                 for (var i = 0; i < iframes.length; i++) {
 
@@ -242,7 +244,9 @@ var postMessage = function (e) {
                             , "*");
                     }
                 }
-            } else if (typeof msgContent.fullScreen !== "undefined") {
+            }
+        if (typeof msgContent.fullScreen !== "undefined") {
+                console.log("gotfullscreenmessage");
                 if (msgContent.fullScreen === true) {
                     tempThisObject.fullScreen = true;
 
@@ -252,7 +256,9 @@ var postMessage = function (e) {
                         '0, 0, 1, 0,' +
                         '0, 0, 0, 1)';
 
-                } else if (msgContent.fullScreen === false) {
+                }
+            if (msgContent.fullScreen === false) {
+                    console.log("noFullscreen");
                     tempThisObject.fullScreen = false;
                 }
 
