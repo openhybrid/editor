@@ -76,8 +76,8 @@ window.onload = function () {
 
     if (globalStates.platform === 'iPhone') {
         document.getElementById("logButtonDiv").style.visibility = "hidden";
-        document.getElementById("reloadButtonDiv").style.visibility = "hidden";
-        document.getElementById("preferencesButtonDiv").style.bottom = "36px";
+       // document.getElementById("reloadButtonDiv").style.visibility = "hidden";
+     //   document.getElementById("preferencesButtonDiv").style.bottom = "36px";
 
         var editingInterface = document.getElementById("content2title");
         editingInterface.style.fontSize = "12px";
