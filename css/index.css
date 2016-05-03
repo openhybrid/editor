@@ -101,7 +101,7 @@ body {
     margin: 0;
     padding: 0;
     border-width: 0px;
-    z-index: 2;
+    z-index: 99;
     -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 }
 

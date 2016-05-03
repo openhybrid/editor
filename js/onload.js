@@ -193,17 +193,22 @@ var postMessage = function (e) {
 
     var tempThisObject = false;
 
+    var thisVersionNumber = 0;
+
     if (typeof msgContent.pos !== "undefined" && typeof msgContent.obj !== "undefined") {
         if (typeof objectExp[msgContent.obj] !== "undefined") {
             if (msgContent.pos === msgContent.obj) {
                 tempThisObject = objectExp[msgContent.pos];
+                thisVersionNumber  = parseInt(objectExp[msgContent.pos].version.replace(/\./g, ""));
             } else {
                 if (typeof objectExp[msgContent.obj].objectValues[msgContent.pos] !== "undefined") {
                     tempThisObject = objectExp[msgContent.obj].objectValues[msgContent.pos];
+                    thisVersionNumber  = parseInt(objectExp[msgContent.obj].version.replace(/\./g, ""));
                 }
             }
         }
     }
+
 
 
     if (tempThisObject !== false) {
@@ -223,10 +228,11 @@ var postMessage = function (e) {
             }
         if (typeof msgContent.sendMatrix !== "undefined") {
                 if (msgContent.sendMatrix === true) {
-                    tempThisObject.sendMatrix = true;
-
-                    document.getElementById("iframe" + msgContent.pos).contentWindow.postMessage(
-                        '{"projectionMatrix":' + JSON.stringify(globalStates.realProjectionMatrix) + "}", '*');
+                    if(thisVersionNumber>=32) {
+                        tempThisObject.sendMatrix = true;
+                        document.getElementById("iframe" + msgContent.pos).contentWindow.postMessage(
+                            '{"projectionMatrix":' + JSON.stringify(globalStates.realProjectionMatrix) + "}", '*');
+                    }
                 }
                 // forward postMessages to all iFrames
             }
@@ -235,13 +241,14 @@ var postMessage = function (e) {
                 for (var i = 0; i < iframes.length; i++) {
 
                     if (iframes[i].id !== "iframe" + msgContent.pos && iframes[i].style.visibility !== "hidden") {
-
-                        iframes[i].contentWindow.postMessage(
-                            JSON.stringify(
-                                {
-                                    "ohGlobalMessage": msgContent.ohGlobalMessage
-                                })
-                            , "*");
+                        if(thisVersionNumber>=32) {
+                            iframes[i].contentWindow.postMessage(
+                                JSON.stringify(
+                                    {
+                                        "ohGlobalMessage": msgContent.ohGlobalMessage
+                                    })
+                                , "*");
+                        }
                     }
                 }
             }
