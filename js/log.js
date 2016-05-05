@@ -58,7 +58,7 @@ function objectLog(thisKey) {
     cout("objectLog");
     var consoleText_ = "";
 
-    consoleText_ += "Object Name: <b>" + thisKey.slice(0, -12);
+    consoleText_ += "Object Name: <b>" + objectExp[thisKey].name;
 
     if (objectExp[thisKey].loaded === true) {
 
@@ -70,7 +70,7 @@ function objectLog(thisKey) {
     }
 
     consoleText_ += "</b>;  Visible: <b>" + objectExp[thisKey].visible +
-    "</b>; MAC: <b>" + thisKey.slice(-12) +
+    "</b>; MAC: <b>" + objectExp[thisKey].name +
     "</b>; IP: <b>" + objectExp[thisKey].ip +
         // "</b><br>Z: "+objectExp[thisKey].screenZ ;
     "</b>";

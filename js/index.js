@@ -354,7 +354,7 @@ function update(objects) {
 
             if (globalStates.guiButtonState || Object.keys(generalObject.objectValues).length === 0) {
                 drawTransformed(generalObject, key, tempMatrix, key);
-                addElement(generalObject, key, "http://" + generalObject.ip + ":" + httpPort + "/obj/" + key.slice(0, -12) + "/");
+                addElement(generalObject, key, "http://" + generalObject.ip + ":" + httpPort + "/obj/" + generalObject.name + "/");
             }
             else {
                 hideTransformed(generalObject, key, key);
@@ -670,7 +670,7 @@ function addElementInPreferences() {
             "name" + keyPref +
             "' style='position: relative;  float: left; height: 20px; width: 35%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial;" + bgcolor + " -webkit-transform-style: preserve-3d; " +
             "'>" +
-            keyPref.slice(0, -12)
+        objectExp[keyPref].name
             + "</div>";
 
         htmlContent += "<div class='Interfaces' id='" +
