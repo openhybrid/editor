@@ -87,6 +87,7 @@ function addHeartbeatObject(beat) {
                 objectExp[thisKey].screenZ = 1000;
                 objectExp[thisKey].fullScreen = false;
                 objectExp[thisKey].sendMatrix = false;
+                objectExp[thisKey].IntegerVersion = parseInt(objectExp[msgContent.pos].version.replace(/\./g, ""));
 
                 cout(objectExp[thisKey]);
                 addElementInPreferences();
@@ -360,18 +361,27 @@ function update(objects) {
                 hideTransformed(generalObject, key, key);
             }
 
+            // do this for staying compatible with older versions but use new routing after some time.
+            // dataPointInterfaces are clearly their own thing and should not be part of obj
+            // once added, they will be associated with the object via the editor postMessages anyway.
+
+            var destinationString;
+            if(generalObject.IntegerVersion > 32){
+                destinationString= "/dataPointInterfaces/";
+            }else {
+                destinationString= "/obj/dataPointInterfaces/";
+            }
 
             for (var subKey in generalObject.objectValues) {
                 // if (!generalObject.objectValues.hasOwnProperty(subKey)) { continue; }
 
                 var tempValue = generalObject.objectValues[subKey];
 
-
                 if (!globalStates.guiButtonState) {
                     drawTransformed(tempValue, subKey, tempMatrix, key);
-                    addElement(tempValue, subKey, "http://" + generalObject.ip + ":" + httpPort + "/obj/dataPointInterfaces/" + tempValue.plugin + "/", key);
 
-                    //  cout("http://" + generalObject.ip + ":" + httpPort + "/obj/dataPointInterfaces/" + tempValue.plugin + "/");
+                    addElement(tempValue, subKey, "http://" + generalObject.ip + ":" + httpPort + destinationString + tempValue.plugin + "/", key);
+
                 } else {
                     hideTransformed(tempValue, subKey, key);
                 }
