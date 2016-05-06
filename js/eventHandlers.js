@@ -107,6 +107,7 @@ function trueTouchUp() {
 
             globalProgram.ObjectB = this.ObjectId;
             globalProgram.locationInB = this.location;
+            var thisOtherTempObject = objectExp[globalProgram.ObjectB];
 
           var okForNewLink = checkForNetworkLoop( globalProgram.ObjectA, globalProgram.locationInA,  globalProgram.ObjectB, globalProgram.locationInB);
 
@@ -117,9 +118,11 @@ function trueTouchUp() {
 
                 thisTempObjectLinks[thisKeyId] = {
                     ObjectA: globalProgram.ObjectA,
-                    locationInA: globalProgram.locationInA,
                     ObjectB: globalProgram.ObjectB,
-                    locationInB: globalProgram.locationInB
+                    locationInA: globalProgram.locationInA,
+                    locationInB: globalProgram.locationInB,
+                    ObjectNameA: thisTempObject.name,
+                    ObjectNameB: thisOtherTempObject.name
                 };
 
                 // push new connection to objectA
