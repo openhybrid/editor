@@ -87,7 +87,7 @@ function addHeartbeatObject(beat) {
                 objectExp[thisKey].screenZ = 1000;
                 objectExp[thisKey].fullScreen = false;
                 objectExp[thisKey].sendMatrix = false;
-                objectExp[thisKey].IntegerVersion = parseInt(objectExp[msgContent.pos].version.replace(/\./g, ""));
+                objectExp[thisKey].IntegerVersion = parseInt(objectExp[thisKey].version.replace(/\./g, ""));
 
                 cout(objectExp[thisKey]);
                 addElementInPreferences();
@@ -366,7 +366,7 @@ function update(objects) {
             // once added, they will be associated with the object via the editor postMessages anyway.
 
             var destinationString;
-            if(generalObject.IntegerVersion > 32){
+            if(generalObject.IntegerVersion > 39){
                 destinationString= "/dataPointInterfaces/";
             }else {
                 destinationString= "/obj/dataPointInterfaces/";
@@ -641,27 +641,28 @@ function hideTransformed(thisObject, thisKey, generalKey) {
  **/
 
 function addElementInPreferences() {
+    console.log("addedObject");
 
     var htmlContent = "";
 
 
     htmlContent += "<div class='Interfaces'" +
-        " style='position: relative;  float: left; height: 20px; width: 35%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial;background-color: #a0a0a0; -webkit-transform-style: preserve-3d;'>" +
+        " style='position: relative;  float: left; height: 20px; width: 35%;  text-align: center;  line-height: 20px; vertical-align: middle;display: table-cell; font-family: Helvetica Neue, Helvetica, Arial;background-color: #a0a0a0; -webkit-transform-style: preserve-3d;'>" +
         "Name</div>";
     htmlContent += "<div class='Interfaces'" +
-        " style='position: relative;  float: left; height: 20px; width: 30%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial;background-color: #a0a0a0; -webkit-transform-style: preserve-3d;'>" +
+        " style='position: relative;  float: left; height: 20px; width: 30%;  text-align: center;  line-height: 20px; vertical-align: middle;display: table-cell;  font-family: Helvetica Neue, Helvetica, Arial;background-color: #a0a0a0; -webkit-transform-style: preserve-3d;'>" +
         "IP</div>";
 
     htmlContent += "<div class='Interfaces'" +
-        " style='position: relative;  float: left; height: 20px; width: 16%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial;background-color: #a0a0a0; -webkit-transform-style: preserve-3d; '>" +
+        " style='position: relative;  float: left; height: 20px; width: 16%;  text-align: center;  line-height: 20px; vertical-align: middle;display: table-cell;  font-family: Helvetica Neue, Helvetica, Arial;background-color: #a0a0a0; -webkit-transform-style: preserve-3d; '>" +
         "Version</div>";
 
     htmlContent += "<div class='Interfaces'" +
-        " style='position: relative;  float: left; height: 20px; width: 7%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial; background-color: #a0a0a0;-webkit-transform-style: preserve-3d;'>" +
+        " style='position: relative;  float: left; height: 20px; width: 7%;  text-align: center;  line-height: 20px; vertical-align: middle;display: table-cell;  font-family: Helvetica Neue, Helvetica, Arial; background-color: #a0a0a0;-webkit-transform-style: preserve-3d;'>" +
         "I/O</div>";
 
     htmlContent += "<div class='Interfaces'" +
-        " style='position: relative;  float: left; height: 20px; width: 12%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial; background-color: #a0a0a0;-webkit-transform-style: preserve-3d;'>" +
+        " style='position: relative;  float: left; height: 20px; width: 12%;  text-align: center;  line-height: 20px; vertical-align: middle;display: table-cell;  font-family: Helvetica Neue, Helvetica, Arial; background-color: #a0a0a0;-webkit-transform-style: preserve-3d;'>" +
         "Links</div>";
 
     var bgSwitch = false;
@@ -678,21 +679,25 @@ function addElementInPreferences() {
 
         htmlContent += "<div class='Interfaces' id='" +
             "name" + keyPref +
-            "' style='position: relative;  float: left; height: 20px; width: 35%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial;" + bgcolor + " -webkit-transform-style: preserve-3d; " +
-            "'>" +
-        objectExp[keyPref].name
-            + "</div>";
+            "' style='position: relative;  float: left; height: 20px; width: 35%; text-align: center;  line-height: 20px; vertical-align: middle;display: table-cell; font-family: Helvetica Neue, Helvetica, Arial;" + bgcolor + " -webkit-transform-style: preserve-3d; " +
+            "'>" ;
 
-        htmlContent += "<div class='Interfaces' id='" +
+        if(objectExp[keyPref].IntegerVersion > 40){
+            htmlContent +=    objectExp[keyPref].name;
+        }else{
+            htmlContent +=     keyPref.slice(0, -12);
+        }
+
+        htmlContent += "</div><div class='Interfaces' id='" +
             "name" + keyPref +
-            "' style='position: relative;  float: left; height: 20px; width: 30%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial;" + bgcolor + " -webkit-transform-style: preserve-3d; " +
+            "' style='position: relative;  float: left; height: 20px; width: 30%;  text-align: center;  line-height: 20px; vertical-align: middle;display: table-cell;  font-family: Helvetica Neue, Helvetica, Arial;" + bgcolor + " -webkit-transform-style: preserve-3d; " +
             "'>" +
             objectExp[keyPref].ip
             + "</div>";
 
         htmlContent += "<div class='Interfaces' id='" +
             "version" + keyPref +
-            "' style='position: relative;  float: left; height: 20px; width: 16%; text-align: center; font-family: Helvetica Neue, Helvetica, Arial; " + bgcolor + "-webkit-transform-style: preserve-3d;" +
+            "' style='position: relative;  float: left; height: 20px; width: 16%;  text-align: center;  line-height: 20px; vertical-align: middle;display: table-cell; font-family: Helvetica Neue, Helvetica, Arial; " + bgcolor + "-webkit-transform-style: preserve-3d;" +
             "'>" +
             objectExp[keyPref].version
             + "</div>";
@@ -705,7 +710,7 @@ function addElementInPreferences() {
 
         htmlContent += "<div class='Interfaces' id='" +
             "io" + keyPref +
-            "' style='position: relative;  float: left; height: 20px; width: 7%;  text-align: center; font-family: Helvetica Neue, Helvetica, Arial;" + bgcolor + "-webkit-transform-style: preserve-3d;" +
+            "' style='position: relative;  float: left; height: 20px; width: 7%;   text-align: center;  line-height: 20px; vertical-align: middle;display: table-cell;  font-family: Helvetica Neue, Helvetica, Arial;" + bgcolor + "-webkit-transform-style: preserve-3d;" +
             "'>" +
             anzahl
             + "</div>";
@@ -719,7 +724,7 @@ function addElementInPreferences() {
 
         htmlContent += "<div class='Interfaces' id='" +
             "links" + keyPref +
-            "' style='position: relative;  float: left; height: 20px; width: 12%; text-align: center;  font-family: Helvetica Neue, Helvetica, Arial;" + bgcolor + "-webkit-transform-style: preserve-3d;" +
+            "' style='position: relative;  float: left; height: 20px; width: 12%;  text-align: center;  line-height: 20px; vertical-align: middle;display: table-cell;  font-family: Helvetica Neue, Helvetica, Arial;" + bgcolor + "-webkit-transform-style: preserve-3d;" +
             "'>" +
             anzahl
             + "</div>";
