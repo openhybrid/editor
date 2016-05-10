@@ -88,6 +88,7 @@ function addHeartbeatObject(beat) {
                 objectExp[thisKey].fullScreen = false;
                 objectExp[thisKey].sendMatrix = false;
                 objectExp[thisKey].IntegerVersion = parseInt(objectExp[thisKey].version.replace(/\./g, ""));
+                objectExp[thisKey].name = objectExp[thisKey].folder;
 
                 cout(objectExp[thisKey]);
                 addElementInPreferences();
@@ -106,7 +107,7 @@ function addHeartbeatObject(beat) {
 
 function setDeviceName(deviceName) {
     globalStates.device = deviceName;
-    console.log("we are dealing with a " + globalStates.device);
+    console.log("The Reality Editor is loaded on a " + globalStates.device);
 }
 
 function setStates(developerState, extendedTrackingState, clearSkyState, externalState) {
@@ -251,10 +252,10 @@ function setProjectionMatrix(matrix) {
 
     //  generate all transformations for the object that needs to be done ASAP
     var scaleZ = [
-        [1, 0, 0, 0],
-        [0, 1, 0, 0],
-        [0, 0, 2, 0],
-        [0, 0, 0, 1]
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 2, 0,
+        0, 0, 0, 1
     ];
 
     var corX = 0;
@@ -275,11 +276,18 @@ function setProjectionMatrix(matrix) {
         corY = 6.5;
     }
 
+    if (globalStates.device === "iPad2,1" || globalStates.device === "iPad2,2" || globalStates.device === "iPad2,3" || globalStates.device === "iPad2,4") {
+        corX = -31;
+        corY = -5;
+    }
+
+
+
     var viewportScaling = [
-        [globalStates.height, 0, 0, 0],
-        [0, -globalStates.width, 0, 0],
-        [0, 0, 1, 0],
-        [corX, corY, 0, 1]
+        globalStates.height, 0, 0, 0,
+        0, -globalStates.width, 0, 0,
+        0, 0, 1, 0,
+        corX, corY, 0, 1
     ];
 
     globalStates.realProjectionMatrix = matrix;
@@ -313,6 +321,7 @@ function updateReDraw() {
 }
 
 function update(objects) {
+
     timeSynchronizer(timeCorrection);
     //disp = uiButtons.style.display;
     //uiButtons.style.display = 'none';
@@ -366,7 +375,7 @@ function update(objects) {
             // once added, they will be associated with the object via the editor postMessages anyway.
 
             var destinationString;
-            if(generalObject.IntegerVersion > 39){
+            if(generalObject.IntegerVersion > 40){
                 destinationString= "/dataPointInterfaces/";
             }else {
                 destinationString= "/obj/dataPointInterfaces/";
@@ -492,10 +501,10 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
         if (thisObject.fullScreen !== true) {
 
             var finalMatrixTransform2 = [
-                [thisObject.scale, 0, 0, 0],
-                [0, thisObject.scale, 0, 0],
-                [0, 0, 1, 0],
-                [thisObject.x, thisObject.y, 0, 1]
+                thisObject.scale, 0, 0, 0,
+                0, thisObject.scale, 0, 0,
+                0, 0, 1, 0,
+                thisObject.x, thisObject.y, 0, 1
             ];
 
             var thisTransform = [];
@@ -536,19 +545,19 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
                         estimateIntersection(thisKey, multiplyMatrix(finalMatrixTransform2, multiplyMatrix(thisObject.begin, invertMatrix(thisObject.temp))));
                     } else {
                         estimateIntersection(thisKey, [
-                            [1, 0, 0, 0],
-                            [0, 1, 0, 0],
-                            [0, 0, 1, 0],
-                            [0, 0, 0, 1]
+                            1, 0, 0, 0,
+                            0, 1, 0, 0,
+                            0, 0, 1, 0,
+                            0, 0, 0, 1
                         ]);
                     }
 
                 } else {
                     estimateIntersection(thisKey, [
-                        [1, 0, 0, 0],
-                        [0, 1, 0, 0],
-                        [0, 0, 1, 0],
-                        [0, 0, 0, 1]
+                        1, 0, 0, 0,
+                        0, 1, 0, 0,
+                        0, 0, 1, 0,
+                        0, 0, 0, 1
                     ]);
                 }
             }
@@ -565,16 +574,16 @@ function drawTransformed(thisObject, thisKey, thisTransform2, generalKey) {
             }
 
             document.getElementById("thisObject" + thisKey).style.webkitTransform = 'matrix3d(' +
-                thisTransform[0][0] + ',' + thisTransform[0][1] + ',' + thisTransform[0][2] + ',' + thisTransform[0][3] + ',' +
-                thisTransform[1][0] + ',' + thisTransform[1][1] + ',' + thisTransform[1][2] + ',' + thisTransform[1][3] + ',' +
-                thisTransform[2][0] + ',' + thisTransform[2][1] + ',' + thisTransform[2][2] + ',' + thisTransform[2][3] + ',' +
-                thisTransform[3][0] + ',' + thisTransform[3][1] + ',' + thisTransform[3][2] + ',' + thisTransform[3][3] + ')';
+                thisTransform[0] + ',' + thisTransform[1] + ',' + thisTransform[2] + ',' + thisTransform[3] + ',' +
+                thisTransform[4] + ',' + thisTransform[5] + ',' + thisTransform[6] + ',' + thisTransform[7] + ',' +
+                thisTransform[8] + ',' + thisTransform[9] + ',' + thisTransform[10] + ',' + thisTransform[11] + ',' +
+                thisTransform[12] + ',' + thisTransform[13] + ',' + thisTransform[14] + ',' + thisTransform[15] + ')';
 
             // this is for later
             // The matrix has been changed from Vuforia 3 to 4 and 5. Instead of  thisTransform[3][2] it is now thisTransform[3][3]
-            thisObject.screenX = thisTransform[3][0] / thisTransform[3][3] + (globalStates.height / 2);
-            thisObject.screenY = thisTransform[3][1] / thisTransform[3][3] + (globalStates.width / 2);
-            thisObject.screenZ = thisTransform[3][2];
+            thisObject.screenX = thisTransform[12] / thisTransform[15] + (globalStates.height / 2);
+            thisObject.screenY = thisTransform[13] / thisTransform[15] + (globalStates.width / 2);
+            thisObject.screenZ = thisTransform[14];
 
         }
 
@@ -641,7 +650,7 @@ function hideTransformed(thisObject, thisKey, generalKey) {
  **/
 
 function addElementInPreferences() {
-    console.log("addedObject");
+   cout("addedObject");
 
     var htmlContent = "";
 
@@ -682,11 +691,7 @@ function addElementInPreferences() {
             "' style='position: relative;  float: left; height: 20px; width: 35%; text-align: center;  line-height: 20px; vertical-align: middle;display: table-cell; font-family: Helvetica Neue, Helvetica, Arial;" + bgcolor + " -webkit-transform-style: preserve-3d; " +
             "'>" ;
 
-        if(objectExp[keyPref].IntegerVersion > 40){
             htmlContent +=    objectExp[keyPref].name;
-        }else{
-            htmlContent +=     keyPref.slice(0, -12);
-        }
 
         htmlContent += "</div><div class='Interfaces' id='" +
             "name" + keyPref +
@@ -762,20 +767,20 @@ function addElement(thisObject, thisKey, thisUrl, generalObject) {
 
         if (typeof thisObject.begin !== "object") {
             thisObject.begin = [
-                [1, 0, 0, 0],
-                [0, 1, 0, 0],
-                [0, 0, 1, 0],
-                [0, 0, 0, 1]
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
             ];
 
         }
 
         if (typeof thisObject.temp !== "object") {
             thisObject.temp = [
-                [1, 0, 0, 0],
-                [0, 1, 0, 0],
-                [0, 0, 1, 0],
-                [0, 0, 0, 1]
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
             ];
 
         }

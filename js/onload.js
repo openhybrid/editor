@@ -253,7 +253,7 @@ var postMessage = function (e) {
                 }
             }
         if (typeof msgContent.fullScreen !== "undefined") {
-                console.log("gotfullscreenmessage");
+               // console.log("gotfullscreenmessage");
                 if (msgContent.fullScreen === true) {
                     tempThisObject.fullScreen = true;
 
@@ -265,7 +265,7 @@ var postMessage = function (e) {
 
                 }
             if (msgContent.fullScreen === false) {
-                    console.log("noFullscreen");
+                   // console.log("noFullscreen");
                     tempThisObject.fullScreen = false;
                 }
 

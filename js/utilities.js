@@ -68,29 +68,39 @@ var newURLTextLoad = function (){
  * @return
  **/
 
-var multiplyMatrix = function (matrix2, matrix1) {
-    var result = [];
-    for (var j = 0; j < 4; j++) {
-        result[j] = [];
-        for (var k = 0; k < 4; k++) {
-            var sum = 0;
-            for (var i = 0; i < 4; i++) {
-                sum = sum + (matrix1[i][k] * matrix2[j][i]);
-            }
-            result[j].push(sum);
-        }
-    }
-    return result;
-};
+function multiplyMatrix(m2, m1) {
+    var r = [];
+    // Cm1che only the current line of the second mm1trix
+    r[0] = m2[0]*m1[0] + m2[1]*m1[4] + m2[2]*m1[8] + m2[3]*m1[12];
+    r[1] = m2[0]*m1[1] + m2[1]*m1[5] + m2[2]*m1[9] + m2[3]*m1[13];
+    r[2] = m2[0]*m1[2] + m2[1]*m1[6] + m2[2]*m1[10] + m2[3]*m1[14];
+    r[3] = m2[0]*m1[3] + m2[1]*m1[7] + m2[2]*m1[11] + m2[3]*m1[15];
 
-var multiplyMatrix4 = function(matrix1, matrix2) {
-    var result = [];
-    var x = matrix1[0], y = matrix1[1], z = matrix1[2], w = matrix1[3];
-    result[0] = matrix2[0] * x + matrix2[4] * y + matrix2[8] * z + matrix2[12] * w;
-    result[1] = matrix2[1] * x + matrix2[5] * y + matrix2[9] * z + matrix2[13] * w;
-    result[2] = matrix2[2] * x + matrix2[6] * y + matrix2[10] * z + matrix2[14] * w;
-    result[3] = matrix2[3] * x + matrix2[7] * y + matrix2[11] * z + matrix2[15] * w;
-    return result;
+    r[4] = m2[4]*m1[0] + m2[5]*m1[4] + m2[6]*m1[8] + m2[7]*m1[12];
+    r[5] = m2[4]*m1[1] + m2[5]*m1[5] + m2[6]*m1[9] + m2[7]*m1[13];
+    r[6] = m2[4]*m1[2] + m2[5]*m1[6] + m2[6]*m1[10] + m2[7]*m1[14];
+    r[7] = m2[4]*m1[3] + m2[5]*m1[7] + m2[6]*m1[11] + m2[7]*m1[15];
+
+    r[8] = m2[8]*m1[0] + m2[9]*m1[4] + m2[10]*m1[8] + m2[11]*m1[12];
+    r[9] = m2[8]*m1[1] + m2[9]*m1[5] + m2[10]*m1[9] + m2[11]*m1[13];
+    r[10] = m2[8]*m1[2] + m2[9]*m1[6] + m2[10]*m1[10] + m2[11]*m1[14];
+    r[11] = m2[8]*m1[3] + m2[9]*m1[7] + m2[10]*m1[11] + m2[11]*m1[15];
+
+    r[12] = m2[12]*m1[0] + m2[13]*m1[4] + m2[14]*m1[8] + m2[15]*m1[12];
+    r[13] = m2[12]*m1[1] + m2[13]*m1[5] + m2[14]*m1[9] + m2[15]*m1[13];
+    r[14] = m2[12]*m1[2] + m2[13]*m1[6] + m2[14]*m1[10] + m2[15]*m1[14];
+    r[15] = m2[12]*m1[3] + m2[13]*m1[7] + m2[14]*m1[11] + m2[15]*m1[15];
+    return r;
+}
+
+var multiplyMatrix4 = function(m1, m2) {
+    var r = [];
+    var x = m1[0], y = m1[1], z = m1[2], w = m1[3];
+    r[0] = m2[0] * x + m2[4] * y + m2[8] * z + m2[12] * w;
+    r[1] = m2[1] * x + m2[5] * y + m2[9] * z + m2[13] * w;
+    r[2] = m2[2] * x + m2[6] * y + m2[10] * z + m2[14] * w;
+    r[3] = m2[3] * x + m2[7] * y + m2[11] * z + m2[15] * w;
+    return r;
 };
 
 /**
@@ -100,16 +110,26 @@ var multiplyMatrix4 = function(matrix1, matrix2) {
  * @return
  **/
 
-var copyMatrix = function (matrix) {
-    var result = [];
-    for (var j = 0; j < 4; j++) {
-        result[j] = [];
-        for (var k = 0; k < 4; k++) {
-            result[j].push(matrix[j][k]);
-        }
-    }
-    return result;
-};
+function copyMatrix(matrix) {
+    var r = []; //new Array(16);
+    r[0] = matrix[0];
+    r[1] = matrix[1];
+    r[2] = matrix[2];
+    r[3] = matrix[3];
+    r[4] = matrix[4];
+    r[5] = matrix[5];
+    r[6] = matrix[6];
+    r[7] = matrix[7];
+    r[8] = matrix[8];
+    r[9] = matrix[9];
+    r[10] = matrix[10];
+    r[11] = matrix[11];
+    r[12] = matrix[12];
+    r[13] = matrix[13];
+    r[14] = matrix[14];
+    r[15] = matrix[15];
+    return r;
+}
 
 /**
  * @desc
@@ -119,28 +139,24 @@ var copyMatrix = function (matrix) {
  **/
 
 var invertMatrix = function (a) {
-   var b =[];
-    var c = a[0][0], d = a[0][1], e = a[0][2], g = a[0][3], f = a[1][0], h = a[1][1], i = a[1][2], j = a[1][3], k = a[2][0], l = a[2][1], o = a[2][2], m = a[2][3], n = a[3][0], p = a[3][1], r = a[3][2], s = a[3][3], A = c * h - d * f, B = c * i - e * f, t = c * j - g * f, u = d * i - e * h, v = d * j - g * h, w = e * j - g * i, x = k * p - l * n, y = k * r - o * n, z = k * s - m * n, C = l * r - o * p, D = l * s - m * p, E = o * s - m * r, q = 1 / (A * E - B * D + t * C + u * z - v * y + w * x);
-    b[0] = [];
-    b[0].push((h * E - i * D + j * C) * q);
-    b[0].push(( - d * E + e * D - g * C) * q);
-    b[0].push((p * w - r * v + s * u) * q);
-    b[0].push(( - l * w + o * v - m * u) * q);
-    b[1] = [];
-    b[1].push(( - f * E + i * z - j * y) * q);
-    b[1].push((c * E - e * z + g * y) * q);
-    b[1].push(( - n * w + r * t - s * B) * q);
-    b[1].push((k * w - o * t + m * B) * q);
-    b[2] = [];
-    b[2].push((f * D - h * z + j * x) * q);
-    b[2].push(( - c * D + d * z - g * x) * q);
-    b[2].push((n * v - p * t + s * A) * q);
-    b[2].push(( - k * v + l * t - m * A) * q);
-    b[3] = [];
-    b[3].push(( - f * C + h * y - i * x) * q);
-    b[3].push((c * C - d * y + e * x) * q);
-    b[3].push(( - n * u + p * B - r * A) * q);
-    b[3].push((k * u - l * B + o * A) * q);
+    var b = [];
+    var c = a[0], d = a[1], e = a[2], g = a[3], f = a[4], h = a[5], i = a[6], j = a[7], k = a[8], l = a[9], o = a[10], m = a[11], n = a[12], p = a[13], r = a[14], s = a[15], A = c * h - d * f, B = c * i - e * f, t = c * j - g * f, u = d * i - e * h, v = d * j - g * h, w = e * j - g * i, x = k * p - l * n, y = k * r - o * n, z = k * s - m * n, C = l * r - o * p, D = l * s - m * p, E = o * s - m * r, q = 1 / (A * E - B * D + t * C + u * z - v * y + w * x);
+    b[0] = (h * E - i * D + j * C) * q;
+    b[1] = ( - d * E + e * D - g * C) * q;
+    b[2] = (p * w - r * v + s * u) * q;
+    b[3] = ( - l * w + o * v - m * u) * q;
+    b[4] = ( - f * E + i * z - j * y) * q;
+    b[5] = (c * E - e * z + g * y) * q;
+    b[6] = ( - n * w + r * t - s * B) * q;
+    b[7] = (k * w - o * t + m * B) * q;
+    b[8] = (f * D - h * z + j * x) * q;
+    b[9] = ( - c * D + d * z - g * x) * q;
+    b[10] = (n * v - p * t + s * A) * q;
+    b[11] = ( - k * v + l * t - m * A) * q;
+    b[12] = ( - f * C + h * y - i * x) * q;
+    b[13] = (c * C - d * y + e * x) * q;
+    b[14] = ( - n * u + p * B - r * A) * q;
+    b[15] = (k * u - l * B + o * A) * q;
     return b;
 };
 
@@ -151,71 +167,13 @@ var invertMatrix = function (a) {
  * @return
  **/
 
-var toAxisAngle = function (matrix) {
-    var rY = Math.atan(matrix[1][2], matrix[2][2]);
-    var rX = Math.atan(matrix[0][2], matrix[2][2]);
+function toAxisAngle(matrix) {
+    var rY = Math.atan(matrix[6], matrix[10]);
+    var rX = Math.atan(matrix[2], matrix[10]);
 
     return [rX, rY];
 
-};
-
-/**********************************************************************************************************************
- **********************************************************************************************************************/
-
-/**
- * @desc Multiply two 2d vectors or alternatively a 2d vector and a number.
- * @param {Array} x 2d vector A
- * @param {Array} y 2d vector B can also be of type {Number}
- * @return {Array} representing the 2d vector
- **/
-var vMN = function (x, y) {
-    return [(x[0] * y), (x[1] * y)];
-};
-
-/**********************************************************************************************************************
- **********************************************************************************************************************/
-
-/**
- * @desc Add two 2d vectors or alternatively a 2d vector and a number.
- * @param {Array} x 2d vector A
- * @param {Array} y 2d vector B can also be of type {Number}
- * @return {Array} representing the 2d vector
- **/
-
-var vA = function (x, y) {
-    return [x[0] + y[0], x[1] + y[1]];
-};
-
-
-/**********************************************************************************************************************
- **********************************************************************************************************************/
-
-/**
- * @desc Divide 2d two vectors or alternatively a 2d vector and a number.
- * @param {Array} x 2d vector A
- * @param {Array} y 2d vector B can also be of type {Number}
- * @return {Array} representing the 2d vector
- **/
-
-var vD = function (x, y) {
-    return [x[0] - y[0], x[1] - y[1]];
-};
-
-
-/**********************************************************************************************************************
- **********************************************************************************************************************/
-
-/**
- * @desc rotates a 2d vector by degrees.
- * @param {Array} vector the 2d vector that will be rotated.
- * @param {Number} rotation by how many degree the 2d vector should be rotated.
- * @return {Array} representing the rotated 2d vector.
- **/
-
-var vR = function (vector, rotation) {
-    return [Math.cos(rotation) * vector[0] - Math.sin(rotation) * vector[1],
-        Math.sin(rotation) * vector[0] + Math.cos(rotation) * vector[1]];
-};
+}
 
 /**********************************************************************************************************************
  **********************************************************************************************************************/
@@ -468,8 +426,8 @@ function timeSynchronizer(timeing) {
 
 /**
  * @desc Given a 4x4 transformation matrix and an x, y coordinate pair,
-            calculates the z-position of the resulting point
- * @return the resulting z-coordinate (float)
+            calculates the z-position of the ring point
+ * @return the ring z-coordinate (float)
  * @author Ben Reynolds
  **/
 
@@ -502,15 +460,6 @@ function sortPointsClockwise(points) {
 
     return points.sort(comparePoints);
 }
-
-
-function mat1x16From4x4(matrix) {
-    return [matrix[0][0], matrix[0][1], matrix[0][2], matrix[0][3],
-        matrix[1][0], matrix[1][1], matrix[1][2], matrix[1][3],
-        matrix[2][0], matrix[2][1], matrix[2][2], matrix[2][3],
-        matrix[3][0], matrix[3][1], matrix[3][2], matrix[3][3]];
-}
-
 
 function getCornersClockwise(thisCanvas) {
     return [[0, 0, 0],
@@ -572,13 +521,13 @@ function addCornerPairToOppositeCornerPairs(cornerPair, oppositeCornerPairs) {
     }
 }
 
-function estimateIntersection(theObject, matrix) {
+function estimateIntersection(theObject, mCanvas) {
 
     var thisCanvas = document.getElementById("canvas"+theObject);
 
     // var newMatrix = copyMatrix(multiplyMatrix(globalMatrix.begin, invertMatrix(globalMatrix.temp)));
 
-    var mCanvas = mat1x16From4x4(matrix);
+   // var mCanvas = mat1x16From4x4(matrix);
     // var mCanvas = getTransformMatrixForDiv(theDiv);
 
     // console.log("mCanvas: ", mCanvas);
