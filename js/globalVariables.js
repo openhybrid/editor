@@ -83,6 +83,8 @@ var globalStates = {
     UIOffMode: false,
     preferencesButtonState: false,
     extendedTracking: false,
+    adminMode: false,
+    currentlyLocked: false,
 
     extendedTrackingState: false,
     developerState: false,

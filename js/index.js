@@ -62,6 +62,30 @@
  ******************************************** Data IO *******************************************
  **********************************************************************************************************************/
 
+
+function authenticateSessionForUser(encryptedId) {
+    console.log("js did run");
+    console.log("authenticating with userId: " + encryptedId);
+
+    if (encryptedId === null) {
+        console.log("authentication failed");
+        if (document.getElementById("adminModeSwitch").checked) {
+            document.getElementById("adminModeSwitch").click(); //.checked = false;            
+        }
+        globalStates.adminMode = false;
+        globalStates.authenticatedUser = null;
+        console.log("Is admin mode on now? " + globalStates.adminMode);    
+    
+    } else {
+        console.log("success");
+        globalStates.adminMode = true;
+        globalStates.authenticatedUser = encryptedId;
+        console.log("Is admin mode on now? " + globalStates.adminMode);
+            
+    }
+
+}
+
 // Functions to fill the data of the object
 
 /**
@@ -147,6 +171,11 @@ function setStates(developerState, extendedTrackingState, clearSkyState, externa
         document.getElementById('unconstButton').style.visibility = "visible";
         document.getElementById('resetButtonDiv').style.display = "inline";
         document.getElementById('unconstButtonDiv').style.display = "inline";
+    }
+
+    if (globalStates.adminMode) {
+        document.getElementById('lockButton').style.visibility = "visible";
+        document.getElementById('lockButtonDiv').style.display = "inline";
     }
 
 

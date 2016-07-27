@@ -63,6 +63,7 @@ var reloadButtonImage = [];
 var logButtonImage = [];
 var resetButtonImage = [];
 var unconstButtonImage = [];
+var lockButtonImage = [];
 var editingButtonImage = [];
 var loadNewUiImage = [];
 
@@ -101,6 +102,10 @@ function GUI() {
 
     preload(unconstButtonImage,
         'png/unconst.png', 'png/unconstOver.png', 'png/unconstSelect.png','png/unconstEmpty.png'
+    );
+
+    preload(lockButtonImage,
+        'png/lock.png', 'png/lockOver.png', 'png/lockSelect.png', 'png/lockEmpty.png'
     );
 
     preload(loadNewUiImage,
@@ -202,6 +207,19 @@ function GUI() {
             document.getElementById('logButton').style.visibility = "visible";
             document.getElementById('preferencesButton').style.visibility = "visible";
 */
+        }
+        console.log("Is clearSky mode on now? " + globalStates.UIOffMode);
+    });
+    ec++;
+
+    document.getElementById("adminModeSwitch").addEventListener("change", function () {
+        if(document.getElementById("adminModeSwitch").checked){
+            window.location.href = "of://authenticateTouch";
+
+        }else{
+            globalStates.adminMode = false;
+            globalStates.authenticatedUser = null;
+            console.log("Is admin mode on now? " + globalStates.adminMode);
         }
     });
     ec++;
@@ -310,7 +328,28 @@ function GUI() {
     });
     ec++;
 
+    document.getElementById("lockButton").addEventListener("touchstart", function () {
+        if(!globalStates.UIOffMode) document.getElementById('lockButton').src = lockButtonImage[1].src;
+    });
+    ec++;
 
+    document.getElementById("lockButton").addEventListener("touchend", function () {
+        if (globalStates.currentlyLocked === true) {
+            if(!globalStates.UIOffMode)    document.getElementById('lockButton').src = lockButtonImage[0].src;
+            globalStates.currentlyLocked = false;
+
+        }
+        else {
+            if(!globalStates.UIOffMode)    document.getElementById('lockButton').src = lockButtonImage[2].src;
+            globalStates.currentlyLocked = true;
+            console.log("locked for user: " + globalStates.authenticatedUser);
+
+        }
+
+        console.log("is currentlyLocked? " + globalStates.currentlyLocked);
+
+    });
+    ec++;
 
     document.getElementById("loadNewUI").addEventListener("touchstart", function () {
         if (globalStates.extendedTracking === true) {
@@ -326,7 +365,6 @@ function GUI() {
 
         if(!globalStates.UIOffMode)    document.getElementById('loadNewUI').src = loadNewUiImage[0].src;
             window.location.href = "of://loadNewUI"+globalStates.newURLText;
-
     });
     ec++;
 
@@ -348,6 +386,11 @@ function GUI() {
                 document.getElementById('unconstButtonDiv').style.display = "inline";
             }
 
+            if(globalStates.adminMode) {
+                document.getElementById('lockButton').style.visibility = "visible";
+                document.getElementById('lockButtonDiv').style.display = "inline";
+            } 
+
             if(globalStates.UIOffMode){
                 document.getElementById('preferencesButton').src = preferencesButtonImage[3].src;
                 document.getElementById('feezeButton').src = freezeButtonImage[3].src;
@@ -356,6 +399,7 @@ function GUI() {
                 document.getElementById('guiButtonImage').src = guiButtonImage[4].src;
                 document.getElementById('resetButton').src = resetButtonImage[3].src;
                 document.getElementById('unconstButton').src = unconstButtonImage[3].src;
+                document.getElementById('lockButton').src = lockButtonImage[3].src;
             }
 
         }
@@ -364,8 +408,10 @@ function GUI() {
 
                 document.getElementById('resetButton').style.visibility = "hidden";
                 document.getElementById('unconstButton').style.visibility = "hidden";
+                document.getElementById('lockButton').style.visibility = "hidden";
                 document.getElementById('resetButtonDiv').style.display = "none";
                 document.getElementById('unconstButtonDiv').style.display = "none";
+                document.getElementById('lockButtonDiv').style.display = "none";
 
 
                 addElementInPreferences();
@@ -386,6 +432,7 @@ function GUI() {
                 document.getElementById('guiButtonImage').src = guiButtonImage[1].src;
                 document.getElementById('resetButton').src = resetButtonImage[0].src;
                 document.getElementById('unconstButton').src = unconstButtonImage[0].src;
+                document.getElementById('lockButton').src = lockButtonImage[0].src;
             }
 
         }
