@@ -74,7 +74,7 @@ window.onload = function () {
     }
 
 
-    if (globalStates.platform === 'iPhone' || lobalStates.platform === 'iPod touch') {
+    if (globalStates.platform === 'iPhone' || globalStates.platform === 'iPod touch') {
         document.getElementById("logButtonDiv").style.visibility = "hidden";
        // document.getElementById("reloadButtonDiv").style.visibility = "hidden";
      //   document.getElementById("preferencesButtonDiv").style.bottom = "36px";
