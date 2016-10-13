@@ -69,7 +69,7 @@ window.onload = function () {
 
     GUI();
 
-    if (globalStates.platform !== 'iPad' && globalStates.platform !== 'iPhone' && globalStates.platform !== 'iPod') {
+    if (globalStates.platform !== 'iPad' && globalStates.platform !== 'iPhone' && globalStates.platform !== 'iPod touch') {
         globalStates.platform = false;
     }
 
